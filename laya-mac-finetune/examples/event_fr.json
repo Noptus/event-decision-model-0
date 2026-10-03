@@ -1,0 +1,13 @@
+{
+  "topic": "acme/prod/eu/payments/authorized/v1",
+  "schema_name": "AccountTakeoverSuspected",
+  "schema_version": "1.0",
+  "event_type": "security.account.takeover",
+  "payload": {
+    "alert_id": "A-DEMO-902",
+    "transaction_id": "TX-DEMO-902",
+    "risk_score": 0.96,
+    "signals": ["nouvel_appareil", "voyage_impossible"],
+    "message": "Compte probablement compromis malgré le topic historique de paiement."
+  }
+}

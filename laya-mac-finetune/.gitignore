@@ -1,0 +1,23 @@
+# Local Python and tool state
+.venv/
+.cache/
+.tmp/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+
+# Reproducible downloads (created by scripts/setup.sh)
+models/
+upstream/laya/
+
+# Large generated checkpoints and transient training state
+outputs/best-model/
+outputs/smoke-model/
+outputs/recovery-model/
+outputs/*.pt
+outputs/*.log
+outputs/.best-model.tmp-*/
+outputs/.smoke-model.tmp-*/
+
+# Metrics, manifests, predictions, CSVs, and generated toy data stay visible.

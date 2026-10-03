@@ -1,0 +1,5 @@
+bin/
+.state/
+.coverage/
+.env
+config.env

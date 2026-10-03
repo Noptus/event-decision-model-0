@@ -1,0 +1,654 @@
+{
+  "argmax_improvements": [],
+  "argmax_regressions": [],
+  "base": {
+    "batched_evaluation_seconds": 1.8711859159993764,
+    "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/models/laya-multilingual",
+    "load_seconds": 27.50096875000054,
+    "metrics": {
+      "accuracy": 0.8333333333333334,
+      "accuracy_per_challenge": {
+        "ambiguous": {
+          "accuracy": 0.75,
+          "count": 12
+        },
+        "missing_optional_fields": {
+          "accuracy": 0.8333333333333334,
+          "count": 12
+        },
+        "noisy_text": {
+          "accuracy": 0.75,
+          "count": 12
+        },
+        "topic_payload_conflict": {
+          "accuracy": 0.8333333333333334,
+          "count": 6
+        },
+        "unseen_topic_pattern": {
+          "accuracy": 0.8333333333333334,
+          "count": 18
+        }
+      },
+      "accuracy_per_language": {
+        "en": {
+          "accuracy": 0.8055555555555556,
+          "count": 36
+        },
+        "fr": {
+          "accuracy": 0.875,
+          "count": 24
+        }
+      },
+      "accuracy_per_route": {
+        "customer-support": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "fraud-review": {
+          "accuracy": 0.3,
+          "count": 10
+        },
+        "inventory-management": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "logistics": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "order-processing": {
+          "accuracy": 0.9,
+          "count": 10
+        },
+        "payment-operations": {
+          "accuracy": 0.8,
+          "count": 10
+        }
+      },
+      "brier_score": 0.21753065524530218,
+      "count": 60,
+      "expected_calibration_error_10_bins": 0.09052833333333339,
+      "mean_confidence": 0.8077016666666667,
+      "negative_log_loss": 0.5259825345777865,
+      "soft_target_brier_score": 0.17246512684366505,
+      "soft_target_cross_entropy": 1.1747569970832337
+    },
+    "warm_single_event_latency": {
+      "median_ms": 36.845458000243525,
+      "min_ms": 36.7859590005537,
+      "p95_ms": 37.93749999895226,
+      "runs": 5
+    }
+  },
+  "calibration": {
+    "abstention_thresholds": {
+      "choice:6-10": 0.18619316739603956
+    },
+    "calibration_id": "8f99162ec667600782f3712c76c2f1128c802ecbfb79c70f036c17d66a47574e",
+    "checkpoint_identity": {
+      "abstention_thresholds": {
+        "choice:6-10": 0.18619316739603956
+      },
+      "mode": "experiment",
+      "model_name": "laya-solace-event-mesh-router",
+      "question_contract_sha256": "cafc4518fc3a89ef740f4db969b4dd0abbe3b7431f0994a849c4f9ade06430fa",
+      "step": 50,
+      "temperature": [
+        1.0811268091201782,
+        1.0,
+        1.0
+      ]
+    },
+    "fit_split": "validation",
+    "metrics_after": {
+      "accuracy": 0.925,
+      "brier_score": 0.1011583961033908,
+      "expected_calibration_error": 0.19731196650673852,
+      "mean_confidence": 0.7524156844465258,
+      "negative_log_loss": 0.431412943323975,
+      "soft_target_cross_entropy": 0.830105951864792
+    },
+    "metrics_before": {
+      "accuracy": 0.925,
+      "brier_score": 0.10072192256554136,
+      "expected_calibration_error": 0.18980578067597242,
+      "mean_confidence": 0.7796440302911971,
+      "negative_log_loss": 0.402651583142483,
+      "soft_target_cross_entropy": 0.8336892822954907
+    },
+    "n": 40,
+    "target_error": 0.15,
+    "temperature": [
+      1.0811268091201782,
+      1.0,
+      1.0
+    ],
+    "temperature_by_options": {}
+  },
+  "device": "mps",
+  "fine_tuned": {
+    "batched_evaluation_seconds": 1.7342730830005166,
+    "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/outputs/best-model",
+    "load_seconds": 21.969359291999353,
+    "metrics": {
+      "accuracy": 0.8333333333333334,
+      "accuracy_per_challenge": {
+        "ambiguous": {
+          "accuracy": 0.75,
+          "count": 12
+        },
+        "missing_optional_fields": {
+          "accuracy": 0.8333333333333334,
+          "count": 12
+        },
+        "noisy_text": {
+          "accuracy": 0.75,
+          "count": 12
+        },
+        "topic_payload_conflict": {
+          "accuracy": 0.8333333333333334,
+          "count": 6
+        },
+        "unseen_topic_pattern": {
+          "accuracy": 0.8333333333333334,
+          "count": 18
+        }
+      },
+      "accuracy_per_language": {
+        "en": {
+          "accuracy": 0.8055555555555556,
+          "count": 36
+        },
+        "fr": {
+          "accuracy": 0.875,
+          "count": 24
+        }
+      },
+      "accuracy_per_route": {
+        "customer-support": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "fraud-review": {
+          "accuracy": 0.3,
+          "count": 10
+        },
+        "inventory-management": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "logistics": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "order-processing": {
+          "accuracy": 0.9,
+          "count": 10
+        },
+        "payment-operations": {
+          "accuracy": 0.8,
+          "count": 10
+        }
+      },
+      "brier_score": 0.21019675416678912,
+      "count": 60,
+      "expected_calibration_error_10_bins": 0.14685166666666677,
+      "mean_confidence": 0.7231216666666669,
+      "negative_log_loss": 0.5002494745195276,
+      "review_policy": {
+        "accepted_accuracy": 0.8928571428571429,
+        "coverage": 0.9333333333333333,
+        "review_rate": 0.06666666666666667
+      },
+      "soft_target_brier_score": 0.14382218789168588,
+      "soft_target_cross_entropy": 0.865938918353148
+    },
+    "warm_single_event_latency": {
+      "median_ms": 37.83629200006544,
+      "min_ms": 37.59962500043912,
+      "p95_ms": 38.4200743992551,
+      "runs": 5
+    }
+  },
+  "fine_tuned_uncalibrated": {
+    "batched_evaluation_seconds": 2.1430466670008173,
+    "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/outputs/best-model",
+    "metrics": {
+      "accuracy": 0.8333333333333334,
+      "accuracy_per_challenge": {
+        "ambiguous": {
+          "accuracy": 0.75,
+          "count": 12
+        },
+        "missing_optional_fields": {
+          "accuracy": 0.8333333333333334,
+          "count": 12
+        },
+        "noisy_text": {
+          "accuracy": 0.75,
+          "count": 12
+        },
+        "topic_payload_conflict": {
+          "accuracy": 0.8333333333333334,
+          "count": 6
+        },
+        "unseen_topic_pattern": {
+          "accuracy": 0.8333333333333334,
+          "count": 18
+        }
+      },
+      "accuracy_per_language": {
+        "en": {
+          "accuracy": 0.8055555555555556,
+          "count": 36
+        },
+        "fr": {
+          "accuracy": 0.875,
+          "count": 24
+        }
+      },
+      "accuracy_per_route": {
+        "customer-support": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "fraud-review": {
+          "accuracy": 0.3,
+          "count": 10
+        },
+        "inventory-management": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "logistics": {
+          "accuracy": 1.0,
+          "count": 10
+        },
+        "order-processing": {
+          "accuracy": 0.9,
+          "count": 10
+        },
+        "payment-operations": {
+          "accuracy": 0.8,
+          "count": 10
+        }
+      },
+      "brier_score": 0.2014864168044245,
+      "count": 60,
+      "expected_calibration_error_10_bins": 0.12272999999999996,
+      "mean_confidence": 0.7475266666666666,
+      "negative_log_loss": 0.4735949005097082,
+      "soft_target_brier_score": 0.14227617780056498,
+      "soft_target_cross_entropy": 0.8659375850372552
+    }
+  },
+  "notes": [
+    "The data are deterministic synthetic events, not production traffic.",
+    "Calibration and the review threshold were fit only on validation, never on test.",
+    "The review gate preserves the native route choice and probabilities."
+  ],
+  "probability_improvements": [
+    {
+      "base_choice": "logistics",
+      "base_confidence": 0.9903,
+      "base_truth_probability": 0.0067,
+      "challenge_tags": [
+        "noisy_text"
+      ],
+      "fine_tuned_choice": "logistics",
+      "fine_tuned_confidence": 0.8309,
+      "fine_tuned_truth_probability": 0.1049,
+      "id": "mesh-tes-0208",
+      "language": "en",
+      "state": {
+        "event_type": "order.amended",
+        "payload": {
+          "currency": "USD",
+          "customer_id": "C-1026",
+          "event_id": "EVT-000208",
+          "items": [
+            {
+              "quantity": 1,
+              "sku": "SKU-123"
+            }
+          ],
+          "message": "Please amend the delivery quantity. FYI: replay after maintenance; correlation header may be stale.",
+          "order_id": "O-80208",
+          "total": 31.75
+        },
+        "schema_name": "OrderAmended",
+        "schema_version": "2.0",
+        "topic": "mesh/uat/orders/na/amended/v1"
+      },
+      "truth": "order-processing",
+      "truth_probability_delta": 0.0982
+    },
+    {
+      "base_choice": "logistics",
+      "base_confidence": 0.2664,
+      "base_truth_probability": 0.0774,
+      "challenge_tags": [
+        "ambiguous"
+      ],
+      "fine_tuned_choice": "logistics",
+      "fine_tuned_confidence": 0.182,
+      "fine_tuned_truth_probability": 0.1678,
+      "id": "mesh-tes-0254",
+      "language": "fr",
+      "state": {
+        "event_type": "risk.transaction.alert",
+        "payload": {
+          "alert_id": "A-600254",
+          "event_id": "EVT-000254",
+          "ip_country": "FR",
+          "message": "Le moteur de risque détecte une transaction inhabituelle.",
+          "risk_score": 0.76,
+          "settlement_status": "pending operations acknowledgement",
+          "signals": [
+            "new_device",
+            "velocity_spike"
+          ],
+          "transaction_id": "TX-500254"
+        },
+        "schema_name": "TransactionRiskAlert",
+        "schema_version": "2.0",
+        "topic": "mesh/uat/risk/eu/transaction-alert/v1"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.09040000000000001
+    },
+    {
+      "base_choice": "inventory-management",
+      "base_confidence": 0.455,
+      "base_truth_probability": 0.0653,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "inventory-management",
+      "fine_tuned_confidence": 0.3331,
+      "fine_tuned_truth_probability": 0.1433,
+      "id": "mesh-tes-0251",
+      "language": "en",
+      "state": {
+        "event_type": "risk.transaction.alert",
+        "payload": {
+          "alert_id": "A-600251",
+          "event_id": "EVT-000251",
+          "ip_country": "FR",
+          "message": "Risk engine detected an unusual transaction.",
+          "risk_score": 0.73,
+          "signals": [
+            "new_device",
+            "velocity_spike"
+          ],
+          "transaction_id": "TX-500251"
+        },
+        "schema_name": "TransactionRiskAlert",
+        "schema_version": "1.0",
+        "topic": "event/v2/transaction-alert/acme/eu/risk"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.07800000000000001
+    },
+    {
+      "base_choice": "customer-support",
+      "base_confidence": 0.4089,
+      "base_truth_probability": 0.0673,
+      "challenge_tags": [],
+      "fine_tuned_choice": "customer-support",
+      "fine_tuned_confidence": 0.306,
+      "fine_tuned_truth_probability": 0.1428,
+      "id": "mesh-tes-0260",
+      "language": "fr",
+      "state": {
+        "event_type": "risk.transaction.alert",
+        "payload": {
+          "alert_id": "A-600260",
+          "event_id": "EVT-000260",
+          "ip_country": "FR",
+          "message": "Le moteur de risque détecte une transaction inhabituelle.",
+          "risk_score": 0.82,
+          "signals": [
+            "new_device",
+            "velocity_spike"
+          ],
+          "transaction_id": "TX-500260"
+        },
+        "schema_name": "TransactionRiskAlert",
+        "schema_version": "2.0",
+        "topic": "mesh/uat/risk/eu/transaction-alert/v1"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.07550000000000001
+    },
+    {
+      "base_choice": "inventory-management",
+      "base_confidence": 0.2809,
+      "base_truth_probability": 0.0935,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "customer-support",
+      "fine_tuned_confidence": 0.1913,
+      "fine_tuned_truth_probability": 0.1541,
+      "id": "mesh-tes-0259",
+      "language": "en",
+      "state": {
+        "event_type": "risk.velocity.triggered",
+        "payload": {
+          "alert_id": "A-600259",
+          "event_id": "EVT-000259",
+          "ip_country": "CA",
+          "risk_score": 0.81,
+          "signals": [
+            "multiple_declines",
+            "velocity_spike"
+          ],
+          "transaction_id": "TX-500259"
+        },
+        "schema_name": "VelocityRuleTriggered",
+        "schema_version": "1.0",
+        "topic": "event/v2/velocity-triggered/initech/apac/risk"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.06059999999999999
+    }
+  ],
+  "probability_regressions": [
+    {
+      "base_choice": "order-processing",
+      "base_confidence": 0.9887,
+      "base_truth_probability": 0.9887,
+      "challenge_tags": [],
+      "fine_tuned_choice": "order-processing",
+      "fine_tuned_confidence": 0.6768,
+      "fine_tuned_truth_probability": 0.6768,
+      "id": "mesh-tes-0210",
+      "language": "fr",
+      "state": {
+        "event_type": "order.created",
+        "payload": {
+          "currency": "EUR",
+          "customer_id": "C-1028",
+          "event_id": "EVT-000210",
+          "items": [
+            {
+              "quantity": 3,
+              "sku": "SKU-125"
+            }
+          ],
+          "message": "Le client a validé un nouveau panier.",
+          "order_id": "O-80210",
+          "total": 46.25
+        },
+        "schema_name": "OrderCreated",
+        "schema_version": "2.0",
+        "topic": "mesh/uat/orders/eu/created/v1"
+      },
+      "truth": "order-processing",
+      "truth_probability_delta": -0.31190000000000007
+    },
+    {
+      "base_choice": "order-processing",
+      "base_confidence": 0.9664,
+      "base_truth_probability": 0.9664,
+      "challenge_tags": [
+        "ambiguous"
+      ],
+      "fine_tuned_choice": "order-processing",
+      "fine_tuned_confidence": 0.6863,
+      "fine_tuned_truth_probability": 0.6863,
+      "id": "mesh-tes-0204",
+      "language": "fr",
+      "state": {
+        "event_type": "order.created",
+        "payload": {
+          "allocation_note": "stock reservation follows order acceptance",
+          "currency": "EUR",
+          "customer_id": "C-1022",
+          "event_id": "EVT-000204",
+          "items": [
+            {
+              "quantity": 1,
+              "sku": "SKU-119"
+            }
+          ],
+          "message": "Le client a validé un nouveau panier.",
+          "order_id": "O-80204",
+          "total": 169.5
+        },
+        "schema_name": "OrderCreated",
+        "schema_version": "2.0",
+        "topic": "mesh/uat/orders/eu/created/v1"
+      },
+      "truth": "order-processing",
+      "truth_probability_delta": -0.2801
+    },
+    {
+      "base_choice": "order-processing",
+      "base_confidence": 0.8095,
+      "base_truth_probability": 0.8095,
+      "challenge_tags": [
+        "ambiguous",
+        "noisy_text"
+      ],
+      "fine_tuned_choice": "order-processing",
+      "fine_tuned_confidence": 0.6525,
+      "fine_tuned_truth_probability": 0.6525,
+      "id": "mesh-tes-0203",
+      "language": "en",
+      "state": {
+        "event_type": "order.cancellation.requested",
+        "payload": {
+          "allocation_note": "stock reservation follows order acceptance",
+          "currency": "USD",
+          "customer_id": "C-1021",
+          "event_id": "EVT-000203",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "SKU-118"
+            }
+          ],
+          "message": "Cancel before allocation. FYI: replay after maintenance; correlation header may be stale.",
+          "order_id": "O-80203",
+          "total": 162.25
+        },
+        "schema_name": "OrderCancellationRequested",
+        "schema_version": "1.0",
+        "topic": "initech/prod/apac/orders/cancel-requested/v1"
+      },
+      "truth": "order-processing",
+      "truth_probability_delta": -0.15700000000000003
+    },
+    {
+      "base_choice": "order-processing",
+      "base_confidence": 1.0,
+      "base_truth_probability": 1.0,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "order-processing",
+      "fine_tuned_confidence": 0.8663,
+      "fine_tuned_truth_probability": 0.8663,
+      "id": "mesh-tes-0201",
+      "language": "en",
+      "state": {
+        "event_type": "order.created",
+        "payload": {
+          "currency": "USD",
+          "customer_id": "C-1019",
+          "event_id": "EVT-000201",
+          "items": [
+            {
+              "quantity": 2,
+              "sku": "SKU-116"
+            }
+          ],
+          "message": "Customer submitted a new basket.",
+          "order_id": "O-80201",
+          "total": 147.75
+        },
+        "schema_name": "OrderCreated",
+        "schema_version": "1.0",
+        "topic": "event/v2/created/acme/eu/orders"
+      },
+      "truth": "order-processing",
+      "truth_probability_delta": -0.13370000000000004
+    },
+    {
+      "base_choice": "order-processing",
+      "base_confidence": 0.9999,
+      "base_truth_probability": 0.9999,
+      "challenge_tags": [
+        "topic_payload_conflict"
+      ],
+      "fine_tuned_choice": "order-processing",
+      "fine_tuned_confidence": 0.8756,
+      "fine_tuned_truth_probability": 0.8756,
+      "id": "mesh-tes-0207",
+      "language": "en",
+      "state": {
+        "event_type": "order.created",
+        "payload": {
+          "currency": "USD",
+          "customer_id": "C-1025",
+          "event_id": "EVT-000207",
+          "items": [
+            {
+              "quantity": 4,
+              "sku": "SKU-122"
+            }
+          ],
+          "message": "Customer submitted a new basket.",
+          "order_id": "O-80207",
+          "total": 24.5
+        },
+        "schema_name": "OrderCreated",
+        "schema_version": "1.0",
+        "topic": "acme/prod/eu/stock/created/v1"
+      },
+      "truth": "order-processing",
+      "truth_probability_delta": -0.12429999999999997
+    }
+  ],
+  "question_contract": {
+    "route": {
+      "criteria": {
+        "customer-support": "customer ticket, complaint, service request, or human follow-up",
+        "fraud-review": "suspected fraud, account takeover, payment abuse, or security alert",
+        "inventory-management": "warehouse stock reservation, count, replenishment, or correction",
+        "logistics": "shipment, carrier, delivery, customs, or fulfilment movement",
+        "order-processing": "order creation, amendment, cancellation, or validation",
+        "payment-operations": "payment authorization, settlement, failure, refund, or reconciliation"
+      },
+      "instructions": "Which consumer service should receive this Solace event? Prefer schema, event_type, and payload meaning over a conflicting legacy topic.",
+      "type": "choice"
+    }
+  },
+  "selected_checkpoint_training_duration_seconds": 118.83983662500032,
+  "status": "experimental_synthetic_proof_of_concept",
+  "test_events": 60,
+  "total_training_search_duration_seconds": 169.8616915829989
+}

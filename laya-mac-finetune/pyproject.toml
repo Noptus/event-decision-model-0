@@ -1,0 +1,30 @@
+[project]
+name = "laya-solace-event-mesh-lab"
+version = "0.1.0"
+description = "Local Apple Silicon fine-tuning lab for bilingual Solace-style event routing"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "laya",
+  "numpy>=1.26,<3",
+  "pyyaml>=6,<7",
+  "safetensors>=0.4,<1",
+  "torch>=2.6,<3",
+  "transformers>=4.48,<5",
+  "huggingface-hub>=0.20,<1",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8,<9",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+laya = { path = "upstream/laya", editable = true }
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+pythonpath = ["scripts"]
+testpaths = ["tests"]

@@ -1,0 +1,12 @@
+{
+  "topic": "acme/prod/na/shipments/delayed/v1",
+  "schema_name": "DeliveryDelayed",
+  "schema_version": "2.0",
+  "event_type": "delivery.delayed",
+  "payload": {
+    "shipment_id": "S-DEMO-901",
+    "carrier": "NorthParcel",
+    "eta_hours": 48,
+    "message": "Carrier missed the delivery window; the customer only asks to be notified."
+  }
+}

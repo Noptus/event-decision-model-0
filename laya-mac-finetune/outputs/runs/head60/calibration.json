@@ -1,0 +1,43 @@
+{
+  "abstention_thresholds": {
+    "choice:6-10": 0.18619316739603956
+  },
+  "calibration_id": "8f99162ec667600782f3712c76c2f1128c802ecbfb79c70f036c17d66a47574e",
+  "checkpoint_identity": {
+    "abstention_thresholds": {
+      "choice:6-10": 0.18619316739603956
+    },
+    "mode": "experiment",
+    "model_name": "laya-solace-event-mesh-router",
+    "question_contract_sha256": "cafc4518fc3a89ef740f4db969b4dd0abbe3b7431f0994a849c4f9ade06430fa",
+    "step": 50,
+    "temperature": [
+      1.0811268091201782,
+      1.0,
+      1.0
+    ]
+  },
+  "fit_split": "validation",
+  "metrics_after": {
+    "accuracy": 0.925,
+    "brier_score": 0.1011583961033908,
+    "expected_calibration_error": 0.19731196650673852,
+    "mean_confidence": 0.7524156844465258,
+    "negative_log_loss": 0.431412943323975
+  },
+  "metrics_before": {
+    "accuracy": 0.925,
+    "brier_score": 0.10072192256554136,
+    "expected_calibration_error": 0.18980578067597242,
+    "mean_confidence": 0.7796440302911971,
+    "negative_log_loss": 0.402651583142483
+  },
+  "n": 40,
+  "target_error": 0.15,
+  "temperature": [
+    1.0811268091201782,
+    1.0,
+    1.0
+  ],
+  "temperature_by_options": {}
+}
