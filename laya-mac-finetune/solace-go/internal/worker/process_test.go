@@ -27,7 +27,7 @@ func fakeProcess(t *testing.T, mode string) *Process {
 		Model:            mode,
 		Device:           "cpu",
 		WorkingDirectory: filepath.Dir(script),
-		StartupTimeout:   200 * time.Millisecond,
+		StartupTimeout:   2 * time.Second,
 		StopTimeout:      200 * time.Millisecond,
 		MaxEventBytes:    8 * 1024 * 1024,
 		MaxResponseBytes: 64 * 1024,

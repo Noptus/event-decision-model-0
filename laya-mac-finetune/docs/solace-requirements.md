@@ -1,273 +1,221 @@
-# What We Need from Solace to Advance the Laya Routing Pilot
+# Requirements for the Next EDM-0 Solace Pilot
 
 **Status date:** 2026-10-03
-**Scope:** Requirements for moving the existing local proof of concept into a measured non-production Solace pilot, then—only if the evidence supports it—toward production.
+**Purpose:** define what Solace and application teams must provide before this experimental router can move from a synthetic proof of concept to a controlled pilot or production decision.
 
-> The quantities and gates below are proposed engineering targets. They are not Solace product requirements, contractual service levels, or performance promises.
+> Every volume, metric, and hardware figure below is an engineering starting point—not a Solace product requirement, contractual SLO, or promised model result.
 
-## 1. Current evidence and limits
+## 1. What exists today
 
-The repository already proves the local mechanics:
-
-| Item | Measured result |
+| Area | Verified result |
 |---|---|
-| Data | 160 train / 40 validation / 60 test synthetic events |
-| Languages | English and French for every route/event-type combination |
-| Model strategy | Frozen mmBERT encoder; native Laya decision head trained with RLCD + soft cross-entropy |
-| Hardware | Apple M4, 16 GiB unified memory, MPS, FP32 training |
-| Selected run | Step 50; 118.8 seconds; validation accuracy 0.925 |
-| Held-out choice accuracy | Base 0.8333; tuned 0.8333 |
-| Held-out raw NLL | Base 0.5260; tuned 0.4736 |
-| Fraud-review recall | Base 3/10; tuned 3/10 |
-| Calibration | Fitted on validation, but test ECE worsened from 0.1227 raw to 0.1469 calibrated |
-| Python verification | 13 tests passed, including real checkpoint load and inference |
-| Go verification | Unit tests, race detector, vet, build, real worker test, and offline end-to-end demo passed |
-| Warm Go-worker inference | Approximately 41–43 ms/event in the local demo after warm-up |
-| Live Solace broker | Not tested; no endpoint or credentials were supplied |
+| Dataset | Exactly 10,000 synthetic events: 8,000 train, 1,000 validation/calibration, 1,000 test |
+| Balance | 1,250 events per route and per source domain overall; approximately 50/50 English/French |
+| Isolation | No exact-state, entity, scenario-family, or normalized semantic-template overlap across splits |
+| Hard cases | 150 counterfactual pairs, topic/body conflicts, schema evolution, missing fields, noisy text, and 80 validation/test OOD events |
+| Token budget | All 10,000 records fit native Laya encoding at 384 tokens; zero dropped state tokens and zero option-marker failures |
+| Training | Apple M4, 16 GiB, MPS, head-only, FP32, exactly 8,000 exposures / 250 optimizer steps |
+| Duration | 129.2 seconds for the completed cache stage and 519.9 seconds for optimization/evaluation/checkpointing |
+| Known-owner test accuracy | Untouched Laya 0.8031 → tuned Laya 0.8719 |
+| Compatibility accuracy | 0.7810 → 0.8560, including provisional labels on 40 OOD events |
+| Raw NLL | 0.6729 → 0.5351 |
+| Fraud-review recall | 0.360 → 0.416; still the weakest route |
+| Calibration | Fitted only on validation; test ECE worsened from 0.1101 raw to 0.1186 calibrated |
+| Runtime | Persistent Go/Python worker; roughly 41–43 ms warm single-event observations, not a load-test result |
+| SDKPerf | 10,000 distinct payload/topic pairs published persistently; 10,000 ACK events and zero NACKs |
+| Broker | Nonproduction TLS connection, dedicated queue provisioning, and 10,000 SDKPerf source ACKs succeeded; the unified 10,000-result SMF audit is pending final verification in `outputs/run_manifest.json` |
+| Tests | Python tests plus Go unit, race, vet, default/native builds, and real-worker checks passed before the live audit |
 
-Fine-tuning improved probability quality but did not change any held-out argmax decisions. The data are synthetic and tiny, the test set has already informed exploratory decisions, and fraud/payment separation remains weak. These facts prevent any production-readiness claim.
+The previous 260-event/six-route experiment remains under `archive/v1-260/`; its selected checkpoint is under ignored `outputs/models/v1-260/`.
 
-## 2. Decisions and accountable owners
+## 2. Named owners and required deliverables
 
-| Owner | Required decision or deliverable |
+| Accountable owner | Deliverable |
 |---|---|
-| Business application owner | Name the accountable routing owner; approve the route taxonomy and rollout scope. |
-| Domain SMEs | Provide and adjudicate labels for orders, payments, shipments, inventory, support, and fraud/security. Resolve disputed examples. |
-| Fraud/risk owner | Define the fraud-versus-payment boundary, false-negative cost, escalation policy, and minimum acceptable fraud recall. |
-| Event-mesh architect | Provide the versioned topic/schema contract, topic-to-payload precedence rules, source systems, and whether routing is single-target or fan-out. |
-| Solace platform owner | Provision the non-production Message VPN, MQTT service, ACLs, session policy, quotas, test publisher, and results consumer. |
-| Data/privacy owner | Approve extraction, anonymization, retention, access, and use of payload fields for training/evaluation. |
-| ML owner | Build leakage-safe splits, train candidates, publish evaluation evidence, version artifacts, and recommend—not unilaterally set—thresholds. |
-| Operations/SRE | Define latency, throughput, burst, backlog, availability, recovery, monitoring, and rollback targets. |
-| Security owner | Approve secret delivery, certificate trust, network path, least-privilege ACLs, artifact provenance, and log redaction. |
+| Business application owner | Signed routing scope, rollout mode, and final go/no-go decision |
+| Event-mesh architect | Versioned topic/schema contract and topic-versus-body precedence rules |
+| Route SMEs | Adjudicated labels and examples for all eight operational destinations |
+| Fraud/risk owner | Fraud/payment boundary, false-negative cost, review rules, and minimum fraud recall |
+| Data/privacy owner | Approved extraction, pseudonymization, retention, access, and permitted payload fields |
+| Solace platform owner | Nonproduction VPN, endpoints, queue/subscriptions, ACLs, spool quotas, test producers/consumers |
+| ML owner | Leakage-safe datasets, model versions, evaluation evidence, calibration analysis, and rollback package |
+| Security owner | Secret delivery, CA trust, network access, audit/log redaction, and artifact provenance |
+| SRE/operations | p95/p99 latency, EPS/burst/backlog SLOs, monitoring, failure tests, runbook, and rollback |
 
-A named person or team must accept each row before a production gate. “The model team” or “Solace” without an accountable owner is not sufficient.
+## 3. Business contract that must be approved
 
-## 3. Business contract required first
+Provide a version-controlled contract that answers:
 
-Deliver a version-controlled routing specification containing:
+1. Is routing single-target, fan-out, or allowed to reject an event?
+2. What are the canonical route IDs and owning consumer applications?
+3. Which signal wins when topic, schema, event type, and payload disagree?
+4. Which schema versions are accepted, deprecated, or incompatible?
+5. What is the policy for unknown event types, unsupported languages, malformed JSON, and truncated inputs?
+6. Which decisions require review, who handles the review queue, and what is its capacity/SLA?
+7. What are the costs of each error, particularly fraud-as-payment and payment-as-fraud?
+8. What p95/p99 latency, sustained EPS, burst duration/rate, outage backlog, and recovery time are required?
 
-1. The canonical route IDs and owning consumer application for each route.
-2. Whether one event has exactly one target, may fan out to multiple targets, or can be rejected.
-3. Precedence when topic, schema, event type, and payload disagree.
-4. Schema-version compatibility and deprecation rules.
-5. Explicit out-of-distribution behavior for unknown event types, tenants, languages, or malformed payloads.
-6. The human-review policy: which routes are eligible, staffing/capacity, response SLA, and what happens while review is pending.
-7. A cost matrix for mistakes—especially fraud sent to payment operations and payment events incorrectly blocked for fraud review.
-8. Required p95/p99 latency, steady-state events/second, burst duration/rate, maximum recoverable backlog, and allowed error rate.
+**Mandatory safety behavior:** `review_required=true` is an abstention. The bridge maps `{route}` to `review` for such decisions while retaining the proposed route and probabilities in the envelope. No downstream consumer may execute or forward the original event based only on a predicted route or route-shaped topic.
 
-**Safety rule:** `review_required=true` is an abstention, not permission to dispatch. The bridge publishes only a decision envelope and uses `review` for the `{route}` output-topic placeholder when review is required. No downstream service may automatically forward or execute the original event based only on a predicted route or route-shaped topic; it must inspect the review flag and route review cases to the approved human workflow.
+## 4. Real data required
 
-## 4. Data required
+The generated 10,000 examples are useful for software and training-path verification, but they do not replace real data.
 
-### 4.1 Record fields supplied by the event owner
+### Input fields
 
-Provide anonymized, approved event snapshots with these model-input fields:
+Provide representative, approved, anonymized event snapshots containing:
 
-- `topic`
-- `schema_name`
-- `schema_version`
-- `event_type`
-- `payload`
+- topic
+- schema name and version
+- event type
+- payload
 - event timestamp
 - source application/system
 - correlation or trace ID
-- entity-group keys needed for leakage control, such as customer, account, order, payment, shipment, ticket, device, and replay lineage
+- entity-group keys such as customer, account, order, payment, shipment, claim, device, incident, and replay lineage
 
-Identifiers should be consistently pseudonymized while retaining the relationships needed to group related events. Remove secrets, credentials, payment-card data, unrestricted personal data, and fields not approved for model use.
+Identifiers should be consistently pseudonymized so related records can be grouped without retaining secrets, credentials, card data, or unapproved personal data.
 
-### 4.2 Labels kept separate from model input
+### Labels kept outside model input
 
-For each event, SMEs should provide separate annotation metadata:
+For each event, SMEs must separately provide:
 
-- correct target route or approved fan-out set
-- short routing rationale
-- whether the case is genuinely ambiguous
-- plausible secondary route, where applicable
-- whether human review is required
-- labeler identity/role and adjudication status
-- applicable policy/routing-contract version
+- correct route or approved fan-out set
+- concise rationale
+- ambiguity marker and plausible secondary route
+- review-needed decision
+- labeler role and adjudication state
+- routing-policy version
 
-The target route, rationale, review flag, and labeler fields must never be serialized into the state presented to Laya.
+Labels, rationales, split names, and review decisions must never be inserted into the model-visible state.
 
-### 4.3 Proposed pilot volume
+### Proposed engineering volume
 
-- **Training:** 2,000–5,000 approved events, with at least 300 per route.
-- **Validation/calibration:** a separate few hundred events, large enough to assess each route, language, option shape, and confidence region.
-- **Locked test:** approximately 1,000 fresh events held out by entity and time, not merely random rows.
-- **Expansion:** consider 10,000–50,000 only after a learning curve shows that more data improves the agreed metrics.
+- Pilot training: **2,000–5,000 real labeled events**, at least **300 per route**.
+- Validation/calibration: a separate **few hundred** events with route/language/confidence coverage.
+- Locked test: about **1,000 fresh events**, grouped by entity and held out by time.
+- Scale to **10,000–50,000 real events only if a learning curve demonstrates value**.
 
-More examples are not automatically better. Label consistency, boundary cases, and leakage prevention matter more than raw volume.
+Required coverage includes real misroutes; fraud/payment boundaries; English and French authored independently; SAP and Salesforce workflows; IT and OT incidents; topic/body conflicts; unseen topic shapes; schema changes; retries/replays; malformed and near-context-limit payloads; and genuine unknown/OOD events.
 
-### 4.4 Coverage priorities
+Deduplicate exact and near duplicates. Keep each entity, replay chain, incident, source template, and derived/corrected event in one split. Freeze the new test set before tuning. The current synthetic test has already informed engineering choices and must be treated as exploratory.
 
-The collection must deliberately include:
+## 5. Solace platform requirements
 
-- real historical misroutes and operational escalations
-- fraud/payment boundary cases, including legitimate declines, chargebacks, account takeover, and suspicious authorizations
-- representative English and French—not translated duplicates only
-- topic/payload and schema/payload conflicts
-- new or reordered topic hierarchies
-- schema upgrades, deprecated fields, and missing optional fields
-- retries, replays, near duplicates, correction events, and out-of-order events
-- unknown/OOD event types and unsupported languages
-- short, long, malformed, and near-context-limit payloads
-- realistic class imbalance and peak-period traffic
+### Shared prerequisites
 
-### 4.5 Split controls
+- A nonproduction Message VPN and exact Connect-page endpoints.
+- Dedicated client credentials delivered through the approved secret mechanism.
+- TLS trust chain and network/DNS/firewall access from the runtime.
+- Subscribe ACL restricted to `edm0/pilot/events/...`.
+- Publish ACL restricted to `edm0/pilot/results/...`.
+- Explicit source, accepted-result, review, and error topic ownership.
+- A test publisher and a result consumer that validates envelopes and deduplicates by correlation ID plus payload hash.
+- Measured spool sizing for the agreed outage/backlog window.
 
-- Deduplicate exact and near-duplicate payloads before splitting.
-- Keep all events for the same business entity or incident in one split.
-- Keep replay chains and corrected versions in one split.
-- Split by time so the locked test represents future traffic.
-- Keep events generated from the same template or transformation in one split.
-- Freeze the test set before tuning. The current synthetic test is now exploratory and must not become the future unbiased benchmark.
+### Native SMF path
 
-## 5. Solace non-production pilot requirements
+- Native SMF host, normally `tcp://HOST:55555` or `tcps://HOST:55443`.
+- Message VPN name supplied separately from username/password.
+- Preprovisioned durable queue `edm0-routing-pilot`, with exclusive/non-exclusive mode chosen by the platform owner.
+- Queue subscription `edm0/pilot/events/>` and permission to consume/ack.
+- Permission to publish persistent results to `edm0/pilot/results/>`.
+- If the queue does not exist, the explicit pilot-only provisioning command may create exactly that queue and add exactly that subscription. Normal bridge startup remains `DO_NOT_CREATE`, and no code deprovisions a queue.
+- Topic limits: at most 250 UTF-8 bytes and 128 levels. Supported matching is exact levels, `*`, suffix wildcards such as `order*`, and terminal `>` with one-or-more-level semantics.
 
-The Solace platform owner should provide:
+The native adapter uses client acknowledgement and calls `Ack` only after `PublishAwaitAcknowledgement` confirms the persistent output. It disposes the SDK-owned inbound message after processing. On shutdown it pauses intake, drains accepted work while the publisher remains connected, then terminates receiver/publisher/service without deleting queue subscriptions.
 
-1. A non-production Message VPN with MQTT enabled and the exact values shown by its **Connect** settings.
-2. A TLS MQTT endpoint and trusted CA chain. Typical defaults are port 1883 for MQTT and 8883 for MQTT/TLS, but ports are per VPN and the provisioned values are authoritative.
-3. A dedicated client username and secret delivered through the approved secret mechanism. Do not infer or construct a `user@VPN` value.
-4. Subscribe ACL limited to the approved source filter.
-5. Publish ACL limited to the decision, review, and error topic hierarchy.
-6. A stable, unique client ID per bridge replica.
-7. Guaranteed Messaging enabled, a client profile that permits QoS 1 persistent sessions, and enough session-queue/spool quota for the measured outage backlog. Source publishers must use Guaranteed/QoS 1 delivery too; requesting a QoS 1 subscription does not upgrade a QoS 0 source message.
-8. Explicit source, decision, review, and error topics with owners and retention policies.
-9. A controlled test publisher and a results consumer that validates the envelope and deduplicates by correlation ID/payload hash.
-10. Network/DNS/firewall access from the runtime and an approved certificate-root update process.
+### MQTT path
 
-The current bridge uses MQTT 3.1.1 QoS 1, `CleanSession=false`, a stable client ID, Paho file-backed protocol state, automatic reconnect, resubscription, bounded local intake, and manual input acknowledgement after output publication. It deliberately does not unsubscribe on normal shutdown, allowing the broker session subscription to survive. With `CleanSession=true`, that persistence is intentionally lost.
+- MQTT listener for the selected VPN: typically 1883 plaintext or 8883 TLS, but use the actual Connect-page values.
+- Stable unique client ID and `CleanSession=false` for broker-held QoS 1 session state.
+- MQTT topic syntax (`+`, `#`) rather than SMF syntax (`*`, `>`).
+- QoS 1 on source and result publication. Shared MQTT subscriptions on PubSub+ are QoS 0 and do not satisfy this flow.
 
-This provides at-least-once behavior, not exactly-once processing. A crash after publishing the result and before acknowledging the source can create a duplicate output. An MQTT persistent session queue is broker-managed through the MQTT session and does not provide every native Solace Guaranteed Messaging queue feature. Shared MQTT subscriptions are QoS 0 on PubSub+ and are unsuitable for this QoS 1 flow.
+Both transports are at-least-once, not exactly-once. A crash after output confirmation but before source acknowledgement can duplicate output; consumers must deduplicate.
 
-Producer payloads must be UTF-8 JSON objects containing the model's topic, schema, event-type, and payload fields. The current bridge records the transport topic in the result but does not inject it into an event that omits `topic`. Agree on a normalization envelope for existing producers. In particular, MQTT 3.1.1 does not carry arbitrary SMF user properties or Solace structured-data maps into this JSON contract; required metadata must be included explicitly in the payload. Validate this conversion with real producer traffic. See [Solace's payload-conversion rules](https://docs.solace.com/API/MQTT/Using-MQTT.htm).
+## 6. Pilot versus production
 
-## 6. Hardware and implementation path
+### Pilot must-haves
 
-### Pilot
+- Named owners and approved routing/review contract.
+- Approved real dataset and locked leakage-safe evaluation set.
+- Nonproduction VPN, dedicated queue, topic subscriptions, least-privilege ACLs, TLS roots, and secret delivery.
+- Agreed error costs and acceptance thresholds.
+- Shadow mode only: record decisions without automatic business actions.
+- Failure tests for disconnect/reconnect, replay, duplicate delivery, worker timeout/restart, output failure, queue saturation, and graceful shutdown.
+- Load tests measuring p50/p95/p99 latency, EPS, burst tolerance, spool growth, and backlog recovery.
+- A functioning human-review sink whose capacity exceeds measured review volume.
 
-The current 16 GiB M4 is sufficient for this head-only proof of concept:
+### Production must-haves
 
-- training selected a checkpoint in 118.8 seconds
-- warm single-event inference is about 38 ms in the Python evaluation and approximately 41–43 ms through the Go worker
-- fixed 256-token inputs fit without truncation in the recorded Go demo
+- All pilot gates passed on the locked real-data test set.
+- Immutable model/config/calibration identifiers in every output and a tested rollback procedure.
+- High availability with unique client IDs or an approved non-exclusive queue design.
+- Health/readiness endpoints and monitoring for queue depth, unacknowledged messages, reconnects, worker restarts, inference/publish latency, OOD, truncation, and review backlog.
+- Capacity tests on the exact deployment OS/hardware.
+- Security review, credential/certificate rotation test, data-retention controls, and operational runbook.
+- Canary rollout before any automatic routing action.
 
-The arithmetic reciprocal of 40 ms is roughly 25 events/second for one serial worker. That is **not** a sustainable throughput claim: it excludes load spikes, new-shape Metal compilation, broker round trips, publication acknowledgement, retries, and safety headroom. Measure actual EPS, p95/p99 latency, and backlog recovery on representative payloads.
+## 7. Acceptance plan
 
-### Optional acceleration after data quality is proven
+Compare three frozen candidates on the same locked real test set:
 
-A borrowed or rented single NVIDIA L4 with 24 GB GPU memory is a reasonable starting budget to profile final-block or full-encoder experiments and batched inference. It is not a guarantee that every sequence length, optimizer, or full fine-tune fits. Plan approximately 32–64 GB host RAM and 50 GB free disk for datasets, environments, checkpoints, optimizer state, and atomic-save headroom.
-
-Before any GPU purchase or rental is treated as usable, port and test the current MPS-specific trainer/inference wrappers on Linux/CUDA. Profile memory because attention cost grows approximately quadratically with sequence length. Do not add multiple GPUs until a measured single-GPU bottleneck and learning curve justify them. GPU capacity cannot correct ambiguous requirements or bad labels.
-
-## 7. Current limitations
-
-- All model evidence comes from synthetic data; no production distribution or operational error cost has been measured.
-- The current test set has informed exploratory tuning and is no longer an unbiased future benchmark.
-- Head-only tuning improved probability quality but not held-out choice accuracy; fraud-review recall is only 3/10.
-- The fitted temperature worsened held-out ECE. The present confidence and review threshold are experimental and miss some confidently wrong events.
-- The model accepts one route choice, not a validated fan-out contract or OOD class.
-- The model context is fixed at 256 tokens. Truncation is exposed in every envelope but remains possible for larger production events.
-- One serial Python worker is implemented. Its arithmetic ceiling is not a broker-load capacity result, and it is not highly available.
-- Only macOS arm64/MPS has been exercised. The bundled Go installer is darwin-arm64; Linux/CUDA training and inference are not implemented or tested.
-- No live broker, ACL, TLS, reconnect, backlog, or failover test has been run.
-- MQTT QoS 1 permits duplicates and does not provide exactly-once processing or the full operational controls of a native Solace queue.
-
-## 8. Staged acceptance plan
-
-### Stage A — contract and data readiness
-
-Must pass before model comparison:
-
-- route contract, precedence, fan-out, review semantics, and error costs approved by named owners
-- data/privacy approval recorded
-- minimum pilot dataset and per-route coverage met
-- group/time/template/replay leakage checks pass
-- label audit samples reach an SME-agreed agreement level
-- locked test hashes and cutoff date recorded
-
-### Stage B — offline model acceptance
-
-Compare three frozen candidates on the same locked real test:
-
-1. deterministic topic/schema rules baseline
+1. deterministic topic/schema rules
 2. untouched multilingual Laya
 3. tuned Laya
 
-Business owners must set numeric gates before results are opened. At minimum assess:
+Business owners must choose numeric gates before seeing final results. At minimum measure:
 
-- overall and per-route recall/precision, with a specific critical fraud-recall gate
-- cost-weighted routing error under the approved error matrix
-- accepted precision and review coverage at the chosen abstention policy
-- English/French parity and topic/schema-version slices
-- NLL, Brier score, ECE, reliability plots, and confidence under shift
-- OOD detection/review behavior
-- truncation rate, requiring explicit rejection/review rather than silent acceptance
-- p50/p95/p99 latency, memory, and sustained/burst throughput
+- overall and per-route precision/recall, with a critical fraud-recall gate
+- cost-weighted error under the approved mistake matrix
+- accepted precision and review coverage
+- OOD review recall and false-review rate
+- English/French parity
+- topic-conflict, schema-version, source-system, and unseen-topic slices
+- NLL, Brier score, ECE, and reliability curves
+- truncation rate, with explicit reject/review behavior
+- p50/p95/p99 end-to-end latency and sustained/burst throughput
+- reconnect, replay, duplicate, acknowledgement, backpressure, and backlog-recovery behavior
 
-The current 83.33% synthetic accuracy, 3/10 fraud recall, and degraded calibrated ECE do not satisfy an unstated production threshold.
+## 8. Hardware guidance
 
-### Stage C — non-production Solace shadow test
+The current 16 GiB M4 is sufficient for the head-only prototype. The complete 8,000-example pass ran locally; more GPU is not the first priority.
 
-Run without automatic business action. Validate:
+For final-block/full-encoder trials or higher inference concurrency, a borrowed or rented **single NVIDIA L4 with 24 GB GPU memory** is a reasonable starting budget to profile, not a guaranteed fit. Plan approximately **32–64 GB host RAM and 50 GB free disk** for datasets, caches, optimizer state, and atomic checkpoints. Port and test the current MPS-specific training/inference wrapper on Linux/CUDA before treating that GPU recommendation as usable. Do not add multiple GPUs until measured scaling and a learning curve justify them.
 
-- TLS connection and least-privilege ACLs
-- reconnect and persistent-session resume
-- broker restart, bridge restart, worker timeout/restart, and network interruption
-- duplicate delivery and consumer deduplication
-- replay and out-of-order events
-- queue saturation, enqueue timeout, backpressure, and spool growth
-- output publish failure before source acknowledgement
-- graceful shutdown order: stop intake, drain/publish, then disconnect without unsubscribe
-- certificate and secret rotation
-- review queue/UI integration and reviewer capacity
-- measured p95/p99 latency, sustained EPS, burst EPS, and backlog recovery time
+Attention memory rises quickly with context length. The current 384-token limit was selected only after all 10,000 synthetic states were audited with zero truncation.
 
-### Stage D — controlled production decision
+## 9. Current limitations
 
-Proceed only with signed business, risk, security, data, and operations approval. Start in shadow mode, then a small canary with an immediate rollback path. Keep model/config/calibration versions in every result, monitor per-route drift and review volume, and retain human override plus feedback capture. Automatic event forwarding remains disabled for `review_required=true`.
+- All labels and events are synthetic; no claim about real Solace traffic quality is valid yet.
+- Overall accuracy includes provisional labels for 40 intentionally unknown events; use known-owner accuracy as the operational headline.
+- Fraud-review recall is 0.416 and remains insufficient without an owner-approved threshold.
+- Calibration worsened held-out ECE; the current review policy caught only 7.5% of OOD examples.
+- One serial worker is implemented. A 51.7 ms warm median from five observations implies an arithmetic ceiling around 19 events/s, not sustainable measured throughput.
+- Cold load, new MPS tensor shapes, broker round trips, retries, and bursts are not represented by the warm number.
+- The model supports one selected route, not an approved fan-out policy.
+- Only macOS ARM/MPS training and inference are verified. Linux/CUDA requires an explicit port and test.
+- The default Go build is pure-Go MQTT. Native SMF requires CGO, the bundled Solace C library, and OpenSSL.
+- Live source publication was verified with SDKPerf. The unified 10,000-result SMF audit is still pending final verifier output; end-to-end broker counts must come from `outputs/smf_live_result.json` and the updated run manifest, never from unit tests or earlier cleanup runs.
 
-Production work also needs readiness/health checks and metrics for queue depth, inference and publish latency, reconnects, worker failures, outstanding acknowledgements, and broker spool usage. The current result identifies the model by path/name; an immutable checkpoint hash and policy/config version in each published envelope remain production requirements. The run manifest already records source/model revisions, but it is not a replacement for per-result provenance.
+## 10. Immediate Solace deliverables
 
-## 9. Must-haves versus optional spend
-
-### Must-have before a pilot
-
-- named owners and approved routing/review contract
-- representative anonymized labeled data and leakage-safe split
-- non-production Message VPN and least-privilege MQTT credentials
-- TLS/network path and certificate roots
-- measurable latency/EPS/backlog/error-cost targets
-- test publisher, output consumer, and human-review sink
-- duplicate handling and failure/reconnect test plan
-
-### Optional spend after evidence
-
-- 24 GB L4 trial for Linux/CUDA profiling
-- larger 10k–50k dataset if the learning curve supports it
-- multiple workers or GPUs if measured throughput requires them
-- native Solace API implementation if MQTT session semantics do not meet operational needs
-
-Do not buy GPU capacity or provision production infrastructure as a substitute for the route contract, labels, and locked evaluation set.
-
-## 10. Immediate request to Solace stakeholders
-
-Provide one package containing:
-
-1. Named application owner, route SMEs, fraud/risk approver, Solace platform owner, and operations owner.
-2. Versioned route/precedence/review contract and error-cost matrix.
-3. An approved 2,000–5,000-event pilot training export plus separate validation/calibration and locked test exports with grouping metadata.
-4. Non-production MQTT Connect details, ACLs, client profile/session quota, stable client ID, and secret/certificate delivery method.
-5. Written p95/p99 latency, EPS, burst, backlog, review-capacity, and recovery objectives.
-6. A scheduled shadow-mode acceptance exercise covering the Stage C failure cases.
+1. Name the application, route, fraud/risk, data, platform, security, and SRE owners.
+2. Approve the route/fan-out/precedence/review contract and error-cost matrix.
+3. Provide the first 2,000–5,000 anonymized real labeled events plus independent validation and locked test sets.
+4. Confirm the dedicated VPN, queue mode, subscription, ACLs, spool quota, TLS roots, and secret-delivery mechanism.
+5. State p95/p99 latency, EPS, burst, backlog, review-capacity, and recovery objectives.
+6. Schedule a shadow-mode acceptance exercise covering all failure cases above.
 
 ## Primary references
 
+- [Solace Messaging API for Go supported environments](https://docs.solace.com/API/API-Developer-Guide-Go/Go-API-supported-Environments.htm)
+- [Solace Go API v1.10.1](https://pkg.go.dev/solace.dev/go/messaging@v1.10.1)
 - [Solace: Using MQTT](https://docs.solace.com/API/MQTT/Using-MQTT.htm)
 - [Solace: Managing MQTT Sessions](https://docs.solace.com/Configuring-and-Managing/Managing-MQTT-Sessions.htm)
-- [Solace: MQTT 3.1.1 protocol conformance](https://docs.solace.com/API/MQTT-311-Prtl-Conformance-Spec/MQTT_311_Prtl_Conformance_Spec.htm)
+- [Solace SDKPerf](https://docs.solace.com/API/SDKPerf/SDKPerf.htm)
+- [SDKPerf command-line options](https://docs.solace.com/API/SDKPerf/Command-Line-Options.htm)
 - [NVIDIA L4 Tensor Core GPU](https://www.nvidia.com/en-gb/data-center/l4/)
 
-The model evidence is recorded in `outputs/metrics.json`; environment, revisions, training timings, and bridge verification are recorded in `outputs/run_manifest.json`.
+Detailed metrics are in `outputs/metrics.json`; revisions, hardware, training exposure, SDKPerf, and live transport evidence are in `outputs/run_manifest.json`.

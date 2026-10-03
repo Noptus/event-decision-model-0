@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-from _shared import QUESTION_ID, ROUTING_QUESTION, load_config, question_contract_hash, select_device  # noqa: E402
+from _shared import QUESTION_ID, load_config, load_routing_question, question_contract_hash, select_device  # noqa: E402
 
 PROTOCOL_VERSION = 1
 
@@ -36,7 +36,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_review_thresholds(model_path: Path, agent) -> dict[str, float] | None:
+def load_review_thresholds(
+    model_path: Path, agent, routing_question: dict[str, Any]
+) -> dict[str, float] | None:
     if not agent.cfg.get("fine_tuned"):
         return None
     path = model_path / "calibration.json"
@@ -48,7 +50,7 @@ def load_review_thresholds(model_path: Path, agent) -> dict[str, float] | None:
     if not calibration_id or calibration_id != agent.cfg.get("calibration_id"):
         raise RuntimeError("checkpoint calibration identity mismatch")
     identity = calibration.get("checkpoint_identity", {})
-    if identity.get("question_contract_sha256") != question_contract_hash():
+    if identity.get("question_contract_sha256") != question_contract_hash(routing_question):
         raise RuntimeError("checkpoint calibration uses a different question contract")
     thresholds = calibration.get("abstention_thresholds", {})
     return {str(key): float(value) for key, value in thresholds.items()} or None
@@ -84,7 +86,8 @@ def main() -> None:
         raise RuntimeError(
             f"Laya changed device from {requested_device} to {agent.device}; restart explicitly on CPU"
         )
-    thresholds = load_review_thresholds(model_path, agent)
+    routing_question = load_routing_question(model_path)
+    thresholds = load_review_thresholds(model_path, agent, routing_question)
     if agent.device.type == "mps":
         torch.mps.synchronize()
     load_ms = (time.perf_counter() - load_started) * 1000
@@ -146,7 +149,7 @@ def main() -> None:
             started = time.perf_counter()
             result = agent.predict(
                 event,
-                ROUTING_QUESTION,
+                routing_question,
                 max_len=int(config["max_length"]),
                 head_max_len=int(config["head_max_length"]),
                 min_confidence=thresholds,

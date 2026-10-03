@@ -30,6 +30,11 @@ func (c *orderedClient) Publish(context.Context, string, byte, []byte) error {
 	return nil
 }
 
+func (c *orderedClient) StopIntake() error {
+	c.record("stop-intake")
+	return nil
+}
+
 func (c *orderedClient) Disconnect(time.Duration) { c.record("disconnect") }
 
 type fixedInferencer struct{}
@@ -63,7 +68,7 @@ func TestShutdownDrainsPublishBeforeDisconnect(t *testing.T) {
 	if err := pipeline.Submit(bridge.Incoming{
 		Topic:   "business/events/eu",
 		Payload: []byte(`{"event_id":"shutdown-order"}`),
-		Ack:     func() { client.record("ack") },
+		Ack:     func() error { client.record("ack"); return nil },
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +77,7 @@ func TestShutdownDrainsPublishBeforeDisconnect(t *testing.T) {
 	}
 	client.mu.Lock()
 	defer client.mu.Unlock()
-	want := []string{"publish", "ack", "disconnect"}
+	want := []string{"stop-intake", "publish", "ack", "disconnect"}
 	if len(client.events) != len(want) {
 		t.Fatalf("events=%v", client.events)
 	}

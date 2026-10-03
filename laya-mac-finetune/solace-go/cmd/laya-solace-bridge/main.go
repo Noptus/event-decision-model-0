@@ -18,6 +18,8 @@ import (
 	"laya.local/solacebridge/internal/bridge"
 	"laya.local/solacebridge/internal/config"
 	"laya.local/solacebridge/internal/mqttclient"
+	"laya.local/solacebridge/internal/smfclient"
+	"laya.local/solacebridge/internal/singleton"
 	"laya.local/solacebridge/internal/worker"
 )
 
@@ -37,9 +39,51 @@ func (p *deferredPublisher) Publish(ctx context.Context, topic string, qos byte,
 	publisher := p.publisher
 	p.mu.RUnlock()
 	if publisher == nil {
-		return errors.New("MQTT publisher is not ready")
+		return errors.New("broker publisher is not ready")
 	}
 	return publisher.Publish(ctx, topic, qos, payload)
+}
+
+type auditPublisher struct {
+	publisher bridge.Publisher
+	file      *os.File
+	mu        sync.Mutex
+}
+
+func newAuditPublisher(publisher bridge.Publisher, path string) (*auditPublisher, error) {
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		return nil, fmt.Errorf("create audit directory: %w", err)
+	}
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+	if err != nil {
+		return nil, fmt.Errorf("open result audit: %w", err)
+	}
+	return &auditPublisher{publisher: publisher, file: file}, nil
+}
+
+func (p *auditPublisher) Publish(ctx context.Context, topic string, qos byte, payload []byte) error {
+	if err := p.publisher.Publish(ctx, topic, qos, payload); err != nil {
+		return err
+	}
+	line, err := json.Marshal(struct {
+		Topic   string          `json:"topic"`
+		Payload json.RawMessage `json:"payload"`
+	}{Topic: topic, Payload: json.RawMessage(payload)})
+	if err != nil {
+		return fmt.Errorf("encode result audit record: %w", err)
+	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if _, err := p.file.Write(append(line, '\n')); err != nil {
+		return fmt.Errorf("write result audit record: %w", err)
+	}
+	return nil
+}
+
+func (p *auditPublisher) Close() error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.file.Close()
 }
 
 type stdoutPublisher struct {
@@ -82,15 +126,23 @@ func newWorker(cfg config.Config) (*worker.Process, error) {
 }
 
 func bridgeConfig(cfg config.Config) bridge.Config {
+	delivery := fmt.Sprintf("mqtt-qos-%d", cfg.QoS)
+	if cfg.Transport == "smf" {
+		delivery = "smf-persistent-guaranteed"
+	}
 	return bridge.Config{
-		InputFilter:      cfg.InputFilter,
-		OutputTopic:      cfg.OutputTopic,
-		QoS:              cfg.QoS,
-		QueueCapacity:    cfg.QueueCapacity,
-		MaxEventBytes:    cfg.MaxEventBytes,
-		EnqueueTimeout:   cfg.EnqueueTimeout,
-		InferenceTimeout: cfg.InferenceTimeout,
-		PublishTimeout:   cfg.PublishTimeout,
+		Transport:         cfg.Transport,
+		TopicSyntax:       cfg.Transport,
+		DeliverySemantics: delivery,
+		InputFilter:       cfg.InputFilter,
+		OutputTopic:       cfg.OutputTopic,
+		QoS:               cfg.QoS,
+		QueueCapacity:     cfg.QueueCapacity,
+		MaxEventBytes:     cfg.MaxEventBytes,
+		EnqueueTimeout:    cfg.EnqueueTimeout,
+		InferenceTimeout:  cfg.InferenceTimeout,
+		PublishTimeout:    cfg.PublishTimeout,
+		MaxMessages:       uint64(cfg.MaxMessages),
 	}
 }
 
@@ -106,6 +158,9 @@ func logErrors(logger *slog.Logger, errorsChannel <-chan error, done chan<- int)
 func runOffline(cfg config.Config, modelWorker *worker.Process, logger *slog.Logger) error {
 	publisher := &stdoutPublisher{writer: os.Stdout}
 	pipelineConfig := bridgeConfig(cfg)
+	pipelineConfig.Transport = "offline"
+	pipelineConfig.TopicSyntax = "mqtt"
+	pipelineConfig.DeliverySemantics = "offline-simulation"
 	pipelineConfig.InputFilter = cfg.OfflineInputTopic
 	pipeline, err := bridge.New(pipelineConfig, modelWorker, publisher, logger)
 	if err != nil {
@@ -128,8 +183,7 @@ func runOffline(cfg config.Config, modelWorker *worker.Process, logger *slog.Log
 		if err := pipeline.Submit(bridge.Incoming{
 			Topic:   cfg.OfflineInputTopic,
 			Payload: payload,
-			QoS:     cfg.QoS,
-			Ack:     func() {},
+			Ack:     func() error { return nil },
 		}); err != nil {
 			pipeline.Close()
 			<-pipeline.Done()
@@ -149,26 +203,34 @@ func runOffline(cfg config.Config, modelWorker *worker.Process, logger *slog.Log
 	return nil
 }
 
-type disconnecter interface {
+type transportLifecycle interface {
+	StopIntake() error
 	Disconnect(time.Duration)
+}
+
+type brokerClient interface {
+	bridge.Publisher
+	transportLifecycle
+	Connect(context.Context) error
 }
 
 func drainThenDisconnect(
 	pipeline *bridge.Bridge,
-	client disconnecter,
+	client transportLifecycle,
 	cancelProcessing context.CancelFunc,
 	timeout time.Duration,
 ) error {
-	// Stop accepting locally first. The MQTT subscription is intentionally retained: with
-	// CleanSession=false the broker keeps it and any unacknowledged QoS 1 messages for restart.
+	// Stop accepting locally before pausing the transport. Accepted events drain while the
+	// publisher remains connected; neither transport removes its durable subscription.
 	pipeline.Close()
+	stopIntakeErr := client.StopIntake()
 	timer := time.NewTimer(timeout)
 	defer timer.Stop()
 	select {
 	case <-pipeline.Done():
 		cancelProcessing()
 		client.Disconnect(500 * time.Millisecond)
-		return nil
+		return stopIntakeErr
 	case <-timer.C:
 		// Cancel active inference/publication, let the bounded pipeline abandon remaining items,
 		// and only then disconnect so no accepted item publishes against a closed client.
@@ -178,25 +240,80 @@ func drainThenDisconnect(
 		select {
 		case <-pipeline.Done():
 			client.Disconnect(500 * time.Millisecond)
-			return errors.New("graceful drain timed out; remaining inputs were left unacknowledged")
+			return errors.Join(stopIntakeErr, errors.New("graceful drain timed out; remaining inputs were left unacknowledged"))
 		case <-abortTimer.C:
 			client.Disconnect(0)
-			return errors.New("pipeline did not stop after cancellation")
+			return errors.Join(stopIntakeErr, errors.New("pipeline did not stop after cancellation"))
 		}
 	}
 }
 
-func runMQTT(ctx context.Context, cfg config.Config, modelWorker *worker.Process, logger *slog.Logger) error {
+func waitForStop(ctx context.Context, pipeline *bridge.Bridge, idleTimeout time.Duration) string {
+	if idleTimeout <= 0 {
+		select {
+		case <-ctx.Done():
+			return "signal"
+		case <-pipeline.LimitReached():
+			return "message-limit"
+		}
+	}
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+	stats := pipeline.Stats()
+	lastCount := stats.Submitted + stats.Acknowledged
+	lastActivity := time.Now()
+	for {
+		select {
+		case <-ctx.Done():
+			return "signal"
+		case <-pipeline.LimitReached():
+			return "message-limit"
+		case <-ticker.C:
+			stats = pipeline.Stats()
+			count := stats.Submitted + stats.Acknowledged
+			if count != lastCount {
+				lastCount = count
+				lastActivity = time.Now()
+			} else if time.Since(lastActivity) >= idleTimeout {
+				return "idle-timeout"
+			}
+		}
+	}
+}
+
+func newBrokerClient(
+	cfg config.Config, submit func(bridge.Incoming) error, logger *slog.Logger,
+) (brokerClient, error) {
+	if cfg.Transport == "smf" {
+		return smfclient.New(cfg, submit, logger)
+	}
+	return mqttclient.New(cfg, submit, logger)
+}
+
+func runBroker(ctx context.Context, cfg config.Config, modelWorker *worker.Process, logger *slog.Logger) error {
 	publisher := &deferredPublisher{}
 	pipeline, err := bridge.New(bridgeConfig(cfg), modelWorker, publisher, logger)
 	if err != nil {
 		return err
 	}
-	client, err := mqttclient.New(cfg, pipeline.Submit, logger)
+	client, err := newBrokerClient(cfg, pipeline.Submit, logger)
 	if err != nil {
 		return err
 	}
-	publisher.Set(client)
+	var resultPublisher bridge.Publisher = client
+	if cfg.AuditFile != "" {
+		audit, err := newAuditPublisher(client, cfg.AuditFile)
+		if err != nil {
+			return err
+		}
+		defer func() {
+			if err := audit.Close(); err != nil {
+				logger.Warn("close result audit", "error", err)
+			}
+		}()
+		resultPublisher = audit
+	}
+	publisher.Set(resultPublisher)
 	processorContext, cancelProcessing := context.WithCancel(context.Background())
 	defer cancelProcessing()
 	go pipeline.Run(processorContext)
@@ -210,22 +327,39 @@ func runMQTT(ctx context.Context, cfg config.Config, modelWorker *worker.Process
 		shutdownErr := drainThenDisconnect(pipeline, client, cancelProcessing, cfg.ShutdownTimeout)
 		<-errorDone
 		if shutdownErr != nil {
-			logger.Warn("cleanup after MQTT connect failure", "error", shutdownErr)
+			logger.Warn("cleanup after broker connect failure", "transport", cfg.Transport, "error", shutdownErr)
 		}
 		return err
 	}
 	logger.Info(
 		"bridge ready",
+		"transport", cfg.Transport,
 		"client_id", cfg.ClientID,
 		"input_filter", cfg.InputFilter,
 		"output_topic", cfg.OutputTopic,
-		"qos", cfg.QoS,
-		"clean_session", cfg.CleanSession,
 	)
-	<-ctx.Done()
-	logger.Info("shutdown requested; stopping local intake and draining accepted events before disconnect")
+	stopReason := waitForStop(ctx, pipeline, cfg.IdleTimeout)
+	logger.Info(
+		"stopping local intake and draining accepted events before disconnect",
+		"reason", stopReason,
+		"max_messages", cfg.MaxMessages,
+	)
 	drainErr := drainThenDisconnect(pipeline, client, cancelProcessing, cfg.ShutdownTimeout)
 	failures := <-errorDone
+	stats := pipeline.Stats()
+	logger.Info(
+		"bridge stopped",
+		"transport", cfg.Transport,
+		"submitted", stats.Submitted,
+		"published", stats.Published,
+		"successful_decisions", stats.SuccessfulDecisions,
+		"error_envelopes", stats.ErrorEnvelopes,
+		"acknowledged", stats.Acknowledged,
+		"correlations_tracked", stats.CorrelationsTracked,
+		"unique_correlations", stats.UniqueCorrelations,
+		"failed", stats.Failed,
+		"looped", stats.Looped,
+	)
 	if failures > 0 {
 		logger.Warn("bridge stopped with event-processing errors", "count", failures)
 	}
@@ -237,6 +371,28 @@ func run(args []string) error {
 	cfg, err := config.Parse(args, os.Getenv, os.Stderr)
 	if err != nil {
 		return err
+	}
+	if cfg.Transport == "smf" && !smfclient.Available() {
+		return errors.New("SMF transport requires the optional native build; run 'make build-smf'")
+	}
+	if !cfg.OfflineStdin {
+		lockDirectory := filepath.Join(filepath.Dir(cfg.StoreDirectory), "locks")
+		instanceLock, err := singleton.Acquire(
+			lockDirectory,
+			cfg.Transport,
+			cfg.BrokerURL,
+			cfg.SMFVPN,
+			cfg.ClientID,
+			cfg.StoreDirectory,
+		)
+		if err != nil {
+			return fmt.Errorf("acquire bridge singleton: %w", err)
+		}
+		defer func() {
+			if err := instanceLock.Close(); err != nil {
+				logger.Warn("release bridge singleton", "error", err)
+			}
+		}()
 	}
 	modelWorker, err := newWorker(cfg)
 	if err != nil {
@@ -262,7 +418,7 @@ func run(args []string) error {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	return runMQTT(ctx, cfg, modelWorker, logger)
+	return runBroker(ctx, cfg, modelWorker, logger)
 }
 
 func main() {

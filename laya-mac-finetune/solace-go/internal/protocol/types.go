@@ -59,11 +59,14 @@ type WorkerResponse struct {
 }
 
 type Source struct {
-	Topic         string `json:"topic"`
-	QoS           byte   `json:"qos"`
-	Retained      bool   `json:"retained"`
-	Duplicate     bool   `json:"duplicate"`
-	PayloadSHA256 string `json:"payload_sha256"`
+	Transport         string `json:"transport"`
+	DeliverySemantics string `json:"delivery_semantics"`
+	Topic             string `json:"topic"`
+	QoS               *byte  `json:"qos,omitempty"`
+	Retained          *bool  `json:"retained,omitempty"`
+	Duplicate         bool   `json:"duplicate,omitempty"`
+	Redelivered       bool   `json:"redelivered"`
+	PayloadSHA256     string `json:"payload_sha256"`
 }
 
 type BridgeError struct {

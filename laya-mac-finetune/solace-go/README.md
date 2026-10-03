@@ -1,235 +1,260 @@
-# Solace MQTT → Laya routing bridge
+# Solace Event Broker → Laya routing bridge
 
-A small Go process subscribes to JSON business events over MQTT 3.1.1, sends each event to one long-lived local Python/Laya worker, and publishes an event-correlated decision envelope. It is intentionally a bridge, not a Solace broker client built on the native C API.
+This Go bridge consumes JSON business events from Solace PubSub+, sends each event to one long-lived local Python/Laya worker, and publishes an event-correlated routing decision. It supports two transports:
 
-The Python checkpoint loads once. Normal requests use the already-resident MPS model; they do **not** launch a Python process per event. Before connecting a real broker, use the cross-team checklist in [Solace requirements](../docs/solace-requirements.md).
+- **MQTT 3.1.1** in the default, CGO-free binary.
+- **Native SMF Guaranteed Messaging** in an optional `smf` build backed by the official `solace.dev/go/messaging` SDK.
+
+The Python checkpoint is loaded once, not once per message. The current model contract is loaded from the selected checkpoint's `route_contract.json`, so archived and current checkpoints remain self-describing.
 
 ## Data path
 
 ```text
-Solace MQTT subscription (QoS 1, manual ack)
+MQTT subscription or preprovisioned SMF durable queue
   -> bounded Go queue
   -> persistent stdin/stdout JSONL worker
-  -> native Laya typed choice + six probabilities + truncation metadata
-  -> configurable MQTT output topic (QoS 1)
-  -> acknowledge input only after output publish completes
+  -> native Laya typed choice + probabilities + truncation metadata
+  -> MQTT QoS 1 or confirmed persistent SMF publication
+  -> source acknowledgement only after output confirmation
 ```
 
-Defaults:
+When Laya returns `review_required=true`, `{route}` renders as `review`. The proposed route and complete probability distribution remain in the envelope, but the original event is not forwarded automatically.
 
-- input filter: `acme/prod/+/events/#`
-- output template: `acme/prod/ai/laya-routing/{route}`
-- client ID: `laya-event-router`
-- QoS: `1`
-- clean session: `false`
-- queue capacity: 32
-- maximum event: 256 KiB
-- inference/publish timeouts: 5 seconds each
-- checkpoint: `../outputs/best-model`
-- device: `auto` (MPS on the reference Mac)
+## Build
 
-## Build with the project-local Go toolchain
-
-Go is not required globally. The installer downloads the official `go1.27.1.darwin-arm64.tar.gz` archive under `../.cache/tools`, verifies SHA-256 `ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12`, and does not use `sudo` or alter system directories.
+Go is installed project-locally; no global installation or `sudo` is used:
 
 ```bash
 cd laya-mac-finetune/solace-go
 ./scripts/install-go.sh
 source scripts/env.sh
-go mod download
-go test ./...
-go test -race ./...
-go build -trimpath -o bin/laya-solace-bridge ./cmd/laya-solace-bridge
 ```
 
-The MQTT dependency is pinned to the official Eclipse Paho client, `github.com/eclipse/paho.mqtt.golang v1.5.1`, in `go.mod`/`go.sum`.
+The installer pins Go 1.27.1 for Darwin ARM64 and verifies the official archive SHA-256. Dependencies are pinned in `go.mod`/`go.sum`:
+
+- Eclipse Paho MQTT Go `v1.5.1`
+- Solace Messaging API for Go `v1.10.1`
+
+### Lightweight MQTT binary
+
+```bash
+make build
+./bin/laya-solace-bridge --transport mqtt
+```
+
+`make build` sets `CGO_ENABLED=0`; the native Solace SDK is excluded by the `smf` build tag.
+
+### Native SMF binary
+
+```bash
+make build-smf
+./bin/laya-solace-bridge-smf --transport smf
+```
+
+The official Go API wraps the Solace C API with CGO. On this Apple Silicon machine, `make build-smf` was verified with Apple Clang, the SDK's bundled Darwin ARM64 `libsolclient.a`, and Homebrew OpenSSL 3. `scripts/prepare-smf.sh` builds an ignored, project-local hashed CA directory from the installed CA bundle. Certificate expiry and server-name validation remain enabled; there is no insecure-TLS switch.
+
+On Linux, install a supported C compiler and OpenSSL development/runtime libraries, then set `OPENSSL_PREFIX` if they are outside standard paths. The Makefile accepts `.dylib`, `.so`, or `.a` OpenSSL libraries. Validate the resulting binary on the exact production Linux image before deployment.
+
+## Checkpoint checkout
+
+The complete `outputs/best-model` checkpoint is versioned with Git LFS. Fetch the LFS objects before starting the worker; an LFS pointer is not a usable model:
+
+```bash
+git lfs install
+git lfs pull
+```
+
+The checkpoint includes its Apache-2.0 license, upstream base-model card, route contract, tokenizer, weights, and calibration identity.
 
 ## Offline end-to-end demo
 
-This exercises the built Go bridge, persistent JSONL subprocess, real saved checkpoint, MPS inference, topic rendering, and output envelopes without claiming broker connectivity:
+This exercises Go → persistent Python worker → real local checkpoint → output envelope without a broker:
 
 ```bash
 make offline-demo
 ```
 
-Or explicitly:
-
-```bash
-./bin/laya-solace-bridge \
-  --offline-stdin \
-  --model ../outputs/best-model \
-  --device mps \
-  --offline-input-topic acme/prod/eu/events/demo \
-  < testdata/events.jsonl
-```
-
-Logs and model diagnostics go to stderr. Stdout contains only machine-readable JSONL publications. The first event includes Metal warm-up; subsequent requests use the resident model. Repeated local runs confirm approximately 41–43 ms for warm requests with zero dropped state tokens. Cold model loading and the first new Metal input shape vary substantially and are excluded from that warm figure. A captured three-event run is saved at `../outputs/solace_go_offline_demo.jsonl`; the exact documented `make offline-demo` target also passed from this space-containing path.
+Logs go to stderr. The bridge process writes only machine-readable JSONL to stdout. The captured result is in `../outputs/solace_go_offline_demo.jsonl`. Warm local MPS calls have been approximately 41–43 ms; cold model loading and first-shape Metal compilation are excluded from that figure.
 
 Run the real worker integration test explicitly:
 
 ```bash
-LAYA_REAL_WORKER_TEST=1 LAYA_PROJECT_ROOT=.. go test ./internal/worker -run TestRealSavedModelWorker -v
+make real-worker-test
 ```
 
-## Configure Solace PubSub+
+## MQTT configuration
 
-Use the exact values from the broker service's **Connect** page for MQTT. Do not synthesize a `user@VPN` username: supply the host, port, username, and password exactly as provisioned for the target Message VPN.
+Use exact values from the Solace service's **Connect** page. Do not invent a VPN-qualified username.
 
 ```bash
 cp config.example.env config.env
-# Edit config.env. Keep credentials out of git.
+# Edit config.env and keep it untracked.
 set -a
 source config.env
 set +a
-./bin/laya-solace-bridge
+./bin/laya-solace-bridge --transport mqtt
 ```
 
-Common Solace endpoints are:
+Typical ports are 1883 for MQTT and 8883 for MQTT/TLS, but endpoints are configured per Message VPN and the supplied Connect values are authoritative. MQTT filters use `+` and `#`.
 
-- `tcp://HOST:1883` for MQTT
-- `ssl://HOST:8883` for MQTT over TLS
-- WebSocket listeners commonly use ports 8000 and 8443 (`ws://` / `wss://`)
+The bridge defaults to QoS 1, `CleanSession=false`, a stable client ID, Paho file-backed protocol state, automatic reconnect/resubscribe, and manual acknowledgement after output publication. With `CleanSession=true`, broker session state is discarded on disconnect.
 
-Ports are configured per Message VPN and can differ from defaults. The bridge relies on normal Go TLS certificate verification for `ssl://`/`wss://`; there is deliberately no insecure-TLS flag.
+## Native SMF configuration
 
-Every setting has a CLI flag and an environment equivalent:
-
-| Flag | Environment | Purpose |
-|---|---|---|
-| `--broker-url` | `SOLACE_BROKER_URL` | MQTT endpoint |
-| `--input-filter` | `SOLACE_INPUT_FILTER` | Source topic filter (`+` and final `#` supported) |
-| `--output-topic` | `SOLACE_OUTPUT_TOPIC` | Topic/template for decisions |
-| `--username` | `SOLACE_USERNAME` | Broker username |
-| `--password` | `SOLACE_PASSWORD` | Broker password; env is safer than process arguments |
-| `--client-id` | `SOLACE_CLIENT_ID` | Stable MQTT session identity |
-| `--qos` | `SOLACE_QOS` | `0` or `1`; default `1` |
-| `--clean-session` | `SOLACE_CLEAN_SESSION` | Default `false` |
-| `--model` | `LAYA_MODEL` | Local checkpoint path |
-| `--device` | `LAYA_DEVICE` | `auto`, `mps`, or `cpu` |
-| `--python` | `LAYA_PYTHON` | Project virtualenv Python |
-| `--worker-script` | `LAYA_WORKER_SCRIPT` | JSONL worker path |
-| `--queue-capacity` | `BRIDGE_QUEUE_CAPACITY` | Bound on accepted in-memory events |
-| `--max-event-bytes` | `BRIDGE_MAX_EVENT_BYTES` | Payload bound |
-| timeout flags | `BRIDGE_*_TIMEOUT` | Enqueue, inference, publish, startup, shutdown deadlines |
-
-The bridge never logs the username or password. CLI passwords can be visible to local process-inspection tools, so prefer `SOLACE_PASSWORD` supplied by your runtime secret mechanism.
-
-### Output topic templates
-
-`--output-topic` accepts:
-
-- `{route}` — selected route when accepted; `review` when `review_required=true` or for an error envelope
-- `{correlation_id}` — `correlation_id`, `event_id`, or `id` from the event/payload; otherwise a stable payload hash prefix
-- `{input_topic}` — original MQTT topic hierarchy
-
-Example:
+Use the native SMF host from the Connect page, normally `tcp://HOST:55555` or `tcps://HOST:55443`, plus a separate VPN name:
 
 ```bash
-export SOLACE_OUTPUT_TOPIC='acme/prod/routing/{route}/{correlation_id}'
+export SOLACE_TRANSPORT=smf
+export SOLACE_BROKER_URL='tcps://your-service.messaging.solace.cloud:55443'
+export SOLACE_SMF_VPN='your-vpn'
+export SOLACE_SMF_QUEUE='edm0-routing-pilot'
+export SOLACE_INPUT_FILTER='edm0/pilot/events/>'
+export SOLACE_OUTPUT_TOPIC='edm0/pilot/results/{route}'
+export SOLACE_USERNAME='...'
+export SOLACE_PASSWORD='...'
+./bin/laya-solace-bridge-smf --transport smf
 ```
 
-Publishing is refused if the rendered output matches the configured input filter. Output envelopes also carry `"producer":"laya-solace-bridge"`; if one is received anyway, it is acknowledged and discarded without inference. Wildcards and NUL bytes are rejected in publish topics.
+SMF topic subscriptions use `*` for one level, support a suffix wildcard such as `order*` within one level, and use terminal `>` for one or more levels. MQTT wildcards are rejected in SMF mode and vice versa. Native topics are checked against the 250-byte and 128-level limits before subscribing or publishing.
+
+The queue is expected to be durable and preprovisioned. The normal bridge uses `PersistentReceiverDoNotCreateMissingResources` and never deletes queues or subscriptions. If the platform owner has authorized creation of the dedicated pilot queue, run once:
+
+```bash
+./bin/solace-smf-probe \
+  --transport smf \
+  --smf-provision \
+  --smf-add-subscription
+```
+
+Provisioning uses only the configured queue and filter, treats an identical existing queue as success, and never deprovisions anything. `--smf-add-subscription` can also be used without provisioning when the client username is explicitly allowed to add the configured subscription. Otherwise, the platform owner must attach that subscription administratively.
+
+### Native delivery semantics
+
+- Input is received from a durable exclusive queue by default; set `--smf-queue-exclusive=false` only for an approved competing-consumer design.
+- Automatic acknowledgement is disabled. The message remains owned by the callback until processing completes and is explicitly disposed afterward.
+- Output uses `PublishAwaitAcknowledgement` with persistent delivery. Input is accepted only after the broker confirms the output was persisted.
+- On graceful shutdown, the receiver is paused, already accepted local work drains while the publisher remains connected, and then receiver/publisher/service are terminated. The durable queue and subscription are not removed.
+- A crash after confirmed output publish but before input acknowledgement can create a duplicate. Consumers must deduplicate by `correlation_id` and, where needed, `source.payload_sha256`. This is at-least-once processing, not exactly once.
+
+### Singleton and bounded accounting
+
+Before loading the model, broker mode takes a nonblocking OS file lock keyed by transport, broker, VPN, client ID, and state directory. The filename contains only a hash and the file contains only the PID. A second bridge with the same identity fails fast instead of creating an overlapping consumer; unrelated identities can run concurrently. The lock does not alter broker resources.
+
+`--max-messages=N` enables an in-memory unique-correlation set and stops after `N` acknowledged events. This is intended for finite audits such as the 10,000-event run. With the production default `--max-messages=0`, correlation tracking is disabled so the service cannot grow that set without bound. Final stats explicitly report `correlations_tracked`, `unique_correlations`, successful decisions, error envelopes, publishes, acknowledgements, and failures.
+
+## Configuration
+
+Every setting has a flag and environment equivalent. Credentials are never logged; environment injection is preferred because a password flag is visible to process inspection.
+
+| Flag | Environment | Applies to |
+|---|---|---|
+| `--transport` | `SOLACE_TRANSPORT` | `mqtt` or `smf` |
+| `--broker-url` | `SOLACE_BROKER_URL` | Both |
+| `--input-filter` | `SOLACE_INPUT_FILTER` | Both; syntax depends on transport |
+| `--output-topic` | `SOLACE_OUTPUT_TOPIC` | Both |
+| `--username` | `SOLACE_USERNAME` | Both |
+| `--password` | `SOLACE_PASSWORD` | Both |
+| `--client-id` | `SOLACE_CLIENT_ID` | MQTT client ID / SMF application ID |
+| `--qos` | `SOLACE_QOS` | MQTT only, 0 or 1 |
+| `--clean-session` | `SOLACE_CLEAN_SESSION` | MQTT only |
+| `--smf-vpn` | `SOLACE_SMF_VPN` | SMF |
+| `--smf-queue` | `SOLACE_SMF_QUEUE` | SMF preprovisioned durable queue |
+| `--smf-queue-exclusive` | `SOLACE_SMF_QUEUE_EXCLUSIVE` | SMF, default true |
+| `--smf-add-subscription` | `SOLACE_SMF_ADD_SUBSCRIPTION` | SMF, explicit queue subscription mutation |
+| `--smf-provision` | `SOLACE_SMF_PROVISION` | SMF, explicit creation of only the named queue |
+| `--smf-trust-store` | `SOLACE_SMF_TRUST_STORE` | SMF TLS CA directory |
+| `--model` | `LAYA_MODEL` | Local checkpoint |
+| `--device` | `LAYA_DEVICE` | `auto`, `mps`, or `cpu` |
+| `--python` | `LAYA_PYTHON` | Python interpreter for the persistent worker |
+| `--worker-script` | `LAYA_WORKER_SCRIPT` | JSONL worker path |
+| `--store-dir` | `BRIDGE_STORE_DIR` | MQTT protocol state and singleton-lock parent |
+| `--audit-file` | `BRIDGE_AUDIT_FILE` | Optional owner-only JSONL of broker-confirmed outputs |
+| `--queue-capacity` | `BRIDGE_QUEUE_CAPACITY` | Bounded in-process queue length |
+| `--max-event-bytes` | `BRIDGE_MAX_EVENT_BYTES` | Maximum inbound payload size |
+| `--max-messages` | `BRIDGE_MAX_MESSAGES` | Stop after N acknowledged events; 0 disables correlation tracking and runs until signal |
+| `--enqueue-timeout` | `BRIDGE_ENQUEUE_TIMEOUT` | Maximum callback enqueue wait |
+| `--inference-timeout` | `BRIDGE_INFERENCE_TIMEOUT` | Per-event worker deadline |
+| `--publish-timeout` | `BRIDGE_PUBLISH_TIMEOUT` | Per-result broker publish deadline |
+| `--startup-timeout` | `BRIDGE_STARTUP_TIMEOUT` | Persistent-worker startup deadline |
+| `--shutdown-timeout` | `BRIDGE_SHUTDOWN_TIMEOUT` | Graceful drain deadline |
+| `--idle-timeout` | `BRIDGE_IDLE_TIMEOUT` | Stop after inactivity; 0 disables |
+| `--offline-stdin` | — | Read JSONL from stdin instead of a broker |
+| `--offline-input-topic` | `BRIDGE_OFFLINE_INPUT_TOPIC` | Source topic recorded by offline mode |
 
 ## Message contract
 
-Input payloads are JSON objects matching the model contract:
+Input is a UTF-8 JSON string or byte-array payload. Native SDT map/stream payloads are rejected with a structured `unsupported_payload` result; they are never silently coerced.
 
-```json
-{
-  "topic": "acme/prod/eu/payments/failed/v1",
-  "schema_name": "PaymentFailed",
-  "schema_version": "1.0",
-  "event_type": "payment.failed",
-  "payload": {
-    "event_id": "evt-42",
-    "amount": 120,
-    "currency": "EUR",
-    "message": "Le paiement a été refusé"
-  }
-}
-```
+The output envelope contains:
 
-Published payload:
+- `correlation_id`, taken from native correlation/application message metadata first, then JSON IDs, then a payload hash
+- source `transport`, delivery semantics, topic, redelivery flag, and payload SHA-256
+- selected route and probability for every route
+- confidence plus review status/threshold
+- checkpoint identity and actual inference device
+- model and bridge latency
+- native Laya token usage, including `truncated` and `state_tokens_dropped`
 
-```json
-{
-  "schema_version": "1.0",
-  "producer": "laya-solace-bridge",
-  "correlation_id": "evt-42",
-  "processed_at": "2026-10-03T14:16:34Z",
-  "source": {
-    "topic": "acme/prod/eu/events/payments",
-    "qos": 1,
-    "retained": false,
-    "duplicate": false,
-    "payload_sha256": "..."
-  },
-  "decision": {
-    "selected_route": "payment-operations",
-    "probabilities": {
-      "order-processing": 0.0165,
-      "payment-operations": 0.6092,
-      "logistics": 0.0149,
-      "inventory-management": 0.0154,
-      "customer-support": 0.0959,
-      "fraud-review": 0.2481
-    },
-    "confidence": 0.6092,
-    "review_required": false,
-    "review_status": "passed",
-    "review_threshold": 0.1862,
-    "model": {
-      "path": "../outputs/best-model",
-      "name": "laya-solace-event-mesh-router",
-      "fine_tuned": true
-    },
-    "device": "mps",
-    "latency_ms": 41.5,
-    "usage": {
-      "input_tokens": 219,
-      "output_tokens": 0,
-      "state_tokens": 91,
-      "state_tokens_dropped": 0,
-      "truncated": false,
-      "truncated_questions": []
-    }
-  },
-  "bridge_latency_ms": 41.7
-}
-```
+Output templates support `{route}`, `{correlation_id}`, and `{input_topic}`. A review-required or error result uses `review` for `{route}` while retaining the proposed model route in the JSON. Output topics matching the input filter are refused to prevent loops.
 
-The native `usage` object is intentionally preserved. An integration can reject or send for review any result where `truncated` is true or `state_tokens_dropped` is non-zero rather than silently treating a partial event as complete. When `review_required` is true, `{route}` renders as `review`; the model's proposed `selected_route` and probabilities remain unchanged inside the envelope for a reviewer.
+## SDKPerf export and replay
 
-Invalid JSON, oversized input, and inference failures become structured error envelopes when the output can be published. If output publication fails, the input is not acknowledged.
-
-## Delivery and shutdown semantics
-
-- Solace documents MQTT QoS 0 as at-most-once and QoS 1 as at-least-once. This bridge defaults to QoS 1 for both subscription and publication and rejects QoS 2 because PubSub+ downgrades it to QoS 1.
-- Paho automatic acknowledgements are disabled. A received message is acknowledged only after its result/error envelope has been published successfully.
-- A crash after output publication but before input acknowledgement can produce a duplicate output. Consumers should deduplicate by `correlation_id` and, where needed, `source.payload_sha256`. This is **at-least-once, not exactly-once** processing.
-- `CleanSession=false` and a stable client ID request a persistent MQTT 3.1.1 session. On normal shutdown the bridge does **not** unsubscribe: it first rejects new local submissions without acknowledging them, drains already accepted events while the connection is live, then disconnects. PubSub+ can retain the QoS 1 subscription and undelivered messages for reconnection.
-- With `CleanSession=true`, the broker discards session state on disconnect; offline intake is not retained.
-- The in-process queue is bounded. If it remains full past the enqueue timeout, the callback returns without acknowledging that event. Redelivery may require reconnection, depending on broker/client state.
-- Paho uses asynchronous handlers (`OrderMatters=false`) so model work and result publication do not block the network reader. Reconnect is automatic, and the `OnConnect` handler re-subscribes after every connection.
-- Paho's file store under `.state/mqtt` persists its QoS protocol state. It is not an application database or an idempotent transaction log.
-- A Solace MQTT persistent session uses a broker-managed session queue, but it does not expose the full provisioning, access, replay, selector, or operational semantics of a native Solace Guaranteed Messaging queue. Shared MQTT subscriptions are also downgraded to QoS 0 by PubSub+, so do not use `$share/...` when this QoS 1 flow is required.
-- Oversized or rejected events are never retained in the Go heap beyond their small metadata. Worker timeout kills and reaps the stuck child; the next event can start a replacement worker.
-
-## Tests
+SDKPerf is used only as a traffic generator/replayer; it did not create labels or business semantics.
 
 ```bash
-make test              # mocked worker/publisher, config, child lifecycle
-make race              # includes concurrent Submit/Close regression
-make real-worker-test  # loads the real saved model and performs one MPS inference
-make offline-demo      # three real events through Go -> Python -> Laya -> JSON envelope
+./scripts/install-sdkperf.sh
+../.venv/bin/python ../scripts/export_sdkperf.py
+../.venv/bin/python ../scripts/run_sdkperf_replay.py --batch-size 250   # dry run
+
+# Authorized nonproduction replay; reads secrets only from ignored .env.
+set -a
+source .env
+set +a
+../.venv/bin/python ../scripts/run_sdkperf_replay.py \
+  --execute --limit 10000 --batch-size 250 --rate 500
 ```
 
-No live broker test is claimed because no broker endpoint or credentials were supplied.
+The exporter creates 10,000 distinct payload files in the ignored cache and a tracked manifest pairing each payload with its own `edm0/pilot/events/...` topic. SDKPerf uses `-pal` and an equal-length `-ptl` list per shard, `-mt=persistent`, and its documented `-cpf` password-file option. The temporary owner-only password file is deleted in `finally`.
+
+The executed replay reported 10,000 messages transmitted, 10,000 publish ACK events, and zero NACK events. This proves broker acceptance of 10,000 distinct payload/topic pairs; it is not by itself proof that every downstream result was consumed.
+
+## Bounded native-SMF audit
+
+For an authorized, supervised nonproduction run, `./scripts/run-live-smf-audit.sh` starts exactly one singleton-protected native consumer, replays 10,000 persistent source messages, waits for 10,000 acknowledged results, and then runs `verify_broker_results.py`. Do not launch a second consumer with the same identity.
+
+The optional audit file is mode `0600` and is appended only after the result publisher confirms success and before the source acknowledgement. It contains decision envelopes and source hashes/topics, so treat it as event data even though it contains no broker credentials. The generated files are:
+
+- `.state/live-audit/confirmed-results.jsonl`: local confirmed-publication evidence
+- `.state/live-audit/bridge.log`: redacted progress and final counters
+- `../outputs/smf_live_result.json`: exact correlation/hash/topic, probability, review-topic, transport, latency, and zero-truncation checks
+
+The verifier requires all expected correlations, valid successful decisions, finite normalized eight-route probabilities, and zero truncated inputs. Its latency summary reports the first cold decision separately, then warm p50/p95/p99 and warm/overall maxima for both native model `latency_ms` and end-to-end bridge `bridge_latency_ms`. Duplicate outputs are reported explicitly but are not by themselves a failure under at-least-once delivery. At this revision, the unified 10,000-event verifier result is pending; earlier overlapping-consumer activity and residual queue cleanup are excluded as evidence.
+
+## Testing
+
+```bash
+make test          # CGO-free MQTT/stub build
+make race
+make test-smf      # native Solace SDK build
+make race-smf
+make vet
+make vet-smf
+make build
+make build-smf
+make real-worker-test
+make offline-demo
+```
+
+The tests cover mocked publisher/worker behavior, output-before-input-ack ordering, failed publication, graceful drain-before-disconnect, concurrent submit/close, bounded versus unbounded correlation accounting, singleton locks, child write timeout/reaping, MQTT and SMF wildcard differences, native topic limits, UTF-8 native payload extraction, configuration validation, and the real saved model worker.
+
+No live-broker result should be inferred from unit tests. See the run manifest for separately recorded live checks.
 
 ## Official references
 
+- [Solace Messaging API for Go supported environments](https://docs.solace.com/API/API-Developer-Guide-Go/Go-API-supported-Environments.htm)
+- [Solace Go API module](https://pkg.go.dev/solace.dev/go/messaging@v1.10.1)
 - [Solace: Using MQTT](https://docs.solace.com/API/MQTT/Using-MQTT.htm)
-- [Solace: MQTT 3.1.1 conformance](https://docs.solace.com/API/MQTT-311-Prtl-Conformance-Spec/MQTT_311_Prtl_Conformance_Spec.htm)
 - [Solace: Managing MQTT Sessions](https://docs.solace.com/Configuring-and-Managing/Managing-MQTT-Sessions.htm)
-- [Solace: software broker configuration defaults](https://docs.solace.com/Software-Broker/SW-Broker-Configuration-Defaults.htm)
-- [Eclipse Paho Go client v1.5.1](https://pkg.go.dev/github.com/eclipse/paho.mqtt.golang@v1.5.1)
+- [Solace SDKPerf](https://docs.solace.com/API/SDKPerf/SDKPerf.htm)
+- [SDKPerf command-line options](https://docs.solace.com/API/SDKPerf/Command-Line-Options.htm)
+- [Eclipse Paho Go v1.5.1](https://pkg.go.dev/github.com/eclipse/paho.mqtt.golang@v1.5.1)

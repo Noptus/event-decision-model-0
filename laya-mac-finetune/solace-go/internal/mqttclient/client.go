@@ -33,12 +33,17 @@ func New(cfg config.Config, submit func(bridge.Incoming) error, logger *slog.Log
 	ready := make(chan error, 1)
 	messageHandler := func(_ mqtt.Client, message mqtt.Message) {
 		err := submit(bridge.Incoming{
-			Topic:     message.Topic(),
-			Payload:   message.Payload(),
-			QoS:       message.Qos(),
-			Retained:  message.Retained(),
-			Duplicate: message.Duplicate(),
-			Ack:       message.Ack,
+			Topic:       message.Topic(),
+			Payload:     message.Payload(),
+			QoS:         message.Qos(),
+			HasMQTTQoS:  true,
+			Retained:    message.Retained(),
+			Duplicate:   message.Duplicate(),
+			Redelivered: message.Duplicate(),
+			Ack: func() error {
+				message.Ack()
+				return nil
+			},
 		})
 		if err != nil {
 			// Manual acknowledgement is enabled. A rejected message is deliberately left
@@ -144,12 +149,9 @@ func (c *Client) Publish(ctx context.Context, topic string, qos byte, payload []
 	return waitToken(ctx, token, c.publishTimeout)
 }
 
-func (c *Client) Unsubscribe(ctx context.Context) error {
-	if !c.client.IsConnected() {
-		return nil
-	}
-	return waitToken(ctx, c.client.Unsubscribe(c.inputFilter), c.subscribeTimeout)
-}
+// StopIntake is intentionally a no-op. Closing the bridge first makes callbacks reject
+// new deliveries without acknowledging them, while preserving a CleanSession=false subscription.
+func (c *Client) StopIntake() error { return nil }
 
 func (c *Client) Disconnect(quiesce time.Duration) {
 	milliseconds := uint(quiesce / time.Millisecond)

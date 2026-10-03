@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -35,6 +36,12 @@ type publication struct {
 	topic   string
 	qos     byte
 	payload []byte
+}
+
+type publisherFunc func(context.Context, string, byte, []byte) error
+
+func (function publisherFunc) Publish(ctx context.Context, topic string, qos byte, payload []byte) error {
+	return function(ctx, topic, qos, payload)
 }
 
 type fakePublisher struct {
@@ -97,7 +104,7 @@ func TestPublishesThenAcknowledges(t *testing.T) {
 		Topic:   "business/events/eu",
 		Payload: []byte(`{"event_id":"evt-1","payload":{"message":"late parcel"}}`),
 		QoS:     1,
-		Ack:     func() { acked.Store(true) },
+		Ack:     func() error { acked.Store(true); return nil },
 	})
 	if len(errorsFound) != 0 {
 		t.Fatalf("unexpected errors: %v", errorsFound)
@@ -121,6 +128,62 @@ func TestPublishesThenAcknowledges(t *testing.T) {
 	}
 }
 
+func TestNativeOwnershipPublishesThenAcknowledgesThenReleases(t *testing.T) {
+	var mu sync.Mutex
+	var events []string
+	record := func(value string) {
+		mu.Lock()
+		events = append(events, value)
+		mu.Unlock()
+	}
+	inferencer := &fakeInferencer{decision: &protocol.Decision{
+		SelectedRoute: "shipping-logistics",
+		Probabilities: map[string]float64{"shipping-logistics": 1},
+		Confidence:    1,
+	}}
+	var published []byte
+	publisher := publisherFunc(func(_ context.Context, _ string, _ byte, payload []byte) error {
+		published = append([]byte(nil), payload...)
+		record("publish")
+		return nil
+	})
+	cfg := testConfig()
+	cfg.Transport = "smf"
+	cfg.TopicSyntax = "smf"
+	cfg.DeliverySemantics = "smf-persistent-guaranteed"
+	cfg.InputFilter = "business/events/>"
+	pipeline, err := New(cfg, inferencer, publisher, slog.New(slog.NewTextHandler(io.Discard, nil)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	errorsFound := runOne(t, pipeline, Incoming{
+		Topic:       "business/events/shipping/delayed",
+		Payload:     []byte(`{"event_id":"native-1"}`),
+		Redelivered: true,
+		Ack:         func() error { record("ack"); return nil },
+		Release:     func() { record("dispose") },
+	})
+	if len(errorsFound) != 0 {
+		t.Fatalf("unexpected errors: %v", errorsFound)
+	}
+	want := []string{"publish", "ack", "dispose"}
+	if len(events) != len(want) {
+		t.Fatalf("events=%v", events)
+	}
+	for index := range want {
+		if events[index] != want[index] {
+			t.Fatalf("events=%v want=%v", events, want)
+		}
+	}
+	var envelope protocol.OutputEnvelope
+	if err := json.Unmarshal(published, &envelope); err != nil {
+		t.Fatal(err)
+	}
+	if envelope.Source.Transport != "smf" || envelope.Source.DeliverySemantics != "smf-persistent-guaranteed" || !envelope.Source.Redelivered || envelope.Source.QoS != nil {
+		t.Fatalf("unexpected native source metadata: %#v", envelope.Source)
+	}
+}
+
 func TestReviewDecisionPublishesToReviewTopicWithoutChangingChoice(t *testing.T) {
 	inferencer := &fakeInferencer{decision: &protocol.Decision{
 		SelectedRoute:  "fraud-review",
@@ -136,7 +199,7 @@ func TestReviewDecisionPublishesToReviewTopicWithoutChangingChoice(t *testing.T)
 	}
 	var acked atomic.Bool
 	errorsFound := runOne(t, pipeline, Incoming{
-		Topic: "business/events/eu", Payload: []byte(`{"id":"needs-review"}`), Ack: func() { acked.Store(true) },
+		Topic: "business/events/eu", Payload: []byte(`{"id":"needs-review"}`), Ack: func() error { acked.Store(true); return nil },
 	})
 	if len(errorsFound) != 0 || !acked.Load() {
 		t.Fatalf("review envelope failed: errors=%v acked=%v", errorsFound, acked.Load())
@@ -159,7 +222,7 @@ func TestPublishFailureLeavesInputUnacknowledged(t *testing.T) {
 	pipeline, _ := New(testConfig(), inferencer, publisher, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	var acked atomic.Bool
 	errorsFound := runOne(t, pipeline, Incoming{
-		Topic: "business/events/eu", Payload: []byte(`{"id":"evt-2"}`), Ack: func() { acked.Store(true) },
+		Topic: "business/events/eu", Payload: []byte(`{"id":"evt-2"}`), Ack: func() error { acked.Store(true); return nil },
 	})
 	if acked.Load() {
 		t.Fatal("input was acknowledged after output publish failure")
@@ -175,7 +238,7 @@ func TestInferenceTimeoutPublishesErrorAndAcknowledges(t *testing.T) {
 	pipeline, _ := New(testConfig(), inferencer, publisher, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	var acked atomic.Bool
 	errorsFound := runOne(t, pipeline, Incoming{
-		Topic: "business/events/eu", Payload: []byte(`{"id":"evt-timeout"}`), Ack: func() { acked.Store(true) },
+		Topic: "business/events/eu", Payload: []byte(`{"id":"evt-timeout"}`), Ack: func() error { acked.Store(true); return nil },
 	})
 	if len(errorsFound) != 0 || !acked.Load() {
 		t.Fatalf("error envelope should publish and then ack: errors=%v acked=%v", errorsFound, acked.Load())
@@ -197,7 +260,7 @@ func TestLoopPreventionDoesNotPublishOrAck(t *testing.T) {
 	pipeline, _ := New(cfg, inferencer, publisher, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	var acked atomic.Bool
 	errorsFound := runOne(t, pipeline, Incoming{
-		Topic: "ai/routes/input", Payload: []byte(`{"id":"evt-loop"}`), Ack: func() { acked.Store(true) },
+		Topic: "ai/routes/input", Payload: []byte(`{"id":"evt-loop"}`), Ack: func() error { acked.Store(true); return nil },
 	})
 	if len(errorsFound) != 1 || acked.Load() || len(publisher.publications) != 0 {
 		t.Fatalf("loop guard failed: errors=%v acked=%v published=%d", errorsFound, acked.Load(), len(publisher.publications))
@@ -210,7 +273,7 @@ func TestSelfProducedInputIsAcknowledgedWithoutInference(t *testing.T) {
 	pipeline, _ := New(testConfig(), inferencer, publisher, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	var acked atomic.Bool
 	errorsFound := runOne(t, pipeline, Incoming{
-		Topic: "business/events/loop", Payload: []byte(`{"producer":"laya-solace-bridge"}`), Ack: func() { acked.Store(true) },
+		Topic: "business/events/loop", Payload: []byte(`{"producer":"laya-solace-bridge"}`), Ack: func() error { acked.Store(true); return nil },
 	})
 	if len(errorsFound) != 0 || !acked.Load() || inferencer.calls.Load() != 0 || len(publisher.publications) != 0 {
 		t.Fatal("self-produced event was not safely discarded")
@@ -221,7 +284,7 @@ func TestUnexpectedTopicIsRejectedWithoutAcknowledgement(t *testing.T) {
 	pipeline, _ := New(testConfig(), &fakeInferencer{}, &fakePublisher{}, slog.New(slog.NewTextHandler(io.Discard, nil)))
 	var acked atomic.Bool
 	err := pipeline.Submit(Incoming{
-		Topic: "stale/subscription", Payload: []byte(`{"id":"stale"}`), Ack: func() { acked.Store(true) },
+		Topic: "stale/subscription", Payload: []byte(`{"id":"stale"}`), Ack: func() error { acked.Store(true); return nil },
 	})
 	if !errors.Is(err, ErrUnexpectedTopic) || acked.Load() {
 		t.Fatalf("unexpected-topic handling failed: err=%v acked=%v", err, acked.Load())
@@ -268,6 +331,31 @@ func TestConcurrentSubmitAndCloseNeverPanics(t *testing.T) {
 	}
 }
 
+func TestCorrelationTrackingOnlyForFiniteAudit(t *testing.T) {
+	unbounded, err := New(testConfig(), &fakeInferencer{}, &fakePublisher{}, slog.New(slog.NewTextHandler(io.Discard, nil)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stats := unbounded.Stats(); stats.CorrelationsTracked || stats.UniqueCorrelations != 0 {
+		t.Fatalf("unbounded service retained correlations: %#v", stats)
+	}
+	unbounded.Close()
+
+	cfg := testConfig()
+	cfg.MaxMessages = 1
+	finite, err := New(cfg, &fakeInferencer{decision: &protocol.Decision{
+		SelectedRoute: "logistics", Probabilities: map[string]float64{"logistics": 1}, Confidence: 1,
+	}}, &fakePublisher{}, slog.New(slog.NewTextHandler(io.Discard, nil)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	runOne(t, finite, Incoming{Topic: "business/events/eu", Payload: []byte(`{"id":"finite-audit"}`)})
+	stats := finite.Stats()
+	if !stats.CorrelationsTracked || stats.UniqueCorrelations != 1 {
+		t.Fatalf("finite audit did not track one correlation: %#v", stats)
+	}
+}
+
 func TestTopicMatchingAndTemplateSafety(t *testing.T) {
 	cases := []struct {
 		filter string
@@ -283,6 +371,41 @@ func TestTopicMatchingAndTemplateSafety(t *testing.T) {
 		if got := TopicMatches(test.filter, test.topic); got != test.match {
 			t.Errorf("TopicMatches(%q, %q)=%v", test.filter, test.topic, got)
 		}
+	}
+	smfCases := []struct {
+		filter string
+		topic  string
+		match  bool
+	}{
+		{"a/*/c", "a/b/c", true},
+		{"a/order*/c", "a/orders/c", true},
+		{"a/order*/c", "a/payments/c", false},
+		{"a/>", "a/b/c", true},
+		{"a/>", "a", false},
+		{"a/*/c", "a/b/d", false},
+	}
+	for _, test := range smfCases {
+		if got := TopicMatchesFor("smf", test.filter, test.topic); got != test.match {
+			t.Errorf("SMF TopicMatches(%q, %q)=%v", test.filter, test.topic, got)
+		}
+	}
+	if err := ValidateTopicFilterFor("smf", "a/+/c"); err == nil {
+		t.Fatal("MQTT wildcard was accepted in an SMF filter")
+	}
+	if err := ValidateTopicFilterFor("mqtt", "a/*/c"); err == nil {
+		t.Fatal("SMF wildcard was accepted in an MQTT filter")
+	}
+	if err := ValidateTopicFilterFor("smf", "a/or*der/c"); err == nil {
+		t.Fatal("unsupported embedded SMF wildcard was accepted")
+	}
+	if err := ValidateTopicFilterFor("smf", strings.Repeat("x", 251)); err == nil {
+		t.Fatal("oversized SMF filter was accepted")
+	}
+	if err := ValidateTopicFilterFor("smf", strings.Repeat("/", 128)); err == nil {
+		t.Fatal("SMF filter with more than 128 levels was accepted")
+	}
+	if _, err := RenderTopicFor("smf", strings.Repeat("x", 251), "route", "id", "in/topic"); err == nil {
+		t.Fatal("oversized SMF publish topic was accepted")
 	}
 	if _, err := RenderTopic("out/{route}", "bad/#", "id", "in/topic"); err == nil {
 		t.Fatal("wildcard route was accepted")

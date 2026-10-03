@@ -43,6 +43,44 @@ def load_expected(path: Path, offset: int, count: int) -> dict[str, dict[str, An
     return expected
 
 
+def percentile(values: list[float], quantile: float) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * quantile
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return round(ordered[lower], 3)
+    fraction = position - lower
+    return round(ordered[lower] + (ordered[upper] - ordered[lower]) * fraction, 3)
+
+
+def summarize_latency(values: list[float]) -> dict[str, Any]:
+    if not values:
+        return {
+            "samples": 0,
+            "cold_first_ms": None,
+            "warm_samples": 0,
+            "warm_p50_ms": None,
+            "warm_p95_ms": None,
+            "warm_p99_ms": None,
+            "warm_max_ms": None,
+            "overall_max_ms": None,
+        }
+    warm = values[1:]
+    return {
+        "samples": len(values),
+        "cold_first_ms": round(values[0], 3),
+        "warm_samples": len(warm),
+        "warm_p50_ms": percentile(warm, 0.50),
+        "warm_p95_ms": percentile(warm, 0.95),
+        "warm_p99_ms": percentile(warm, 0.99),
+        "warm_max_ms": round(max(warm), 3) if warm else None,
+        "overall_max_ms": round(max(values), 3),
+    }
+
+
 def main() -> None:
     args = parse_args()
     if args.offset < 0 or args.expected < 1:
@@ -59,6 +97,10 @@ def main() -> None:
     review = 0
     routes = Counter()
     transport_counts = Counter()
+    decision_latencies: list[float] = []
+    bridge_latencies: list[float] = []
+    truncated_decisions = 0
+    state_tokens_dropped = 0
     total_lines = 0
 
     for audit_path in args.audit:
@@ -81,12 +123,19 @@ def main() -> None:
                 if expected_row is None:
                     invalid.append(f"{audit_path}:{line_number}: unknown correlation {correlation}")
                     continue
+                if not isinstance(source, dict):
+                    invalid.append(f"{audit_path}:{line_number}: invalid source metadata for {correlation}")
+                    continue
                 if source.get("payload_sha256") != expected_row["payload_sha256"]:
                     invalid.append(f"{audit_path}:{line_number}: payload hash mismatch for {correlation}")
+                    continue
                 if source.get("topic") != expected_row["topic"]:
                     invalid.append(f"{audit_path}:{line_number}: source topic mismatch for {correlation}")
+                    continue
                 if source.get("transport") != "smf" or source.get("delivery_semantics") != "smf-persistent-guaranteed":
                     invalid.append(f"{audit_path}:{line_number}: incorrect transport metadata for {correlation}")
+                    continue
+                transport_counts[source["transport"]] += 1
 
                 if envelope.get("error") is not None:
                     error_envelopes += 1
@@ -99,7 +148,11 @@ def main() -> None:
                 if not isinstance(probabilities, dict) or set(probabilities) != set(ROUTES):
                     invalid.append(f"{audit_path}:{line_number}: invalid route keys for {correlation}")
                     continue
-                values = [float(probabilities[route]) for route in ROUTES]
+                try:
+                    values = [float(probabilities[route]) for route in ROUTES]
+                except (TypeError, ValueError):
+                    invalid.append(f"{audit_path}:{line_number}: non-numeric probability for {correlation}")
+                    continue
                 if not all(math.isfinite(value) and 0 <= value <= 1 for value in values):
                     invalid.append(f"{audit_path}:{line_number}: non-finite probability for {correlation}")
                     continue
@@ -115,9 +168,37 @@ def main() -> None:
                     invalid.append(f"{audit_path}:{line_number}: output topic does not match decision policy for {correlation}")
                     continue
                 usage = decision.get("usage", {})
-                if not isinstance(usage.get("truncated"), bool) or not isinstance(usage.get("state_tokens_dropped"), int):
+                truncated = usage.get("truncated")
+                dropped = usage.get("state_tokens_dropped")
+                if (
+                    not isinstance(truncated, bool)
+                    or not isinstance(dropped, int)
+                    or isinstance(dropped, bool)
+                    or dropped < 0
+                ):
                     invalid.append(f"{audit_path}:{line_number}: missing native usage metadata for {correlation}")
                     continue
+                if truncated or dropped != 0:
+                    truncated_decisions += 1
+                    state_tokens_dropped += dropped
+                    invalid.append(f"{audit_path}:{line_number}: truncated model input for {correlation}")
+                    continue
+                decision_latency = decision.get("latency_ms")
+                bridge_latency = envelope.get("bridge_latency_ms")
+                if (
+                    not isinstance(decision_latency, (int, float))
+                    or isinstance(decision_latency, bool)
+                    or not math.isfinite(decision_latency)
+                    or decision_latency < 0
+                    or not isinstance(bridge_latency, (int, float))
+                    or isinstance(bridge_latency, bool)
+                    or not math.isfinite(bridge_latency)
+                    or bridge_latency < 0
+                ):
+                    invalid.append(f"{audit_path}:{line_number}: invalid latency metadata for {correlation}")
+                    continue
+                decision_latencies.append(float(decision_latency))
+                bridge_latencies.append(float(bridge_latency))
                 successful += 1
                 review += int(bool(decision.get("review_required")))
                 routes[route] += 1
@@ -135,10 +216,22 @@ def main() -> None:
         "invalid_records": len(invalid),
         "review_required": review,
         "routes": dict(routes),
+        "transport_counts": dict(transport_counts),
+        "truncation": {
+            "truncated_decisions": truncated_decisions,
+            "state_tokens_dropped": state_tokens_dropped,
+        },
+        "latency_summary": {
+            "definition": "The first valid decision is reported separately as cold; warm percentiles exclude it.",
+            "decision_latency_ms": summarize_latency(decision_latencies),
+            "bridge_latency_ms": summarize_latency(bridge_latencies),
+        },
         "checks": {
             "exact_expected_unique_correlations": len(occurrences) == args.expected,
             "all_expected_correlations_seen": not missing and len(expected) == args.expected,
             "all_outputs_valid_successful_decisions": successful == total_lines and not invalid,
+            "complete_latency_samples": len(decision_latencies) == successful == len(bridge_latencies),
+            "zero_truncation": truncated_decisions == 0 and state_tokens_dropped == 0,
             "no_duplicate_outputs": duplicates == 0,
         },
         "invalid_examples": invalid[:20],
@@ -150,6 +243,8 @@ def main() -> None:
         report["checks"]["exact_expected_unique_correlations"],
         report["checks"]["all_expected_correlations_seen"],
         report["checks"]["all_outputs_valid_successful_decisions"],
+        report["checks"]["complete_latency_samples"],
+        report["checks"]["zero_truncation"],
     )
     if not all(required_checks):
         raise SystemExit(1)

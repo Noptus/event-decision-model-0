@@ -1,29 +1,42 @@
-# Laya × Solace Event-Mesh Routing Lab
+# EDM-0 — Event Decision Model
 
-A local, bilingual fine-tuning experiment for routing Solace-style JSON business
-events to six consumer services, with native Laya probability distributions and
-a validation-fitted manual-review policy.
+A local bilingual decision model for Solace projects. EDM-0 reads a JSON event,
+selects an operational owner and returns eight route probabilities plus a review
+signal in one forward pass. A lightweight Go consumer keeps the model resident,
+subscribes over MQTT or native Solace SMF, and publishes decision envelopes to
+customizable topics.
 
-All project code, configuration, synthetic data, tests, and measured results are
-in [`laya-mac-finetune/`](laya-mac-finetune/). Start with its
-[README](laya-mac-finetune/README.md).
+The repository includes **10,000 synthetic enterprise events** spanning finance,
+manufacturing, payments, shipping, insurance, IT/OT, SAP and Salesforce; the
+training code; SDKPerf replay tools; and the complete trained checkpoint.
+Weights and the tokenizer are stored with **Git LFS**.
 
 ```bash
+git lfs install
+git clone https://github.com/Noptus/event-decision-model-0.git
+cd event-decision-model-0
+git lfs pull
 cd laya-mac-finetune
+./scripts/setup.sh
 source scripts/env.sh
-uv run python scripts/infer.py --model outputs/best-model --interactive --verbose
+uv run python scripts/infer.py --model outputs/best-model --file examples/events.jsonl
 ```
 
-Measured on the local M4 with MPS: 118.8 seconds for the selected head-only
-training run and about 38 ms per warm inference. Base and fine-tuned routing
-accuracy both reached 83.3% on 60 synthetic test events; uncalibrated fine-tuning
-improved negative log loss from 0.526 to 0.474. The first run's results are
-preserved in `laya-mac-finetune/outputs/runs/head60/`.
+Trained on an M4 with 16 GiB memory: one pass over 8,000 training events,
+1,000 calibration events, and 1,000 independent test events. Synthetic test
+accuracy improved from **78.1% to 85.6%**. The head optimization and validation
+phase took 519.9 seconds; encoder-cache preparation is additional.
 
-This is an experimental routing prototype; it does not require a Solace broker.
+Fraud recall and unfamiliar-event review remain weak. This is an integration
+prototype: representative real events and a better review policy are the next
+priority. [Solace requirements](laya-mac-finetune/docs/solace-requirements.md)
+cover data, broker setup, hardware and acceptance criteria.
 
-## Solace MQTT bridge
+- [Model, dataset, training and terminal guide](laya-mac-finetune/README.md)
+- [MQTT / SMF Go integration guide](laya-mac-finetune/solace-go/README.md)
+- [Trained model card](laya-mac-finetune/outputs/best-model/README.md)
+- [Dataset description](laya-mac-finetune/data/README.md)
+- [Measured results](laya-mac-finetune/outputs/metrics.json)
 
-A lightweight Go bridge is included at [`laya-mac-finetune/solace-go/`](laya-mac-finetune/solace-go/). It keeps the Python/Laya model worker resident, subscribes and publishes with MQTT QoS 1/manual acknowledgement, preserves native probabilities and truncation metadata, and includes an offline end-to-end demo that needs no broker. See its [integration guide](laya-mac-finetune/solace-go/README.md).
-
-Before a real pilot, review [what we need from Solace](laya-mac-finetune/docs/solace-requirements.md): accountable owners, representative data, broker setup, hardware guidance, acceptance gates, and current limitations.
+The original 260-event experiment is preserved in
+[laya-mac-finetune/archive/v1-260](laya-mac-finetune/archive/v1-260/README.md).

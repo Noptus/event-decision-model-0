@@ -46,6 +46,44 @@ func TestRejectsQoSTwo(t *testing.T) {
 	}
 }
 
+func TestSMFDefaultsAndRequiredQueue(t *testing.T) {
+	if _, err := Parse([]string{"--transport", "smf"}, environment(nil), &bytes.Buffer{}); err == nil {
+		t.Fatal("SMF without VPN and queue was accepted")
+	}
+	cfg, err := Parse(
+		[]string{"--transport", "smf", "--smf-vpn", "pilot", "--smf-queue", "Q.EVENT.ROUTING"},
+		environment(nil),
+		&bytes.Buffer{},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cfg.BrokerURL != "tcp://localhost:55555" || cfg.InputFilter != "acme/prod/*/events/>" {
+		t.Fatalf("unexpected SMF defaults: %#v", cfg)
+	}
+}
+
+func TestSMFProvisionRequiresExplicitSubscription(t *testing.T) {
+	_, err := Parse(
+		[]string{"--transport", "smf", "--smf-vpn", "pilot", "--smf-queue", "queue", "--smf-provision"},
+		environment(nil),
+		&bytes.Buffer{},
+	)
+	if err == nil || !strings.Contains(err.Error(), "smf-add-subscription") {
+		t.Fatalf("expected explicit subscription requirement, got %v", err)
+	}
+}
+
+func TestTransportSpecificBrokerScheme(t *testing.T) {
+	if _, err := Parse(
+		[]string{"--transport", "smf", "--smf-vpn", "pilot", "--smf-queue", "queue", "--broker-url", "ssl://host:8883"},
+		environment(nil),
+		&bytes.Buffer{},
+	); err == nil {
+		t.Fatal("MQTT TLS scheme was accepted for SMF")
+	}
+}
+
 func TestQoSDoesNotWrapBeforeValidation(t *testing.T) {
 	for _, value := range []int{-1, 256, 257} {
 		text := strconv.Itoa(value)
