@@ -222,7 +222,7 @@ def main() -> None:
             "state_tokens_dropped": state_tokens_dropped,
         },
         "latency_summary": {
-            "definition": "The first valid decision is reported separately as cold; warm percentiles exclude it.",
+            "definition": "The first valid decision is reported separately as cold; warm percentiles exclude it. Model latency covers prediction. Bridge latency covers processing after dequeue until envelope creation, excluding queue wait, broker publish confirmation, and source acknowledgement.",
             "decision_latency_ms": summarize_latency(decision_latencies),
             "bridge_latency_ms": summarize_latency(bridge_latencies),
         },

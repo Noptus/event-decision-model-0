@@ -238,9 +238,12 @@
       "correlation_tracking": "bounded to the finite 10000-message audit",
       "expected_messages": 10000,
       "final_report": "outputs/smf_live_result.json",
+      "final_verification_performed": false,
       "namespace": "edm0/pilot",
+      "note": "User requested no further tests and closeout. The partial audit is not accepted as full 10000-event inference evidence. Completed SDKPerf source publication evidence remains separate.",
+      "observed_audit_records_at_stop": 7829,
       "queue": "edm0-routing-pilot",
-      "status": "pending_final_verification",
+      "status": "stopped_at_user_request",
       "verification_requires": [
         "10000 expected unique correlations",
         "10000 valid successful decisions",
@@ -253,21 +256,6 @@
     },
     "mqtt_client": "github.com/eclipse/paho.mqtt.golang v1.5.1",
     "native_smf_client": "solace.dev/go/messaging v1.10.1",
-    "prior_live_activity": {
-      "evidence_status": "excluded_nonproof",
-      "residual_cleanup_acknowledgements": 196,
-      "reason": "Earlier overlapping-consumer runs and residual queue cleanup are excluded from the unified audit evidence."
-    },
-    "sdkperf_source_replay": {
-      "delivery_mode": "persistent",
-      "publish_acks": 10000,
-      "publish_nacks": 0,
-      "records_submitted": 10000,
-      "report": "outputs/sdkperf_replay.json",
-      "sdkperf_version": "10.30.2",
-      "unique_correlations": 10000,
-      "unique_payloads": 10000
-    },
     "offline_demo": {
       "events": 3,
       "note": "Regenerated and validated before repository publication; timings describe this captured run.",
@@ -279,6 +267,21 @@
         239.801
       ],
       "worker_load_ms": 26155.8
+    },
+    "prior_live_activity": {
+      "evidence_status": "excluded_nonproof",
+      "reason": "Earlier overlapping-consumer runs and residual queue cleanup are excluded from the unified audit evidence.",
+      "residual_cleanup_acknowledgements": 196
+    },
+    "sdkperf_source_replay": {
+      "delivery_mode": "persistent",
+      "publish_acks": 10000,
+      "publish_nacks": 0,
+      "records_submitted": 10000,
+      "report": "outputs/sdkperf_replay.json",
+      "sdkperf_version": "10.30.2",
+      "unique_correlations": 10000,
+      "unique_payloads": 10000
     },
     "tests": {
       "default_build": "passed",
