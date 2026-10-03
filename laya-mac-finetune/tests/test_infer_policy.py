@@ -5,7 +5,7 @@ import json
 import pytest
 
 from infer import review_thresholds
-from _shared import question_contract_hash
+from _shared import ROUTING_QUESTION, question_contract_hash
 
 
 class DummyAgent:
@@ -15,7 +15,7 @@ class DummyAgent:
 
 def test_custom_checkpoint_does_not_borrow_global_policy(tmp_path):
     agent = DummyAgent({"fine_tuned": True, "calibration_id": "expected"})
-    assert review_thresholds(tmp_path, agent, disabled=False) is None
+    assert review_thresholds(tmp_path, agent, disabled=False, routing_question=ROUTING_QUESTION) is None
 
 
 def test_checkpoint_policy_requires_matching_identity(tmp_path):
@@ -31,7 +31,7 @@ def test_checkpoint_policy_requires_matching_identity(tmp_path):
     )
     agent = DummyAgent({"fine_tuned": True, "calibration_id": "expected"})
     with pytest.raises(RuntimeError, match="does not match"):
-        review_thresholds(tmp_path, agent, disabled=False)
+        review_thresholds(tmp_path, agent, disabled=False, routing_question=ROUTING_QUESTION)
 
 
 def test_checkpoint_policy_loads_only_when_bound(tmp_path):
@@ -47,4 +47,4 @@ def test_checkpoint_policy_loads_only_when_bound(tmp_path):
         encoding="utf-8",
     )
     agent = DummyAgent({"fine_tuned": True, "calibration_id": calibration_id})
-    assert review_thresholds(tmp_path, agent, disabled=False) == {"choice:6-10": 0.7}
+    assert review_thresholds(tmp_path, agent, disabled=False, routing_question=ROUTING_QUESTION) == {"choice:6-10": 0.7}

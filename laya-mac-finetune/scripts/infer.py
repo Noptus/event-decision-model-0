@@ -18,8 +18,8 @@ from _shared import (
     CONFIG_PATH,
     OUTPUT_DIR,
     QUESTION_ID,
-    ROUTING_QUESTION,
     load_config,
+    load_routing_question,
     question_contract_hash,
     read_jsonl,
     select_device,
@@ -70,7 +70,7 @@ def load_events(args: argparse.Namespace) -> tuple[list[dict[str, Any]], bool]:
 
 
 def review_thresholds(
-    model_path: Path, agent: Agent, disabled: bool
+    model_path: Path, agent: Agent, disabled: bool, routing_question: dict[str, Any]
 ) -> dict[str, float] | None:
     if disabled or not agent.cfg.get("fine_tuned"):
         return None
@@ -87,7 +87,7 @@ def review_thresholds(
             f"Calibration identity does not match checkpoint {model_path}; refusing to apply its review policy."
         )
     identity = calibration.get("checkpoint_identity", {})
-    if identity.get("question_contract_sha256") != question_contract_hash():
+    if identity.get("question_contract_sha256") != question_contract_hash(routing_question):
         raise RuntimeError("Calibration was fitted for a different routing question contract")
     values = calibration.get("abstention_thresholds", {})
     return {str(key): float(value) for key, value in values.items()} or None
@@ -126,6 +126,7 @@ def run_batch(
     agent: Agent,
     model_path: Path,
     events: list[dict[str, Any]],
+    routing_question: dict[str, Any],
     config: dict[str, Any],
     thresholds: dict[str, float] | None,
     batch_size: int,
@@ -137,7 +138,7 @@ def run_batch(
     started = time.perf_counter()
     results = agent.predict_batch(
         events,
-        ROUTING_QUESTION,
+        routing_question,
         batch_size=batch_size,
         sort_by_length=len(events) > batch_size,
         max_len=int(config["max_length"]),
@@ -167,7 +168,8 @@ def main() -> None:
         raise RuntimeError(
             f"Laya changed device from {requested_device} to {agent.device}; rerun with --device cpu."
         )
-    thresholds = review_thresholds(model_path, agent, args.no_review_gate)
+    routing_question = load_routing_question(model_path)
+    thresholds = review_thresholds(model_path, agent, args.no_review_gate, routing_question)
     batch_size = args.batch_size or int(config["inference_batch_size"])
     events, interactive = load_events(args)
     print(
@@ -183,7 +185,7 @@ def main() -> None:
 
     if not interactive:
         for output in run_batch(
-            agent, model_path, events, config, thresholds, batch_size, args.verbose
+            agent, model_path, events, routing_question, config, thresholds, batch_size, args.verbose
         ):
             print(json.dumps(output, ensure_ascii=False))
         return
@@ -201,6 +203,7 @@ def main() -> None:
                 agent,
                 model_path,
                 [parse_event(text)],
+                routing_question,
                 config,
                 thresholds,
                 1,

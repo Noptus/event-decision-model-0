@@ -1,104 +1,109 @@
 {
   "best_validation": {
-    "accuracy": 0.875,
-    "loss": 1.0813754133880138
+    "accuracy": 0.723,
+    "loss": 1.5151992673575878
   },
   "calibration": null,
   "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/outputs/smoke-model",
   "device": "mps",
-  "duration_seconds": 23.915436875000523,
+  "duration_seconds": 61.11113804199704,
+  "epochs_completed": 1.0,
+  "examples_exposed": 64,
+  "feature_cache_contains_labels": false,
+  "feature_cache_dtype": "float16",
+  "feature_cache_parity_max_abs": 0.00012636184692382812,
+  "feature_cache_seconds": 60.54756012500002,
   "freeze_strategy": "head_only",
   "gradient_accumulation_steps": 4,
   "history": [
     {
       "epoch": 0,
-      "gradient_norm": 117.89616394042969,
+      "examples_exposed": 16,
+      "gradient_norm": 88.30290985107422,
       "learning_rates": [
-        0.00011999999999999999
+        4e-05
       ],
-      "loss": -0.3113727867603302,
-      "loss_ce": 0.46153053641319275,
-      "loss_rlcd": -0.772903323173523,
-      "reward": 0.2105024755001068,
+      "loss": 0.523711085319519,
+      "loss_ce": 1.2519011497497559,
+      "loss_rlcd": -0.7281900644302368,
+      "reward": -0.48084354400634766,
       "sigma": 0.3,
       "step": 1
     },
     {
       "epoch": 0,
-      "gradient_norm": 13.96180248260498,
+      "examples_exposed": 32,
+      "gradient_norm": 71.68162536621094,
       "learning_rates": [
-        0.00017999999999999998
+        6e-05
       ],
-      "loss": 0.2646932601928711,
-      "loss_ce": 0.4280053675174713,
-      "loss_rlcd": -0.16331210732460022,
-      "reward": 0.2647373676300049,
-      "sigma": 0.25,
-      "step": 2
+      "loss": 0.7801384329795837,
+      "loss_ce": 0.5509552359580994,
+      "loss_rlcd": 0.22918319702148438,
+      "reward": 0.10328629612922668,
+      "sigma": 0.23333333333333334,
+      "step": 2,
+      "validation": {
+        "accuracy": 0.723,
+        "examples": 1000,
+        "loss": 1.538769036412239
+      }
     },
     {
-      "epoch": 1,
-      "gradient_norm": 43.851741790771484,
+      "epoch": 0,
+      "examples_exposed": 48,
+      "gradient_norm": 86.96135711669922,
       "learning_rates": [
-        0.00023999999999999998
+        8e-05
       ],
-      "loss": 0.22218042612075806,
-      "loss_ce": 0.8602228760719299,
-      "loss_rlcd": -0.6380424499511719,
-      "reward": -0.04690068960189819,
-      "sigma": 0.2,
+      "loss": 1.2327611446380615,
+      "loss_ce": 1.9492205381393433,
+      "loss_rlcd": -0.7164593935012817,
+      "reward": -1.5661365985870361,
+      "sigma": 0.16666666666666669,
       "step": 3
     },
     {
       "epoch": 1,
-      "gradient_norm": 183.32754516601562,
+      "examples_exposed": 64,
+      "gradient_norm": 135.65696716308594,
       "learning_rates": [
-        0.0003
+        0.0001
       ],
-      "loss": 1.272257924079895,
-      "loss_ce": 0.4576769769191742,
-      "loss_rlcd": 0.8145809769630432,
-      "reward": 0.23745615780353546,
-      "sigma": 0.15,
-      "step": 4
-    },
-    {
-      "epoch": 1,
-      "gradient_norm": 51.82972717285156,
-      "learning_rates": [
-        0.0003
-      ],
-      "loss": 0.9534235000610352,
-      "loss_ce": 1.5703145265579224,
-      "loss_rlcd": -0.6168910264968872,
-      "reward": -1.2320822477340698,
+      "loss": 3.924422025680542,
+      "loss_ce": 3.84908390045166,
+      "loss_rlcd": 0.07533806562423706,
+      "reward": -2.7938127517700195,
       "sigma": 0.1,
-      "step": 5,
+      "step": 4,
       "validation": {
-        "accuracy": 0.875,
-        "examples": 40,
-        "loss": 1.0813754133880138
+        "accuracy": 0.723,
+        "examples": 1000,
+        "loss": 1.5151992673575878
       }
     }
   ],
   "initial_validation": {
-    "accuracy": 0.875,
-    "examples": 40,
-    "loss": 1.0747029393911363
+    "accuracy": 0.723,
+    "examples": 1000,
+    "loss": 1.5547954395115375
   },
+  "micro_batch_size": 4,
+  "minimum_train_epochs": 1,
   "mode": "smoke",
   "mps_memory_at_end": {
-    "current_allocated_memory": 1419724800,
-    "driver_allocated_memory": 2417704960,
+    "current_allocated_memory": 186615040,
+    "driver_allocated_memory": 1184579584,
     "recommended_max_memory": 12713115648
   },
-  "optimizer_steps": 5,
+  "optimizer_steps": 4,
   "parameter_counts": {
     "frozen": 306939648,
     "total": 321908995,
     "trainable": 14969347
   },
   "precision": "float32",
-  "train_examples": 12,
-  "validation_examples": 40
+  "selected_checkpoint_updated": true,
+  "train_examples": 64,
+  "validation_examples": 1000
 }

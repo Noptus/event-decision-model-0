@@ -1,0 +1,13 @@
+{
+  "manifest": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/data/sdkperf_replay_manifest.jsonl",
+  "note": "SDKPerf replays generated records; it does not create or label business semantics.",
+  "payload_directory": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/.cache/sdkperf-replay/payloads",
+  "records": 10000,
+  "shard_size": 100,
+  "shards": 100,
+  "tool": "Solace SDKPerf Java",
+  "unique_correlation_ids": 10000,
+  "unique_payloads": 10000,
+  "unique_topics": 1060,
+  "version": "10.30.2"
+}

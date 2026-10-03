@@ -1,125 +1,3423 @@
 {
-  "argmax_improvements": [],
-  "argmax_regressions": [],
+  "argmax_improvements": [
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4131,
+      "base_truth_probability": 0.2207,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.2936,
+      "fine_tuned_truth_probability": 0.2936,
+      "id": "edm0-d51e0445c5e8",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09993",
+        "entity": {
+          "id": "g7faf6b9b9d76",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-21T19:39:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 10243,
+          "claim_id": "C609993",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09993",
+          "line": "property",
+          "policy_id": "P509993"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "1.0",
+        "source_system": "Salesforce Sales Cloud",
+        "topic": "edm0/pilot/events/v2/claim-settlement/na/salesforce"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.07290000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.3701,
+      "base_truth_probability": 0.189,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.2291,
+      "fine_tuned_truth_probability": 0.2291,
+      "id": "edm0-e6fdfc463e47",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09981",
+        "entity": {
+          "id": "g5bfcdb1a0cfb",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-21T19:03:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 10231,
+          "claim_id": "C609981",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09981",
+          "line": "property",
+          "policy_id": "P509981"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "1.0",
+        "source_system": "Salesforce Sales Cloud",
+        "topic": "edm0/pilot/events/v2/claim-settlement/na/salesforce"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.0401
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7257,
+      "base_truth_probability": 0.1263,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "shipping-logistics",
+      "fine_tuned_confidence": 0.3079,
+      "fine_tuned_truth_probability": 0.3079,
+      "id": "edm0-19358440381f",
+      "language": "en",
+      "state": {
+        "correlation_id": "c489537a30b",
+        "entity": {
+          "id": "ged08a8c7a089",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:48:00Z",
+        "event_type": "delivery.proof-dispute.assessed",
+        "payload": {
+          "amount": 236,
+          "case_reference": "P390c8e04",
+          "currency": "EUR",
+          "delivery_evidence": "carrier_scan_missing",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "ec98f4ee21e"
+        },
+        "schema_name": "ProofOfDeliveryDisputeAssessed",
+        "schema_version": "2.0",
+        "source_system": "Warehouse WMS",
+        "topic": "edm0/pilot/events/shipping/decision/delivery-proof-dispute-assessed/v2"
+      },
+      "truth": "shipping-logistics",
+      "truth_probability_delta": 0.1816
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.48,
+      "base_truth_probability": 0.2497,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.442,
+      "fine_tuned_truth_probability": 0.442,
+      "id": "edm0-a8143e68e60b",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09692",
+        "entity": {
+          "id": "g9547a85119ce",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T04:36:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7068",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09692",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S05",
+          "value": 86
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1923
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4491,
+      "base_truth_probability": 0.305,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.317,
+      "fine_tuned_truth_probability": 0.317,
+      "id": "edm0-576206b4f5a8",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09584",
+        "entity": {
+          "id": "gabeebd7c58a7",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-20T23:12:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 9834,
+          "claim_id": "C609584",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09584",
+          "line": "travel",
+          "policy_id": "P509584"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "3.0",
+        "source_system": "Claims Portal",
+        "topic": "edm0/pilot/events/v3/claim-settlement/latam/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.01200000000000001
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7102,
+      "base_truth_probability": 0.1121,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2756,
+      "fine_tuned_truth_probability": 0.2756,
+      "id": "edm0-3ac14a545187",
+      "language": "en",
+      "state": {
+        "correlation_id": "c83e9d62ba9",
+        "entity": {
+          "id": "g77866b4a994f",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:46:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 202,
+          "case_reference": "Pf9b72fcc",
+          "claim_pattern": "organized_ring",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e287c6dada0"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Claims Portal",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.1635
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.8026,
+      "base_truth_probability": 0.1461,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.4166,
+      "fine_tuned_truth_probability": 0.4166,
+      "id": "edm0-0db8ca4d7a3c",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09298",
+        "entity": {
+          "id": "g94b4212c463f",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T08:54:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 210,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09298",
+          "risk_score": 0.34,
+          "status": "captured",
+          "transaction_id": "T309298"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.2705
+    },
+    {
+      "base_choice": "insurance-operations",
+      "base_confidence": 0.531,
+      "base_truth_probability": 0.416,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.4525,
+      "fine_tuned_truth_probability": 0.4525,
+      "id": "edm0-e88526f68521",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09164",
+        "entity": {
+          "id": "gef706d3d7204",
+          "type": "production-order"
+        },
+        "event_timestamp": "2026-09-20T02:12:00Z",
+        "event_type": "manufacturing.bom.deviation",
+        "payload": {
+          "description": "Mettre à jour le plan de production.",
+          "event_id": "e09164",
+          "material": "M091",
+          "plant": "P02",
+          "quality": "accepted",
+          "quantity": 49,
+          "work_order": "W209164"
+        },
+        "schema_name": "BillOfMaterialsDeviation",
+        "schema_version": "3.0",
+        "source_system": "Maintenance EAM",
+        "topic": "edm0/pilot/events/v3/bom-deviation/apac/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.03650000000000003
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4011,
+      "base_truth_probability": 0.3721,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5403,
+      "fine_tuned_truth_probability": 0.5403,
+      "id": "edm0-2459289e7786",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09674",
+        "entity": {
+          "id": "gae9b633b3538",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T03:42:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7050",
+          "description": "Restore the affected digital or industrial service.",
+          "event_id": "e09674",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S01",
+          "value": 68
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.16820000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.435,
+      "base_truth_probability": 0.3146,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.3244,
+      "fine_tuned_truth_probability": 0.3244,
+      "id": "edm0-f9102120d147",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09532",
+        "entity": {
+          "id": "gcc204284a52d",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-20T20:36:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 9782,
+          "claim_id": "C609532",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09532",
+          "line": "motor",
+          "policy_id": "P509532"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/v1/claim-settlement/latam/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.009800000000000031
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4218,
+      "base_truth_probability": 0.3392,
+      "challenge_tags": [
+        "ambiguous",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4954,
+      "fine_tuned_truth_probability": 0.4954,
+      "id": "edm0-6f85aec5ed31",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09720",
+        "entity": {
+          "id": "gd8c29d1e8e3a",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T06:00:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7096",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09720",
+          "metric": "latency",
+          "secondary_signal": "Mettre à jour le plan de production.",
+          "severity": "warning",
+          "site": "S05",
+          "value": 114
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1562
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5329,
+      "base_truth_probability": 0.4431,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.7185,
+      "fine_tuned_truth_probability": 0.7185,
+      "id": "edm0-404c9bf2d1c8",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09314",
+        "entity": {
+          "id": "ga94d1fb27b53",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T09:42:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 226,
+          "currency": "GBP",
+          "event_id": "e09314",
+          "risk_score": 0.12,
+          "status": "captured",
+          "transaction_id": "T309314"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v3/risk/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.27540000000000003
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.726,
+      "base_truth_probability": 0.2272,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.534,
+      "fine_tuned_truth_probability": 0.534,
+      "id": "edm0-bf09a18f2bdf",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09334",
+        "entity": {
+          "id": "g1fcc796a60a8",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T10:42:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 246,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09334",
+          "risk_score": 0.32,
+          "status": "captured",
+          "transaction_id": "T309334"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.3068
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7134,
+      "base_truth_probability": 0.1207,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.3087,
+      "fine_tuned_truth_probability": 0.3087,
+      "id": "edm0-dd02972de59f",
+      "language": "fr",
+      "state": {
+        "correlation_id": "cc45ae0be3b",
+        "entity": {
+          "id": "gefa03fa24295",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:45:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 185,
+          "case_reference": "Pa32711b6",
+          "claim_pattern": "covered_event",
+          "currency": "EUR",
+          "description": "Un seul fait métier validé détermine l'équipe responsable.",
+          "event_id": "eda601a7032"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.18799999999999997
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6139,
+      "base_truth_probability": 0.1832,
+      "challenge_tags": [
+        "ambiguous",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.3492,
+      "fine_tuned_truth_probability": 0.3492,
+      "id": "edm0-fc37f7d54fc7",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09580",
+        "entity": {
+          "id": "gb4fc0644d4fd",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-20T23:00:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 9830,
+          "claim_id": "C609580",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09580",
+          "line": "motor",
+          "policy_id": "P509580",
+          "secondary_signal": "Examiner les signaux de risque avant exécution."
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/v1/claim-settlement/latam/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.166
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5117,
+      "base_truth_probability": 0.3891,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.5752,
+      "fine_tuned_truth_probability": 0.5752,
+      "id": "edm0-00aa3db89f6f",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09318",
+        "entity": {
+          "id": "g9d0cdc0c1f05",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T09:54:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 230,
+          "currency": "EUR",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09318",
+          "risk_score": 0.16,
+          "status": "captured",
+          "transaction_id": "T309318"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "2.0",
+        "source_system": "Card Gateway",
+        "topic": "edm0/pilot/events/v2/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.18610000000000004
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4867,
+      "base_truth_probability": 0.4726,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.6754,
+      "fine_tuned_truth_probability": 0.6754,
+      "id": "edm0-32854618c814",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09131",
+        "entity": {
+          "id": "g9667b0980778",
+          "type": "production-order"
+        },
+        "event_timestamp": "2026-09-20T00:33:00Z",
+        "event_type": "manufacturing.batch.held",
+        "payload": {
+          "description": "Update the plant production plan.",
+          "event_id": "e09131",
+          "material": "M058",
+          "plant": "P05",
+          "quality": "hold",
+          "quantity": 16,
+          "work_order": "W209131"
+        },
+        "schema_name": "ProductionBatchHeld",
+        "schema_version": "3.0",
+        "source_system": "Maintenance EAM",
+        "topic": "edm0/pilot/events/v3/batch-held/na/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.20279999999999998
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5501,
+      "base_truth_probability": 0.3518,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "shipping-logistics",
+      "fine_tuned_confidence": 0.4235,
+      "fine_tuned_truth_probability": 0.4235,
+      "id": "edm0-7b3026461b7e",
+      "language": "en",
+      "state": {
+        "correlation_id": "c11fabe4696",
+        "entity": {
+          "id": "g9a6d1b8d4f61",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:40:00Z",
+        "event_type": "delivery.proof-dispute.assessed",
+        "payload": {
+          "amount": 100,
+          "case_reference": "P0e7e9982",
+          "currency": "EUR",
+          "delivery_evidence": "carrier_scan_missing",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e3bc88f77ea"
+        },
+        "schema_name": "ProofOfDeliveryDisputeAssessed",
+        "schema_version": "2.0",
+        "source_system": "Customs Gateway",
+        "topic": "edm0/pilot/events/shipping/decision/delivery-proof-dispute-assessed/v2"
+      },
+      "truth": "shipping-logistics",
+      "truth_probability_delta": 0.07169999999999999
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5966,
+      "base_truth_probability": 0.2016,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.2996,
+      "fine_tuned_truth_probability": 0.2996,
+      "id": "edm0-cf53f233f524",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09875",
+        "entity": {
+          "id": "ge0d2ed203b77",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T13:45:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7251",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09875",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S06",
+          "value": 87
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "2.0",
+        "source_system": "SAP Ariba",
+        "topic": "edm0/pilot/events/v2/ransomware-signal/eu/sap"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.09799999999999998
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4224,
+      "base_truth_probability": 0.3721,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5645,
+      "fine_tuned_truth_probability": 0.5645,
+      "id": "edm0-497ed6163de4",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09704",
+        "entity": {
+          "id": "gbb72c28dfd05",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T05:12:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7080",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09704",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S03",
+          "value": 98
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.19240000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6171,
+      "base_truth_probability": 0.2595,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.3742,
+      "fine_tuned_truth_probability": 0.3742,
+      "id": "edm0-25eb5a198edf",
+      "language": "en",
+      "state": {
+        "correlation_id": "cfe92a639e9",
+        "entity": {
+          "id": "g0f46cf870793",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:42:00Z",
+        "event_type": "payment.payout.screened",
+        "payload": {
+          "amount": 134,
+          "beneficiary_verified": true,
+          "case_reference": "P9021c691",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "ebd1b18c9d3"
+        },
+        "schema_name": "MerchantPayoutScreened",
+        "schema_version": "2.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/payments/decision/payment-payout-screened/v2"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.11469999999999997
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4556,
+      "base_truth_probability": 0.2465,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.3199,
+      "fine_tuned_truth_probability": 0.3199,
+      "id": "edm0-57199a640d83",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09568",
+        "entity": {
+          "id": "gb1a184589e19",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-20T22:24:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 9818,
+          "claim_id": "C609568",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09568",
+          "line": "motor",
+          "policy_id": "P509568"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/v1/claim-settlement/latam/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.07340000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6143,
+      "base_truth_probability": 0.0344,
+      "challenge_tags": [
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.1808,
+      "fine_tuned_truth_probability": 0.1808,
+      "id": "edm0-305d83fa66fe",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09738",
+        "entity": {
+          "id": "g56c6758f4871",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-21T06:54:00Z",
+        "event_type": "geospatial.drone.surveyed",
+        "payload": {
+          "event_id": "e09738",
+          "measurement": 21.4,
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "ppm"
+        },
+        "schema_name": "DroneSurveyCompleted",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v3/drone-survey/eu/itot"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.14639999999999997
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.8552,
+      "base_truth_probability": 0.1258,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.416,
+      "fine_tuned_truth_probability": 0.416,
+      "id": "edm0-b5c6e9f5e3c7",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09262",
+        "entity": {
+          "id": "g8f593f6f294e",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T07:06:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 174,
+          "currency": "USD",
+          "event_id": "e09262",
+          "risk_score": 0.36,
+          "status": "captured",
+          "transaction_id": "T309262"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.2902
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7483,
+      "base_truth_probability": 0.227,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.4758,
+      "fine_tuned_truth_probability": 0.4758,
+      "id": "edm0-903b54fd7eaa",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09286",
+        "entity": {
+          "id": "gd8259bbd3ece",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T08:18:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 198,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09286",
+          "risk_score": 0.22,
+          "status": "captured",
+          "transaction_id": "T309286"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.2488
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4805,
+      "base_truth_probability": 0.2646,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.463,
+      "fine_tuned_truth_probability": 0.463,
+      "id": "edm0-3bb1726eb5bb",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09678",
+        "entity": {
+          "id": "gb08306997a63",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T03:54:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7054",
+          "description": "Restore the affected digital or industrial service.",
+          "event_id": "e09678",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S05",
+          "value": 72
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.19840000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6109,
+      "base_truth_probability": 0.2805,
+      "challenge_tags": [
+        "noisy_text",
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.2149,
+      "fine_tuned_truth_probability": 0.2149,
+      "id": "edm0-673f6f1e272f",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09213",
+        "entity": {
+          "id": "gc307bb366fb1",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-20T04:39:00Z",
+        "event_type": "environment.weather.threshold",
+        "payload": {
+          "event_id": "e09213",
+          "measurement": 49.1,
+          "note": "maintenance replay; stale header",
+          "observation": "Novel business signal; owner is unknown.",
+          "unit": "ppm"
+        },
+        "schema_name": "WeatherThresholdObserved",
+        "schema_version": "1.0",
+        "source_system": "Plant MES",
+        "topic": "edm0/pilot/events/v3/weather-threshold/latam/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": -0.06560000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4203,
+      "base_truth_probability": 0.4118,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.352,
+      "fine_tuned_truth_probability": 0.352,
+      "id": "edm0-d21d90097698",
+      "language": "en",
+      "state": {
+        "correlation_id": "ca2a9b8f364",
+        "entity": {
+          "id": "ga2f7502ae301",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:40:00Z",
+        "event_type": "payment.payout.screened",
+        "payload": {
+          "amount": 100,
+          "beneficiary_verified": true,
+          "case_reference": "P4ca03d8f",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e151c09a1f4"
+        },
+        "schema_name": "MerchantPayoutScreened",
+        "schema_version": "2.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/payments/decision/payment-payout-screened/v2"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": -0.05980000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4864,
+      "base_truth_probability": 0.4845,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.7168,
+      "fine_tuned_truth_probability": 0.7168,
+      "id": "edm0-5e344eb9e36f",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09167",
+        "entity": {
+          "id": "gf993d2496298",
+          "type": "production-order"
+        },
+        "event_timestamp": "2026-09-20T02:21:00Z",
+        "event_type": "manufacturing.batch.held",
+        "payload": {
+          "description": "Update the plant production plan.",
+          "event_id": "e09167",
+          "material": "M094",
+          "plant": "P05",
+          "quality": "hold",
+          "quantity": 52,
+          "work_order": "W209167"
+        },
+        "schema_name": "ProductionBatchHeld",
+        "schema_version": "3.0",
+        "source_system": "Maintenance EAM",
+        "topic": "edm0/pilot/events/v3/batch-held/na/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.2323
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5521,
+      "base_truth_probability": 0.4047,
+      "challenge_tags": [
+        "noisy_text",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.5635,
+      "fine_tuned_truth_probability": 0.5635,
+      "id": "edm0-4f7f58bffaaf",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09349",
+        "entity": {
+          "id": "gce85514458b1",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T11:27:00Z",
+        "event_type": "payment.chargeback.received",
+        "payload": {
+          "amount": 261,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09349",
+          "note": "rejeu maintenance; en-tête ancien",
+          "risk_score": 0.09,
+          "status": "authorized",
+          "transaction_id": "T309349"
+        },
+        "schema_name": "ChargebackReceived",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v3/chargeback-received/apac/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.1588
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.33,
+      "base_truth_probability": 0.1431,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.1568,
+      "fine_tuned_truth_probability": 0.1568,
+      "id": "edm0-a8e6802d4bac",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09977",
+        "entity": {
+          "id": "g9471acadee3c",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-21T18:51:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 10227,
+          "claim_id": "C609977",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09977",
+          "line": "travel",
+          "policy_id": "P509977"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "3.0",
+        "source_system": "MuleSoft",
+        "topic": "edm0/pilot/events/v3/claim-settlement/na/salesforce"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.01369999999999999
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6539,
+      "base_truth_probability": 0.1188,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.1661,
+      "fine_tuned_truth_probability": 0.1661,
+      "id": "edm0-b49c48485fac",
+      "language": "en",
+      "state": {
+        "correlation_id": "ca3c4c3a818",
+        "entity": {
+          "id": "g1026a6418e98",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:40:00Z",
+        "event_type": "plant.restart.assessed",
+        "payload": {
+          "amount": 100,
+          "case_reference": "Pe0450444",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e479987e71b",
+          "interlock_override": false
+        },
+        "schema_name": "PlantRestartAssessment",
+        "schema_version": "2.0",
+        "source_system": "SAP Ariba",
+        "topic": "edm0/pilot/events/sap/decision/plant-restart-assessed/v2"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.047299999999999995
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5465,
+      "base_truth_probability": 0.4234,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.6358,
+      "fine_tuned_truth_probability": 0.6358,
+      "id": "edm0-5e1dd4ff70d2",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09203",
+        "entity": {
+          "id": "g534435700beb",
+          "type": "production-order"
+        },
+        "event_timestamp": "2026-09-20T04:09:00Z",
+        "event_type": "manufacturing.batch.held",
+        "payload": {
+          "description": "Update the plant production plan.",
+          "event_id": "e09203",
+          "material": "M130",
+          "plant": "P05",
+          "quality": "hold",
+          "quantity": 8,
+          "work_order": "W209203"
+        },
+        "schema_name": "ProductionBatchHeld",
+        "schema_version": "3.0",
+        "source_system": "Maintenance EAM",
+        "topic": "edm0/pilot/events/v3/batch-held/na/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.21240000000000003
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5401,
+      "base_truth_probability": 0.3637,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.5635,
+      "fine_tuned_truth_probability": 0.5635,
+      "id": "edm0-be581836947d",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09266",
+        "entity": {
+          "id": "g917d5969635f",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T07:18:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 178,
+          "currency": "GBP",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09266",
+          "risk_score": 0.4,
+          "status": "captured",
+          "transaction_id": "T309266"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v3/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.19979999999999998
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6715,
+      "base_truth_probability": 0.3072,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "schema_evolution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.6144,
+      "fine_tuned_truth_probability": 0.6144,
+      "id": "edm0-aceb392deb08",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09340",
+        "entity": {
+          "id": "g961b15cf95c9",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T11:00:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 252,
+          "currency": "USD",
+          "event_id": "e09340",
+          "risk_score": 0.38,
+          "status": "captured",
+          "transaction_id": "T309340"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/na/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.3072
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.556,
+      "base_truth_probability": 0.2995,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2785,
+      "fine_tuned_truth_probability": 0.2785,
+      "id": "edm0-ed11d73a2b97",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09749",
+        "entity": {
+          "id": "gb1be24605ce9",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-21T07:27:00Z",
+        "event_type": "risk.claim.suspicious",
+        "payload": {
+          "alert_id": "A959749",
+          "description": "Examiner les signaux de risque avant exécution.",
+          "event_id": "e09749",
+          "risk_score": 0.74,
+          "signals": [
+            "impossible_travel",
+            "behavior_change"
+          ],
+          "transaction_id": "T309749"
+        },
+        "schema_name": "SuspiciousClaimDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v2/suspicious-claim/latam/itot"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": -0.020999999999999963
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4688,
+      "base_truth_probability": 0.296,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.3033,
+      "fine_tuned_truth_probability": 0.3033,
+      "id": "edm0-ea1bdd6e3bfa",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09873",
+        "entity": {
+          "id": "g10e7d55a5b70",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T13:39:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7249",
+          "description": "Restore the affected digital or industrial service.",
+          "event_id": "e09873",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S04",
+          "value": 85
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "3.0",
+        "source_system": "SAP S/4HANA",
+        "topic": "edm0/pilot/events/v1/ransomware-signal/apac/sap"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.007300000000000029
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5621,
+      "base_truth_probability": 0.1145,
+      "challenge_tags": [
+        "noisy_text",
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.2134,
+      "fine_tuned_truth_probability": 0.2134,
+      "id": "edm0-94bc3796255d",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09338",
+        "entity": {
+          "id": "ga51d77538ad6",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-20T10:54:00Z",
+        "event_type": "environment.weather.threshold",
+        "payload": {
+          "event_id": "e09338",
+          "measurement": 21.5,
+          "note": "rejeu maintenance; en-tête ancien",
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "index"
+        },
+        "schema_name": "WeatherThresholdObserved",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v3/weather-threshold/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.0989
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5979,
+      "base_truth_probability": 0.2236,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.518,
+      "fine_tuned_truth_probability": 0.518,
+      "id": "edm0-2d21aa3bba23",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09689",
+        "entity": {
+          "id": "g75a1645a6a15",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T04:27:00Z",
+        "event_type": "ot.safety.interlock",
+        "payload": {
+          "asset_id": "A7065",
+          "event_id": "e09689",
+          "metric": "temperature",
+          "severity": "major",
+          "site": "S02",
+          "value": 83
+        },
+        "schema_name": "SafetyInterlockTripped",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/production/latam/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.2944
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.3702,
+      "base_truth_probability": 0.2215,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.2572,
+      "fine_tuned_truth_probability": 0.2572,
+      "id": "edm0-d2a57fa15f57",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09997",
+        "entity": {
+          "id": "gaf5f63b2d48a",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-21T19:51:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 10247,
+          "claim_id": "C609997",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09997",
+          "line": "motor",
+          "policy_id": "P509997"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "2.0",
+        "source_system": "Salesforce Service Cloud",
+        "topic": "edm0/pilot/events/v1/claim-settlement/na/salesforce"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.03569999999999998
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4904,
+      "base_truth_probability": 0.3494,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5501,
+      "fine_tuned_truth_probability": 0.5501,
+      "id": "edm0-24801c4325a0",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09716",
+        "entity": {
+          "id": "g6fa5f882fb69",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T05:48:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7092",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09716",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S01",
+          "value": 110
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.20070000000000005
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7178,
+      "base_truth_probability": 0.1625,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.3628,
+      "fine_tuned_truth_probability": 0.3628,
+      "id": "edm0-77a519c55c3c",
+      "language": "en",
+      "state": {
+        "correlation_id": "c9085d709d0",
+        "entity": {
+          "id": "g5f2e2d9f3675",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:40:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 100,
+          "case_reference": "Pe7bad1a6",
+          "claim_pattern": "organized_ring",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e4a21bd3d0a"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Claims Portal",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.2003
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6936,
+      "base_truth_probability": 0.1545,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4069,
+      "fine_tuned_truth_probability": 0.4069,
+      "id": "edm0-a06366033567",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09650",
+        "entity": {
+          "id": "g139cc8b1929e",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T02:30:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7026",
+          "event_id": "e09650",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S05",
+          "value": 44
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.25239999999999996
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5212,
+      "base_truth_probability": 0.3718,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.5554,
+      "fine_tuned_truth_probability": 0.5554,
+      "id": "edm0-0c4e96456455",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09282",
+        "entity": {
+          "id": "g4e12be8f478e",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T08:06:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 194,
+          "currency": "EUR",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09282",
+          "risk_score": 0.18,
+          "status": "captured",
+          "transaction_id": "T309282"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "2.0",
+        "source_system": "Card Gateway",
+        "topic": "edm0/pilot/events/v2/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.18359999999999999
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6113,
+      "base_truth_probability": 0.1637,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.3049,
+      "fine_tuned_truth_probability": 0.3049,
+      "id": "edm0-d29fdf3213f7",
+      "language": "en",
+      "state": {
+        "correlation_id": "c3055d289ed",
+        "entity": {
+          "id": "g651c09852b30",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:48:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 236,
+          "case_reference": "P09630f6e",
+          "claim_pattern": "covered_event",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e0f4c978289"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.1412
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4403,
+      "base_truth_probability": 0.3481,
+      "challenge_tags": [
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.3205,
+      "fine_tuned_truth_probability": 0.3205,
+      "id": "edm0-aa140ab645b4",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09263",
+        "entity": {
+          "id": "g917d5969635f",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-20T07:09:00Z",
+        "event_type": "geospatial.drone.surveyed",
+        "payload": {
+          "event_id": "e09263",
+          "measurement": 14.0,
+          "observation": "Novel business signal; owner is unknown.",
+          "unit": "index"
+        },
+        "schema_name": "DroneSurveyCompleted",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v1/drone-survey/eu/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": -0.027600000000000013
+    },
+    {
+      "base_choice": "insurance-operations",
+      "base_confidence": 0.4722,
+      "base_truth_probability": 0.0137,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.3395,
+      "fine_tuned_truth_probability": 0.3395,
+      "id": "edm0-b4d51a950b24",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09246",
+        "entity": {
+          "id": "g832814f7857f",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-20T06:18:00Z",
+        "event_type": "risk.claim.suspicious",
+        "payload": {
+          "alert_id": "A959246",
+          "description": "Investigate the risk signals before execution.",
+          "event_id": "e09246",
+          "risk_score": 0.84,
+          "signals": [
+            "impossible_travel",
+            "behavior_change"
+          ],
+          "transaction_id": "T309246"
+        },
+        "schema_name": "SuspiciousClaimDetected",
+        "schema_version": "1.0",
+        "source_system": "Plant MES",
+        "topic": "edm0/pilot/events/v2/suspicious-claim/na/manufacturing"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.32580000000000003
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5687,
+      "base_truth_probability": 0.3904,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.6176,
+      "fine_tuned_truth_probability": 0.6176,
+      "id": "edm0-f89ea9883e8a",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09274",
+        "entity": {
+          "id": "g06a0eb2059bf",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T07:42:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 186,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09274",
+          "risk_score": 0.1,
+          "status": "captured",
+          "transaction_id": "T309274"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.2272
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.3955,
+      "base_truth_probability": 0.3748,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5473,
+      "fine_tuned_truth_probability": 0.5473,
+      "id": "edm0-99769e3a0e98",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09686",
+        "entity": {
+          "id": "g75a1645a6a15",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T04:18:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7062",
+          "description": "Restore the affected digital or industrial service.",
+          "event_id": "e09686",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S13",
+          "value": 80
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1725
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.3152,
+      "base_truth_probability": 0.307,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4612,
+      "fine_tuned_truth_probability": 0.4612,
+      "id": "edm0-0496bbac31af",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09666",
+        "entity": {
+          "id": "g78fda503568b",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T03:18:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7042",
+          "description": "Restore the affected digital or industrial service.",
+          "event_id": "e09666",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S07",
+          "value": 60
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1542
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6342,
+      "base_truth_probability": 0.3226,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.595,
+      "fine_tuned_truth_probability": 0.595,
+      "id": "edm0-aea4f779d049",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09322",
+        "entity": {
+          "id": "g07dc8d3d6235",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T10:06:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 234,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09322",
+          "risk_score": 0.2,
+          "status": "captured",
+          "transaction_id": "T309322"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.2724
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6431,
+      "base_truth_probability": 0.1432,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2992,
+      "fine_tuned_truth_probability": 0.2992,
+      "id": "edm0-98e40d43ed26",
+      "language": "en",
+      "state": {
+        "correlation_id": "c378a2a23f6",
+        "entity": {
+          "id": "g4d9bd0cd27c3",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:44:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 168,
+          "case_reference": "P1a904e57",
+          "claim_pattern": "organized_ring",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "eb778baf616"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Guidewire",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.15600000000000003
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4408,
+      "base_truth_probability": 0.3089,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4883,
+      "fine_tuned_truth_probability": 0.4883,
+      "id": "edm0-2611a10be4c4",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09668",
+        "entity": {
+          "id": "g78fda503568b",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T03:24:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7044",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09668",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S09",
+          "value": 62
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1794
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.532,
+      "base_truth_probability": 0.1292,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2205,
+      "fine_tuned_truth_probability": 0.2205,
+      "id": "edm0-b35a3062be08",
+      "language": "en",
+      "state": {
+        "correlation_id": "c82eac29518",
+        "entity": {
+          "id": "g651c09852b30",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:48:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 236,
+          "case_reference": "P09630f6e",
+          "claim_pattern": "organized_ring",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e70346ed97a"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.09129999999999999
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6876,
+      "base_truth_probability": 0.1211,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.2445,
+      "fine_tuned_truth_probability": 0.2445,
+      "id": "edm0-5cdad0125b05",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09512",
+        "entity": {
+          "id": "g08239c6e5ad9",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-20T19:36:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 9762,
+          "claim_id": "C609512",
+          "coverage": "pending",
+          "event_id": "e09512",
+          "line": "travel",
+          "policy_id": "P509512"
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "3.0",
+        "source_system": "Claims Portal",
+        "topic": "edm0/pilot/events/v3/claim-settlement/latam/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.1234
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.684,
+      "base_truth_probability": 0.2498,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.2146,
+      "fine_tuned_truth_probability": 0.2146,
+      "id": "edm0-7a970165ff48",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09538",
+        "entity": {
+          "id": "gd1de378d8b8c",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-20T20:54:00Z",
+        "event_type": "environment.weather.threshold",
+        "payload": {
+          "event_id": "e09538",
+          "measurement": 41.5,
+          "observation": "Novel business signal; owner is unknown.",
+          "unit": "count"
+        },
+        "schema_name": "WeatherThresholdObserved",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/v2/weather-threshold/na/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": -0.03519999999999998
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6002,
+      "base_truth_probability": 0.2795,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.4593,
+      "fine_tuned_truth_probability": 0.4593,
+      "id": "edm0-87af2d791867",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09278",
+        "entity": {
+          "id": "g58a495659627",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T07:54:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 190,
+          "currency": "GBP",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09278",
+          "risk_score": 0.14,
+          "status": "captured",
+          "transaction_id": "T309278"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v3/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.17979999999999996
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7786,
+      "base_truth_probability": 0.0918,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.2436,
+      "fine_tuned_truth_probability": 0.2436,
+      "id": "edm0-4d0f2b240bbc",
+      "language": "fr",
+      "state": {
+        "correlation_id": "ce6b719f994",
+        "entity": {
+          "id": "g81750bc596a4",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:47:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 219,
+          "case_reference": "P421511d0",
+          "claim_pattern": "covered_event",
+          "currency": "EUR",
+          "description": "Un seul fait métier validé détermine l'équipe responsable.",
+          "event_id": "ee80f2cda84"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Guidewire",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.1518
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5783,
+      "base_truth_probability": 0.3,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.4702,
+      "fine_tuned_truth_probability": 0.4702,
+      "id": "edm0-f6e0fdecbefd",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09306",
+        "entity": {
+          "id": "g40a9b204619a",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T09:18:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 218,
+          "currency": "EUR",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09306",
+          "risk_score": 0.42,
+          "status": "captured",
+          "transaction_id": "T309306"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "2.0",
+        "source_system": "Card Gateway",
+        "topic": "edm0/pilot/events/v2/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.17020000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4625,
+      "base_truth_probability": 0.4558,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.559,
+      "fine_tuned_truth_probability": 0.559,
+      "id": "edm0-0a6a315faeca",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09326",
+        "entity": {
+          "id": "ga5d4df03837a",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T10:18:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 238,
+          "currency": "GBP",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09326",
+          "risk_score": 0.24,
+          "status": "captured",
+          "transaction_id": "T309326"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v3/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.10320000000000007
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.553,
+      "base_truth_probability": 0.1851,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.3837,
+      "fine_tuned_truth_probability": 0.3837,
+      "id": "edm0-c7624de0d2b8",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09662",
+        "entity": {
+          "id": "gbdba6c9f17ec",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T03:06:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7038",
+          "description": "Restore the affected digital or industrial service.",
+          "event_id": "e09662",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S03",
+          "value": 56
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1986
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6391,
+      "base_truth_probability": 0.1176,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.1775,
+      "fine_tuned_truth_probability": 0.1775,
+      "id": "edm0-ee4c08c08ca9",
+      "language": "en",
+      "state": {
+        "correlation_id": "c0d9aef57c7",
+        "entity": {
+          "id": "g94a843f3414b",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:46:00Z",
+        "event_type": "plant.restart.assessed",
+        "payload": {
+          "amount": 202,
+          "case_reference": "P45236dbb",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "e7d8accdc42",
+          "interlock_override": false
+        },
+        "schema_name": "PlantRestartAssessment",
+        "schema_version": "2.0",
+        "source_system": "SAP Ariba",
+        "topic": "edm0/pilot/events/sap/decision/plant-restart-assessed/v2"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.059899999999999995
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6399,
+      "base_truth_probability": 0.1756,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "noisy_text",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.3904,
+      "fine_tuned_truth_probability": 0.3904,
+      "id": "edm0-e0f693ddcdcf",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09702",
+        "entity": {
+          "id": "gbb72c28dfd05",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T05:06:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7078",
+          "event_id": "e09702",
+          "metric": "latency",
+          "note": "maintenance replay; stale header",
+          "severity": "warning",
+          "site": "S01",
+          "value": 96
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/ransomware-signal/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.21480000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7047,
+      "base_truth_probability": 0.1735,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.2718,
+      "fine_tuned_truth_probability": 0.2718,
+      "id": "edm0-befee1d2639e",
+      "language": "en",
+      "state": {
+        "correlation_id": "c43d7cf0cd0",
+        "entity": {
+          "id": "g6403c4844d62",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:48:00Z",
+        "event_type": "payment.payout.screened",
+        "payload": {
+          "amount": 236,
+          "beneficiary_verified": true,
+          "case_reference": "Pa8140b0a",
+          "currency": "EUR",
+          "description": "One verified business fact determines the responsible team.",
+          "event_id": "ea84939907f"
+        },
+        "schema_name": "MerchantPayoutScreened",
+        "schema_version": "2.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/payments/decision/payment-payout-screened/v2"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.0983
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5193,
+      "base_truth_probability": 0.4427,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.6392,
+      "fine_tuned_truth_probability": 0.6392,
+      "id": "edm0-4eb806ff68d4",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09143",
+        "entity": {
+          "id": "g34c265734593",
+          "type": "production-order"
+        },
+        "event_timestamp": "2026-09-20T01:09:00Z",
+        "event_type": "manufacturing.batch.held",
+        "payload": {
+          "description": "Update the plant production plan.",
+          "event_id": "e09143",
+          "material": "M070",
+          "plant": "P08",
+          "quality": "hold",
+          "quantity": 28,
+          "work_order": "W209143"
+        },
+        "schema_name": "ProductionBatchHeld",
+        "schema_version": "3.0",
+        "source_system": "Maintenance EAM",
+        "topic": "edm0/pilot/events/v3/batch-held/na/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": 0.1965
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5371,
+      "base_truth_probability": 0.3492,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5459,
+      "fine_tuned_truth_probability": 0.5459,
+      "id": "edm0-1c1f74e602e8",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09681",
+        "entity": {
+          "id": "gb08306997a63",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T04:03:00Z",
+        "event_type": "ot.safety.interlock",
+        "payload": {
+          "asset_id": "A7057",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09681",
+          "metric": "temperature",
+          "severity": "major",
+          "site": "S08",
+          "value": 75
+        },
+        "schema_name": "SafetyInterlockTripped",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/interlock-tripped/latam/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.19670000000000004
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5832,
+      "base_truth_probability": 0.2481,
+      "challenge_tags": [
+        "noisy_text",
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5217,
+      "fine_tuned_truth_probability": 0.5217,
+      "id": "edm0-76b313d65bac",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09713",
+        "entity": {
+          "id": "ge0a2ad08d9f7",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-21T05:39:00Z",
+        "event_type": "environment.weather.threshold",
+        "payload": {
+          "event_id": "e09713",
+          "measurement": 18.9,
+          "note": "maintenance replay; stale header",
+          "observation": "Novel business signal; owner is unknown.",
+          "unit": "index"
+        },
+        "schema_name": "WeatherThresholdObserved",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/weather-threshold/latam/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.27360000000000007
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4315,
+      "base_truth_probability": 0.3111,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5152,
+      "fine_tuned_truth_probability": 0.5152,
+      "id": "edm0-20133a61c9f9",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09656",
+        "entity": {
+          "id": "gaa8294c73060",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T02:48:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7032",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09656",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S11",
+          "value": 50
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.2041
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5134,
+      "base_truth_probability": 0.0177,
+      "challenge_tags": [
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2264,
+      "fine_tuned_truth_probability": 0.2264,
+      "id": "edm0-7f00670f0907",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09363",
+        "entity": {
+          "id": "g2d3e08ee1f65",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-20T12:09:00Z",
+        "event_type": "geospatial.drone.surveyed",
+        "payload": {
+          "event_id": "e09363",
+          "measurement": 24.0,
+          "observation": "Novel business signal; owner is unknown.",
+          "unit": "ppm"
+        },
+        "schema_name": "DroneSurveyCompleted",
+        "schema_version": "3.0",
+        "source_system": "Card Gateway",
+        "topic": "edm0/pilot/events/v2/drone-survey/apac/payments"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.2087
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6476,
+      "base_truth_probability": 0.2843,
+      "challenge_tags": [
+        "schema_evolution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.515,
+      "fine_tuned_truth_probability": 0.515,
+      "id": "edm0-507392ca20a0",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09302",
+        "entity": {
+          "id": "gfd8be481cd29",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T09:06:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 214,
+          "currency": "GBP",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09302",
+          "risk_score": 0.38,
+          "status": "captured",
+          "transaction_id": "T309302"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "1.0",
+        "source_system": "Merchant Acquirer",
+        "topic": "edm0/pilot/events/v3/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.23070000000000002
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6069,
+      "base_truth_probability": 0.2071,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5165,
+      "fine_tuned_truth_probability": 0.5165,
+      "id": "edm0-31136f009760",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09663",
+        "entity": {
+          "id": "gbdba6c9f17ec",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-21T03:09:00Z",
+        "event_type": "environment.weather.threshold",
+        "payload": {
+          "event_id": "e09663",
+          "measurement": 13.9,
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "ppm"
+        },
+        "schema_name": "WeatherThresholdObserved",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/weather-threshold/na/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.30939999999999995
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4493,
+      "base_truth_probability": 0.2952,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4809,
+      "fine_tuned_truth_probability": 0.4809,
+      "id": "edm0-b5ee7007b3b6",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09632",
+        "entity": {
+          "id": "g7e8975f27e8c",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T01:36:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7008",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09632",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S01",
+          "value": 117
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.18569999999999998
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6965,
+      "base_truth_probability": 0.1006,
+      "challenge_tags": [
+        "counterfactual_pair",
+        "hard_boundary"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.1963,
+      "fine_tuned_truth_probability": 0.1963,
+      "id": "edm0-291f419729ed",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c8b55f6ebc3",
+        "entity": {
+          "id": "g34345246e455",
+          "type": "decision-case"
+        },
+        "event_timestamp": "2026-09-01T01:43:00Z",
+        "event_type": "insurance.claim.pattern-assessed",
+        "payload": {
+          "amount": 151,
+          "case_reference": "P80cc61ce",
+          "claim_pattern": "covered_event",
+          "currency": "EUR",
+          "description": "Un seul fait métier validé détermine l'équipe responsable.",
+          "event_id": "e57de1ed561"
+        },
+        "schema_name": "ClaimPatternAssessed",
+        "schema_version": "2.0",
+        "source_system": "Claims Portal",
+        "topic": "edm0/pilot/events/insurance/decision/insurance-claim-pattern-assessed/v2"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.09570000000000001
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5031,
+      "base_truth_probability": 0.2898,
+      "challenge_tags": [
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "manufacturing-operations",
+      "fine_tuned_confidence": 0.2314,
+      "fine_tuned_truth_probability": 0.2314,
+      "id": "edm0-5ded38e2448c",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09138",
+        "entity": {
+          "id": "gfbeb28e49b36",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-20T00:54:00Z",
+        "event_type": "geospatial.drone.surveyed",
+        "payload": {
+          "event_id": "e09138",
+          "measurement": 41.6,
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "ppm"
+        },
+        "schema_name": "DroneSurveyCompleted",
+        "schema_version": "1.0",
+        "source_system": "Plant MES",
+        "topic": "edm0/pilot/events/v1/drone-survey/eu/manufacturing"
+      },
+      "truth": "manufacturing-operations",
+      "truth_probability_delta": -0.05840000000000001
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5084,
+      "base_truth_probability": 0.3354,
+      "challenge_tags": [
+        "ambiguous",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "insurance-operations",
+      "fine_tuned_confidence": 0.375,
+      "fine_tuned_truth_probability": 0.375,
+      "id": "edm0-2b1bb35a9102",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09520",
+        "entity": {
+          "id": "gd09518d87bae",
+          "type": "claim"
+        },
+        "event_timestamp": "2026-09-20T20:00:00Z",
+        "event_type": "insurance.claim.settlement",
+        "payload": {
+          "claim_amount": 9770,
+          "claim_id": "C609520",
+          "coverage": "pending",
+          "description": "Traiter cet événement de police ou de sinistre.",
+          "event_id": "e09520",
+          "line": "motor",
+          "policy_id": "P509520",
+          "secondary_signal": "Examiner les signaux de risque avant exécution."
+        },
+        "schema_name": "ClaimSettlementApproved",
+        "schema_version": "2.0",
+        "source_system": "Policy Admin",
+        "topic": "edm0/pilot/events/v1/claim-settlement/latam/insurance"
+      },
+      "truth": "insurance-operations",
+      "truth_probability_delta": 0.039600000000000024
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.441,
+      "base_truth_probability": 0.3448,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5443,
+      "fine_tuned_truth_probability": 0.5443,
+      "id": "edm0-c20f76193dd0",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09644",
+        "entity": {
+          "id": "g96a2c51f2ebe",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T02:12:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7020",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09644",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S13",
+          "value": 129
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.1995
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.7259,
+      "base_truth_probability": 0.2351,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.4807,
+      "fine_tuned_truth_probability": 0.4807,
+      "id": "edm0-08ee12c49746",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09346",
+        "entity": {
+          "id": "g3e2ec6373730",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T11:18:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 258,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09346",
+          "risk_score": 0.44,
+          "status": "captured",
+          "transaction_id": "T309346"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.2456
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.3728,
+      "base_truth_probability": 0.3475,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4795,
+      "fine_tuned_truth_probability": 0.4795,
+      "id": "edm0-46378abbd5c3",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09648",
+        "entity": {
+          "id": "gd3ad8541e82b",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T02:24:00Z",
+        "event_type": "it.security.ransomware",
+        "payload": {
+          "asset_id": "A7024",
+          "description": "Rétablir le service numérique ou industriel affecté.",
+          "event_id": "e09648",
+          "metric": "latency",
+          "severity": "warning",
+          "site": "S03",
+          "value": 42
+        },
+        "schema_name": "RansomwareSignalDetected",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/ransomware-signal/apac/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.132
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4687,
+      "base_truth_probability": 0.3056,
+      "challenge_tags": [
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.4212,
+      "fine_tuned_truth_probability": 0.4212,
+      "id": "edm0-5e2ed50cfbd8",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09638",
+        "entity": {
+          "id": "ged1d3f7b64ac",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-21T01:54:00Z",
+        "event_type": "geospatial.drone.surveyed",
+        "payload": {
+          "event_id": "e09638",
+          "measurement": 11.4,
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "index"
+        },
+        "schema_name": "DroneSurveyCompleted",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v1/drone-survey/eu/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.11560000000000004
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.4045,
+      "base_truth_probability": 0.2983,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.308,
+      "fine_tuned_truth_probability": 0.308,
+      "id": "edm0-c71e205c6903",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09364",
+        "entity": {
+          "id": "g2d3e08ee1f65",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-20T12:12:00Z",
+        "event_type": "risk.claim.suspicious",
+        "payload": {
+          "alert_id": "A959364",
+          "event_id": "e09364",
+          "risk_score": 0.94,
+          "signals": [
+            "impossible_travel",
+            "behavior_change"
+          ],
+          "transaction_id": "T309364"
+        },
+        "schema_name": "SuspiciousClaimDetected",
+        "schema_version": "1.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v2/payment/latam/payments"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.009699999999999986
+    },
+    {
+      "base_choice": "insurance-operations",
+      "base_confidence": 0.4362,
+      "base_truth_probability": 0.0142,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2359,
+      "fine_tuned_truth_probability": 0.2359,
+      "id": "edm0-b06ec39e0018",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09234",
+        "entity": {
+          "id": "gd36d040ce5e2",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-20T05:42:00Z",
+        "event_type": "risk.claim.suspicious",
+        "payload": {
+          "alert_id": "A959234",
+          "description": "Investigate the risk signals before execution.",
+          "event_id": "e09234",
+          "risk_score": 0.72,
+          "signals": [
+            "impossible_travel",
+            "behavior_change"
+          ],
+          "transaction_id": "T309234"
+        },
+        "schema_name": "SuspiciousClaimDetected",
+        "schema_version": "1.0",
+        "source_system": "Plant MES",
+        "topic": "edm0/pilot/events/v2/suspicious-claim/na/manufacturing"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": 0.2217
+    }
+  ],
+  "argmax_regressions": [
+    {
+      "base_choice": "fraud-review",
+      "base_confidence": 0.2776,
+      "base_truth_probability": 0.2776,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.3439,
+      "fine_tuned_truth_probability": 0.1957,
+      "id": "edm0-97cb4de0de36",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09736",
+        "entity": {
+          "id": "gc8f778d26cd1",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-21T06:48:00Z",
+        "event_type": "risk.mule.account",
+        "payload": {
+          "alert_id": "A959736",
+          "description": "Examiner les signaux de risque avant exécution.",
+          "event_id": "e09736",
+          "risk_score": 0.88,
+          "signals": [
+            "new_device",
+            "behavior_change"
+          ],
+          "transaction_id": "T309736"
+        },
+        "schema_name": "MuleAccountSuspected",
+        "schema_version": "3.0",
+        "source_system": "SCADA Historian",
+        "topic": "edm0/pilot/events/v2/mule-account/apac/itot"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": -0.0819
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.9665,
+      "base_truth_probability": 0.9665,
+      "challenge_tags": [
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.5049,
+      "fine_tuned_truth_probability": 0.4679,
+      "id": "edm0-d1883b8257a0",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09081",
+        "entity": {
+          "id": "g0000cb17ddda",
+          "type": "financial-document"
+        },
+        "event_timestamp": "2026-09-19T22:03:00Z",
+        "event_type": "finance.cash.position.changed",
+        "payload": {
+          "amount": 2581,
+          "company": "C03",
+          "currency": "EUR",
+          "description": "Reconcile this financial record.",
+          "document_id": "D109081",
+          "event_id": "e09081"
+        },
+        "schema_name": "CashPositionChanged",
+        "schema_version": "3.0",
+        "source_system": "Treasury Hub",
+        "topic": "edm0/pilot/events/v3/payment/eu/finance"
+      },
+      "truth": "finance-accounting",
+      "truth_probability_delta": -0.49860000000000004
+    },
+    {
+      "base_choice": "fraud-review",
+      "base_confidence": 0.6968,
+      "base_truth_probability": 0.6968,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "shipping-logistics",
+      "fine_tuned_confidence": 0.2678,
+      "fine_tuned_truth_probability": 0.1591,
+      "id": "edm0-c8154304df8f",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09742",
+        "entity": {
+          "id": "g8dce99a8b96d",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-21T07:06:00Z",
+        "event_type": "risk.mule.account",
+        "payload": {
+          "alert_id": "A959742",
+          "description": "Investigate the risk signals before execution.",
+          "event_id": "e09742",
+          "risk_score": 0.94,
+          "signals": [
+            "new_device",
+            "behavior_change"
+          ],
+          "transaction_id": "T309742"
+        },
+        "schema_name": "MuleAccountSuspected",
+        "schema_version": "3.0",
+        "source_system": "SCADA Historian",
+        "topic": "edm0/pilot/events/v2/mule-account/eu/itot"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": -0.5377
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5089,
+      "base_truth_probability": 0.5089,
+      "challenge_tags": [
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.2621,
+      "fine_tuned_truth_probability": 0.1102,
+      "id": "edm0-a761d06c8f8d",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09763",
+        "entity": {
+          "id": "g628c1a5bb69b",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-21T08:09:00Z",
+        "event_type": "geospatial.drone.surveyed",
+        "payload": {
+          "event_id": "e09763",
+          "measurement": 23.9,
+          "observation": "Novel business signal; owner is unknown.",
+          "unit": "count"
+        },
+        "schema_name": "DroneSurveyCompleted",
+        "schema_version": "2.0",
+        "source_system": "SAP EWM",
+        "topic": "edm0/pilot/events/v3/drone-survey/eu/sap"
+      },
+      "truth": "finance-accounting",
+      "truth_probability_delta": -0.3987
+    },
+    {
+      "base_choice": "payment-operations",
+      "base_confidence": 0.5959,
+      "base_truth_probability": 0.5959,
+      "challenge_tags": [
+        "ambiguous",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.3746,
+      "fine_tuned_truth_probability": 0.3663,
+      "id": "edm0-d398e7e00842",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09820",
+        "entity": {
+          "id": "gfd0806d5b1e4",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-21T11:00:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 732,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09820",
+          "risk_score": 0.24,
+          "secondary_signal": "Examiner les signaux de risque avant exécution.",
+          "status": "captured",
+          "transaction_id": "T309820"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "SAP EWM",
+        "topic": "edm0/pilot/events/v1/reversed/latam/sap"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": -0.22959999999999997
+    },
+    {
+      "base_choice": "fraud-review",
+      "base_confidence": 0.3399,
+      "base_truth_probability": 0.3399,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.3554,
+      "fine_tuned_truth_probability": 0.2552,
+      "id": "edm0-e0885e1dc2fc",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09748",
+        "entity": {
+          "id": "gb1be24605ce9",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-21T07:24:00Z",
+        "event_type": "risk.mule.account",
+        "payload": {
+          "alert_id": "A959748",
+          "description": "Examiner les signaux de risque avant exécution.",
+          "event_id": "e09748",
+          "risk_score": 0.73,
+          "signals": [
+            "new_device",
+            "behavior_change"
+          ],
+          "transaction_id": "T309748"
+        },
+        "schema_name": "MuleAccountSuspected",
+        "schema_version": "3.0",
+        "source_system": "SCADA Historian",
+        "topic": "edm0/pilot/events/v2/mule-account/apac/itot"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": -0.0847
+    }
+  ],
   "base": {
-    "batched_evaluation_seconds": 1.8711859159993764,
+    "batched_evaluation_seconds": 39.86502141700112,
     "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/models/laya-multilingual",
-    "load_seconds": 27.50096875000054,
+    "load_seconds": 29.048359707998316,
     "metrics": {
-      "accuracy": 0.8333333333333334,
+      "accuracy": 0.781,
       "accuracy_per_challenge": {
         "ambiguous": {
-          "accuracy": 0.75,
-          "count": 12
+          "accuracy": 0.9247311827956989,
+          "count": 93
+        },
+        "counterfactual_pair": {
+          "accuracy": 0.18,
+          "count": 100
+        },
+        "hard_boundary": {
+          "accuracy": 0.18,
+          "count": 100
         },
         "missing_optional_fields": {
-          "accuracy": 0.8333333333333334,
-          "count": 12
+          "accuracy": 0.7058823529411765,
+          "count": 68
         },
         "noisy_text": {
-          "accuracy": 0.75,
-          "count": 12
+          "accuracy": 0.8571428571428571,
+          "count": 84
+        },
+        "out_of_distribution": {
+          "accuracy": 0.25,
+          "count": 40
+        },
+        "schema_evolution": {
+          "accuracy": 0.8888888888888888,
+          "count": 45
         },
         "topic_payload_conflict": {
-          "accuracy": 0.8333333333333334,
-          "count": 6
+          "accuracy": 0.8723404255319149,
+          "count": 47
         },
         "unseen_topic_pattern": {
-          "accuracy": 0.8333333333333334,
-          "count": 18
+          "accuracy": 0.8477777777777777,
+          "count": 900
+        }
+      },
+      "accuracy_per_domain": {
+        "finance": {
+          "accuracy": 0.856,
+          "count": 125
+        },
+        "insurance": {
+          "accuracy": 0.688,
+          "count": 125
+        },
+        "it-ot": {
+          "accuracy": 0.712,
+          "count": 125
+        },
+        "manufacturing": {
+          "accuracy": 0.824,
+          "count": 125
+        },
+        "payments": {
+          "accuracy": 0.64,
+          "count": 125
+        },
+        "salesforce": {
+          "accuracy": 0.912,
+          "count": 125
+        },
+        "sap": {
+          "accuracy": 0.76,
+          "count": 125
+        },
+        "shipping": {
+          "accuracy": 0.856,
+          "count": 125
         }
       },
       "accuracy_per_language": {
         "en": {
-          "accuracy": 0.8055555555555556,
-          "count": 36
+          "accuracy": 0.8036072144288577,
+          "count": 499
         },
         "fr": {
-          "accuracy": 0.875,
-          "count": 24
+          "accuracy": 0.7584830339321357,
+          "count": 501
         }
       },
       "accuracy_per_route": {
-        "customer-support": {
+        "customer-crm": {
+          "accuracy": 0.88,
+          "count": 125
+        },
+        "finance-accounting": {
           "accuracy": 1.0,
-          "count": 10
+          "count": 125
         },
         "fraud-review": {
-          "accuracy": 0.3,
-          "count": 10
+          "accuracy": 0.36,
+          "count": 125
         },
-        "inventory-management": {
-          "accuracy": 1.0,
-          "count": 10
+        "insurance-operations": {
+          "accuracy": 0.776,
+          "count": 125
         },
-        "logistics": {
-          "accuracy": 1.0,
-          "count": 10
+        "it-ot-operations": {
+          "accuracy": 0.704,
+          "count": 125
         },
-        "order-processing": {
-          "accuracy": 0.9,
-          "count": 10
+        "manufacturing-operations": {
+          "accuracy": 0.84,
+          "count": 125
         },
         "payment-operations": {
-          "accuracy": 0.8,
-          "count": 10
+          "accuracy": 0.752,
+          "count": 125
+        },
+        "shipping-logistics": {
+          "accuracy": 0.936,
+          "count": 125
         }
       },
-      "brier_score": 0.21753065524530218,
-      "count": 60,
-      "expected_calibration_error_10_bins": 0.09052833333333339,
-      "mean_confidence": 0.8077016666666667,
-      "negative_log_loss": 0.5259825345777865,
-      "soft_target_brier_score": 0.17246512684366505,
-      "soft_target_cross_entropy": 1.1747569970832337
+      "brier_score": 0.29517275339477855,
+      "count": 1000,
+      "expected_calibration_error_10_bins": 0.06445959999999999,
+      "known_owner_accuracy_excluding_ood": 0.803125,
+      "mean_confidence": 0.8413851999999999,
+      "negative_log_loss": 0.672938157269626,
+      "overall_compatibility_accuracy_including_provisional_ood": 0.781,
+      "soft_target_brier_score": 0.2564455442783216,
+      "soft_target_cross_entropy": 1.6980142766172486
     },
     "warm_single_event_latency": {
-      "median_ms": 36.845458000243525,
-      "min_ms": 36.7859590005537,
-      "p95_ms": 37.93749999895226,
+      "median_ms": 51.51662500065868,
+      "min_ms": 51.140750001650304,
+      "p95_ms": 52.396357800171245,
       "runs": 5
     }
   },
   "calibration": {
     "abstention_thresholds": {
-      "choice:6-10": 0.18619316739603956
+      "choice:6-10": 0.19653254703316808
     },
-    "calibration_id": "8f99162ec667600782f3712c76c2f1128c802ecbfb79c70f036c17d66a47574e",
+    "calibration_id": "9efb068d7441967d55c151c1bef66fc98aea0bceaf664f6100a144e1d23d55a4",
     "checkpoint_identity": {
       "abstention_thresholds": {
-        "choice:6-10": 0.18619316739603956
+        "choice:6-10": 0.19653254703316808
       },
       "mode": "experiment",
-      "model_name": "laya-solace-event-mesh-router",
-      "question_contract_sha256": "cafc4518fc3a89ef740f4db969b4dd0abbe3b7431f0994a849c4f9ade06430fa",
-      "step": 50,
+      "model_name": "laya-edm0-enterprise-v2",
+      "question_contract_sha256": "fd26ef0b32352ab58c09eb5cdae1dc7cf8c893158526c1f312bd88d7c61c9d18",
+      "step": 250,
       "temperature": [
-        1.0811268091201782,
+        1.0499415397644043,
         1.0,
         1.0
       ]
     },
     "fit_split": "validation",
     "metrics_after": {
-      "accuracy": 0.925,
-      "brier_score": 0.1011583961033908,
-      "expected_calibration_error": 0.19731196650673852,
-      "mean_confidence": 0.7524156844465258,
-      "negative_log_loss": 0.431412943323975,
-      "soft_target_cross_entropy": 0.830105951864792
+      "accuracy": 0.84,
+      "brier_score": 0.20703436925444293,
+      "expected_calibration_error": 0.13154419675761017,
+      "mean_confidence": 0.7098933529918456,
+      "negative_log_loss": 0.6509701955806723,
+      "soft_target_cross_entropy": 0.9793669000912547
     },
     "metrics_before": {
-      "accuracy": 0.925,
-      "brier_score": 0.10072192256554136,
-      "expected_calibration_error": 0.18980578067597242,
-      "mean_confidence": 0.7796440302911971,
-      "negative_log_loss": 0.402651583142483,
-      "soft_target_cross_entropy": 0.8336892822954907
+      "accuracy": 0.84,
+      "brier_score": 0.20517200882052655,
+      "expected_calibration_error": 0.11321761675114936,
+      "mean_confidence": 0.7267823832488506,
+      "negative_log_loss": 0.6359965204696596,
+      "soft_target_cross_entropy": 0.9807938621686997
     },
-    "n": 40,
+    "n": 1000,
     "target_error": 0.15,
     "temperature": [
-      1.0811268091201782,
+      1.0499415397644043,
       1.0,
       1.0
     ],
@@ -127,159 +3425,281 @@
   },
   "device": "mps",
   "fine_tuned": {
-    "batched_evaluation_seconds": 1.7342730830005166,
+    "batched_evaluation_seconds": 38.158795125000324,
     "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/outputs/best-model",
-    "load_seconds": 21.969359291999353,
+    "load_seconds": 19.875323792002746,
     "metrics": {
-      "accuracy": 0.8333333333333334,
+      "accuracy": 0.856,
       "accuracy_per_challenge": {
         "ambiguous": {
-          "accuracy": 0.75,
-          "count": 12
+          "accuracy": 0.946236559139785,
+          "count": 93
+        },
+        "counterfactual_pair": {
+          "accuracy": 0.33,
+          "count": 100
+        },
+        "hard_boundary": {
+          "accuracy": 0.33,
+          "count": 100
         },
         "missing_optional_fields": {
-          "accuracy": 0.8333333333333334,
-          "count": 12
+          "accuracy": 0.8529411764705882,
+          "count": 68
         },
         "noisy_text": {
-          "accuracy": 0.75,
-          "count": 12
+          "accuracy": 0.9166666666666666,
+          "count": 84
+        },
+        "out_of_distribution": {
+          "accuracy": 0.475,
+          "count": 40
+        },
+        "schema_evolution": {
+          "accuracy": 0.9333333333333333,
+          "count": 45
         },
         "topic_payload_conflict": {
-          "accuracy": 0.8333333333333334,
-          "count": 6
+          "accuracy": 0.9148936170212766,
+          "count": 47
         },
         "unseen_topic_pattern": {
-          "accuracy": 0.8333333333333334,
-          "count": 18
+          "accuracy": 0.9144444444444444,
+          "count": 900
+        }
+      },
+      "accuracy_per_domain": {
+        "finance": {
+          "accuracy": 0.848,
+          "count": 125
+        },
+        "insurance": {
+          "accuracy": 0.808,
+          "count": 125
+        },
+        "it-ot": {
+          "accuracy": 0.872,
+          "count": 125
+        },
+        "manufacturing": {
+          "accuracy": 0.896,
+          "count": 125
+        },
+        "payments": {
+          "accuracy": 0.832,
+          "count": 125
+        },
+        "salesforce": {
+          "accuracy": 0.944,
+          "count": 125
+        },
+        "sap": {
+          "accuracy": 0.776,
+          "count": 125
+        },
+        "shipping": {
+          "accuracy": 0.872,
+          "count": 125
         }
       },
       "accuracy_per_language": {
         "en": {
-          "accuracy": 0.8055555555555556,
-          "count": 36
+          "accuracy": 0.8637274549098196,
+          "count": 499
         },
         "fr": {
-          "accuracy": 0.875,
-          "count": 24
+          "accuracy": 0.8483033932135728,
+          "count": 501
         }
       },
       "accuracy_per_route": {
-        "customer-support": {
-          "accuracy": 1.0,
-          "count": 10
+        "customer-crm": {
+          "accuracy": 0.88,
+          "count": 125
+        },
+        "finance-accounting": {
+          "accuracy": 0.984,
+          "count": 125
         },
         "fraud-review": {
-          "accuracy": 0.3,
-          "count": 10
+          "accuracy": 0.416,
+          "count": 125
         },
-        "inventory-management": {
-          "accuracy": 1.0,
-          "count": 10
+        "insurance-operations": {
+          "accuracy": 0.896,
+          "count": 125
         },
-        "logistics": {
-          "accuracy": 1.0,
-          "count": 10
+        "it-ot-operations": {
+          "accuracy": 0.888,
+          "count": 125
         },
-        "order-processing": {
-          "accuracy": 0.9,
-          "count": 10
+        "manufacturing-operations": {
+          "accuracy": 0.912,
+          "count": 125
         },
         "payment-operations": {
-          "accuracy": 0.8,
-          "count": 10
+          "accuracy": 0.92,
+          "count": 125
+        },
+        "shipping-logistics": {
+          "accuracy": 0.952,
+          "count": 125
         }
       },
-      "brier_score": 0.21019675416678912,
-      "count": 60,
-      "expected_calibration_error_10_bins": 0.14685166666666677,
-      "mean_confidence": 0.7231216666666669,
-      "negative_log_loss": 0.5002494745195276,
+      "brier_score": 0.21748199615233638,
+      "count": 1000,
+      "expected_calibration_error_10_bins": 0.11859359999999997,
+      "known_owner_accuracy_excluding_ood": 0.871875,
+      "mean_confidence": 0.7383088,
+      "negative_log_loss": 0.5506332466309696,
+      "overall_compatibility_accuracy_including_provisional_ood": 0.856,
       "review_policy": {
-        "accepted_accuracy": 0.8928571428571429,
-        "coverage": 0.9333333333333333,
-        "review_rate": 0.06666666666666667
+        "accepted_accuracy": 0.8710337768679631,
+        "annotated_review_recall": 0.022556390977443608,
+        "coverage": 0.977,
+        "ood_review_recall": 0.075,
+        "review_rate": 0.023
       },
-      "soft_target_brier_score": 0.14382218789168588,
-      "soft_target_cross_entropy": 0.865938918353148
+      "soft_target_brier_score": 0.16824160188020737,
+      "soft_target_cross_entropy": 0.8999634837225519
     },
     "warm_single_event_latency": {
-      "median_ms": 37.83629200006544,
-      "min_ms": 37.59962500043912,
-      "p95_ms": 38.4200743992551,
+      "median_ms": 51.66533300143783,
+      "min_ms": 51.01454200121225,
+      "p95_ms": 52.05614180013072,
       "runs": 5
     }
   },
   "fine_tuned_uncalibrated": {
-    "batched_evaluation_seconds": 2.1430466670008173,
+    "batched_evaluation_seconds": 37.884278541998356,
     "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/outputs/best-model",
     "metrics": {
-      "accuracy": 0.8333333333333334,
+      "accuracy": 0.856,
       "accuracy_per_challenge": {
         "ambiguous": {
-          "accuracy": 0.75,
-          "count": 12
+          "accuracy": 0.946236559139785,
+          "count": 93
+        },
+        "counterfactual_pair": {
+          "accuracy": 0.33,
+          "count": 100
+        },
+        "hard_boundary": {
+          "accuracy": 0.33,
+          "count": 100
         },
         "missing_optional_fields": {
-          "accuracy": 0.8333333333333334,
-          "count": 12
+          "accuracy": 0.8529411764705882,
+          "count": 68
         },
         "noisy_text": {
-          "accuracy": 0.75,
-          "count": 12
+          "accuracy": 0.9166666666666666,
+          "count": 84
+        },
+        "out_of_distribution": {
+          "accuracy": 0.475,
+          "count": 40
+        },
+        "schema_evolution": {
+          "accuracy": 0.9333333333333333,
+          "count": 45
         },
         "topic_payload_conflict": {
-          "accuracy": 0.8333333333333334,
-          "count": 6
+          "accuracy": 0.9148936170212766,
+          "count": 47
         },
         "unseen_topic_pattern": {
-          "accuracy": 0.8333333333333334,
-          "count": 18
+          "accuracy": 0.9144444444444444,
+          "count": 900
+        }
+      },
+      "accuracy_per_domain": {
+        "finance": {
+          "accuracy": 0.848,
+          "count": 125
+        },
+        "insurance": {
+          "accuracy": 0.808,
+          "count": 125
+        },
+        "it-ot": {
+          "accuracy": 0.872,
+          "count": 125
+        },
+        "manufacturing": {
+          "accuracy": 0.896,
+          "count": 125
+        },
+        "payments": {
+          "accuracy": 0.832,
+          "count": 125
+        },
+        "salesforce": {
+          "accuracy": 0.944,
+          "count": 125
+        },
+        "sap": {
+          "accuracy": 0.776,
+          "count": 125
+        },
+        "shipping": {
+          "accuracy": 0.872,
+          "count": 125
         }
       },
       "accuracy_per_language": {
         "en": {
-          "accuracy": 0.8055555555555556,
-          "count": 36
+          "accuracy": 0.8637274549098196,
+          "count": 499
         },
         "fr": {
-          "accuracy": 0.875,
-          "count": 24
+          "accuracy": 0.8483033932135728,
+          "count": 501
         }
       },
       "accuracy_per_route": {
-        "customer-support": {
-          "accuracy": 1.0,
-          "count": 10
+        "customer-crm": {
+          "accuracy": 0.88,
+          "count": 125
+        },
+        "finance-accounting": {
+          "accuracy": 0.984,
+          "count": 125
         },
         "fraud-review": {
-          "accuracy": 0.3,
-          "count": 10
+          "accuracy": 0.416,
+          "count": 125
         },
-        "inventory-management": {
-          "accuracy": 1.0,
-          "count": 10
+        "insurance-operations": {
+          "accuracy": 0.896,
+          "count": 125
         },
-        "logistics": {
-          "accuracy": 1.0,
-          "count": 10
+        "it-ot-operations": {
+          "accuracy": 0.888,
+          "count": 125
         },
-        "order-processing": {
-          "accuracy": 0.9,
-          "count": 10
+        "manufacturing-operations": {
+          "accuracy": 0.912,
+          "count": 125
         },
         "payment-operations": {
-          "accuracy": 0.8,
-          "count": 10
+          "accuracy": 0.92,
+          "count": 125
+        },
+        "shipping-logistics": {
+          "accuracy": 0.952,
+          "count": 125
         }
       },
-      "brier_score": 0.2014864168044245,
-      "count": 60,
-      "expected_calibration_error_10_bins": 0.12272999999999996,
-      "mean_confidence": 0.7475266666666666,
-      "negative_log_loss": 0.4735949005097082,
-      "soft_target_brier_score": 0.14227617780056498,
-      "soft_target_cross_entropy": 0.8659375850372552
+      "brier_score": 0.21214168433344419,
+      "count": 1000,
+      "expected_calibration_error_10_bins": 0.11005870000000001,
+      "known_owner_accuracy_excluding_ood": 0.871875,
+      "mean_confidence": 0.7539475,
+      "negative_log_loss": 0.5351150751255126,
+      "overall_compatibility_accuracy_including_provisional_ood": 0.856,
+      "soft_target_brier_score": 0.16657993418703723,
+      "soft_target_cross_entropy": 0.901932754757168
     }
   },
   "notes": [
@@ -289,366 +3709,404 @@
   ],
   "probability_improvements": [
     {
-      "base_choice": "logistics",
-      "base_confidence": 0.9903,
-      "base_truth_probability": 0.0067,
-      "challenge_tags": [
-        "noisy_text"
-      ],
-      "fine_tuned_choice": "logistics",
-      "fine_tuned_confidence": 0.8309,
-      "fine_tuned_truth_probability": 0.1049,
-      "id": "mesh-tes-0208",
-      "language": "en",
-      "state": {
-        "event_type": "order.amended",
-        "payload": {
-          "currency": "USD",
-          "customer_id": "C-1026",
-          "event_id": "EVT-000208",
-          "items": [
-            {
-              "quantity": 1,
-              "sku": "SKU-123"
-            }
-          ],
-          "message": "Please amend the delivery quantity. FYI: replay after maintenance; correlation header may be stale.",
-          "order_id": "O-80208",
-          "total": 31.75
-        },
-        "schema_name": "OrderAmended",
-        "schema_version": "2.0",
-        "topic": "mesh/uat/orders/na/amended/v1"
-      },
-      "truth": "order-processing",
-      "truth_probability_delta": 0.0982
-    },
-    {
-      "base_choice": "logistics",
-      "base_confidence": 0.2664,
-      "base_truth_probability": 0.0774,
-      "challenge_tags": [
-        "ambiguous"
-      ],
-      "fine_tuned_choice": "logistics",
-      "fine_tuned_confidence": 0.182,
-      "fine_tuned_truth_probability": 0.1678,
-      "id": "mesh-tes-0254",
-      "language": "fr",
-      "state": {
-        "event_type": "risk.transaction.alert",
-        "payload": {
-          "alert_id": "A-600254",
-          "event_id": "EVT-000254",
-          "ip_country": "FR",
-          "message": "Le moteur de risque détecte une transaction inhabituelle.",
-          "risk_score": 0.76,
-          "settlement_status": "pending operations acknowledgement",
-          "signals": [
-            "new_device",
-            "velocity_spike"
-          ],
-          "transaction_id": "TX-500254"
-        },
-        "schema_name": "TransactionRiskAlert",
-        "schema_version": "2.0",
-        "topic": "mesh/uat/risk/eu/transaction-alert/v1"
-      },
-      "truth": "fraud-review",
-      "truth_probability_delta": 0.09040000000000001
-    },
-    {
-      "base_choice": "inventory-management",
-      "base_confidence": 0.455,
-      "base_truth_probability": 0.0653,
+      "base_choice": "insurance-operations",
+      "base_confidence": 0.4722,
+      "base_truth_probability": 0.0137,
       "challenge_tags": [
         "unseen_topic_pattern"
       ],
-      "fine_tuned_choice": "inventory-management",
-      "fine_tuned_confidence": 0.3331,
-      "fine_tuned_truth_probability": 0.1433,
-      "id": "mesh-tes-0251",
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.3395,
+      "fine_tuned_truth_probability": 0.3395,
+      "id": "edm0-b4d51a950b24",
       "language": "en",
       "state": {
-        "event_type": "risk.transaction.alert",
-        "payload": {
-          "alert_id": "A-600251",
-          "event_id": "EVT-000251",
-          "ip_country": "FR",
-          "message": "Risk engine detected an unusual transaction.",
-          "risk_score": 0.73,
-          "signals": [
-            "new_device",
-            "velocity_spike"
-          ],
-          "transaction_id": "TX-500251"
+        "correlation_id": "c09246",
+        "entity": {
+          "id": "g832814f7857f",
+          "type": "risk-case"
         },
-        "schema_name": "TransactionRiskAlert",
+        "event_timestamp": "2026-09-20T06:18:00Z",
+        "event_type": "risk.claim.suspicious",
+        "payload": {
+          "alert_id": "A959246",
+          "description": "Investigate the risk signals before execution.",
+          "event_id": "e09246",
+          "risk_score": 0.84,
+          "signals": [
+            "impossible_travel",
+            "behavior_change"
+          ],
+          "transaction_id": "T309246"
+        },
+        "schema_name": "SuspiciousClaimDetected",
         "schema_version": "1.0",
-        "topic": "event/v2/transaction-alert/acme/eu/risk"
+        "source_system": "Plant MES",
+        "topic": "edm0/pilot/events/v2/suspicious-claim/na/manufacturing"
       },
       "truth": "fraud-review",
-      "truth_probability_delta": 0.07800000000000001
+      "truth_probability_delta": 0.32580000000000003
     },
     {
-      "base_choice": "customer-support",
-      "base_confidence": 0.4089,
-      "base_truth_probability": 0.0673,
-      "challenge_tags": [],
-      "fine_tuned_choice": "customer-support",
-      "fine_tuned_confidence": 0.306,
-      "fine_tuned_truth_probability": 0.1428,
-      "id": "mesh-tes-0260",
-      "language": "fr",
-      "state": {
-        "event_type": "risk.transaction.alert",
-        "payload": {
-          "alert_id": "A-600260",
-          "event_id": "EVT-000260",
-          "ip_country": "FR",
-          "message": "Le moteur de risque détecte une transaction inhabituelle.",
-          "risk_score": 0.82,
-          "signals": [
-            "new_device",
-            "velocity_spike"
-          ],
-          "transaction_id": "TX-500260"
-        },
-        "schema_name": "TransactionRiskAlert",
-        "schema_version": "2.0",
-        "topic": "mesh/uat/risk/eu/transaction-alert/v1"
-      },
-      "truth": "fraud-review",
-      "truth_probability_delta": 0.07550000000000001
-    },
-    {
-      "base_choice": "inventory-management",
-      "base_confidence": 0.2809,
-      "base_truth_probability": 0.0935,
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6069,
+      "base_truth_probability": 0.2071,
       "challenge_tags": [
         "missing_optional_fields",
+        "out_of_distribution",
         "unseen_topic_pattern"
       ],
-      "fine_tuned_choice": "customer-support",
-      "fine_tuned_confidence": 0.1913,
-      "fine_tuned_truth_probability": 0.1541,
-      "id": "mesh-tes-0259",
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.5165,
+      "fine_tuned_truth_probability": 0.5165,
+      "id": "edm0-31136f009760",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09663",
+        "entity": {
+          "id": "gbdba6c9f17ec",
+          "type": "observation"
+        },
+        "event_timestamp": "2026-09-21T03:09:00Z",
+        "event_type": "environment.weather.threshold",
+        "payload": {
+          "event_id": "e09663",
+          "measurement": 13.9,
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "ppm"
+        },
+        "schema_name": "WeatherThresholdObserved",
+        "schema_version": "2.0",
+        "source_system": "ServiceNow",
+        "topic": "edm0/pilot/events/v2/weather-threshold/na/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.30939999999999995
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.6715,
+      "base_truth_probability": 0.3072,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "schema_evolution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.6144,
+      "fine_tuned_truth_probability": 0.6144,
+      "id": "edm0-aceb392deb08",
       "language": "en",
       "state": {
-        "event_type": "risk.velocity.triggered",
-        "payload": {
-          "alert_id": "A-600259",
-          "event_id": "EVT-000259",
-          "ip_country": "CA",
-          "risk_score": 0.81,
-          "signals": [
-            "multiple_declines",
-            "velocity_spike"
-          ],
-          "transaction_id": "TX-500259"
+        "correlation_id": "c09340",
+        "entity": {
+          "id": "g961b15cf95c9",
+          "type": "transaction"
         },
-        "schema_name": "VelocityRuleTriggered",
-        "schema_version": "1.0",
-        "topic": "event/v2/velocity-triggered/initech/apac/risk"
+        "event_timestamp": "2026-09-20T11:00:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 252,
+          "currency": "USD",
+          "event_id": "e09340",
+          "risk_score": 0.38,
+          "status": "captured",
+          "transaction_id": "T309340"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/na/payments"
       },
-      "truth": "fraud-review",
-      "truth_probability_delta": 0.06059999999999999
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.3072
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.726,
+      "base_truth_probability": 0.2272,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.534,
+      "fine_tuned_truth_probability": 0.534,
+      "id": "edm0-bf09a18f2bdf",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09334",
+        "entity": {
+          "id": "g1fcc796a60a8",
+          "type": "transaction"
+        },
+        "event_timestamp": "2026-09-20T10:42:00Z",
+        "event_type": "payment.reversed",
+        "payload": {
+          "amount": 246,
+          "currency": "USD",
+          "description": "Traiter cet événement du cycle de paiement.",
+          "event_id": "e09334",
+          "risk_score": 0.32,
+          "status": "captured",
+          "transaction_id": "T309334"
+        },
+        "schema_name": "PaymentReversed",
+        "schema_version": "3.0",
+        "source_system": "Bank Transfer Hub",
+        "topic": "edm0/pilot/events/v1/reversed/latam/payments"
+      },
+      "truth": "payment-operations",
+      "truth_probability_delta": 0.3068
+    },
+    {
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.5979,
+      "base_truth_probability": 0.2236,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "it-ot-operations",
+      "fine_tuned_confidence": 0.518,
+      "fine_tuned_truth_probability": 0.518,
+      "id": "edm0-2d21aa3bba23",
+      "language": "fr",
+      "state": {
+        "correlation_id": "c09689",
+        "entity": {
+          "id": "g75a1645a6a15",
+          "type": "managed-asset"
+        },
+        "event_timestamp": "2026-09-21T04:27:00Z",
+        "event_type": "ot.safety.interlock",
+        "payload": {
+          "asset_id": "A7065",
+          "event_id": "e09689",
+          "metric": "temperature",
+          "severity": "major",
+          "site": "S02",
+          "value": 83
+        },
+        "schema_name": "SafetyInterlockTripped",
+        "schema_version": "1.0",
+        "source_system": "Cloud Monitor",
+        "topic": "edm0/pilot/events/v3/production/latam/itot"
+      },
+      "truth": "it-ot-operations",
+      "truth_probability_delta": 0.2944
     }
   ],
   "probability_regressions": [
     {
-      "base_choice": "order-processing",
-      "base_confidence": 0.9887,
-      "base_truth_probability": 0.9887,
-      "challenge_tags": [],
-      "fine_tuned_choice": "order-processing",
-      "fine_tuned_confidence": 0.6768,
-      "fine_tuned_truth_probability": 0.6768,
-      "id": "mesh-tes-0210",
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.9035,
+      "base_truth_probability": 0.9035,
+      "challenge_tags": [
+        "noisy_text",
+        "out_of_distribution",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "finance-accounting",
+      "fine_tuned_confidence": 0.3496,
+      "fine_tuned_truth_probability": 0.3496,
+      "id": "edm0-14b9e6846d6d",
       "language": "fr",
       "state": {
-        "event_type": "order.created",
-        "payload": {
-          "currency": "EUR",
-          "customer_id": "C-1028",
-          "event_id": "EVT-000210",
-          "items": [
-            {
-              "quantity": 3,
-              "sku": "SKU-125"
-            }
-          ],
-          "message": "Le client a validé un nouveau panier.",
-          "order_id": "O-80210",
-          "total": 46.25
+        "correlation_id": "c09088",
+        "entity": {
+          "id": "gf13ba4d2da63",
+          "type": "observation"
         },
-        "schema_name": "OrderCreated",
-        "schema_version": "2.0",
-        "topic": "mesh/uat/orders/eu/created/v1"
-      },
-      "truth": "order-processing",
-      "truth_probability_delta": -0.31190000000000007
-    },
-    {
-      "base_choice": "order-processing",
-      "base_confidence": 0.9664,
-      "base_truth_probability": 0.9664,
-      "challenge_tags": [
-        "ambiguous"
-      ],
-      "fine_tuned_choice": "order-processing",
-      "fine_tuned_confidence": 0.6863,
-      "fine_tuned_truth_probability": 0.6863,
-      "id": "mesh-tes-0204",
-      "language": "fr",
-      "state": {
-        "event_type": "order.created",
+        "event_timestamp": "2026-09-19T22:24:00Z",
+        "event_type": "environment.weather.threshold",
         "payload": {
-          "allocation_note": "stock reservation follows order acceptance",
-          "currency": "EUR",
-          "customer_id": "C-1022",
-          "event_id": "EVT-000204",
-          "items": [
-            {
-              "quantity": 1,
-              "sku": "SKU-119"
-            }
-          ],
-          "message": "Le client a validé un nouveau panier.",
-          "order_id": "O-80204",
-          "total": 169.5
+          "event_id": "e09088",
+          "measurement": 36.6,
+          "note": "rejeu maintenance; en-tête ancien",
+          "observation": "Signal métier inédit; propriétaire inconnu.",
+          "unit": "count"
         },
-        "schema_name": "OrderCreated",
-        "schema_version": "2.0",
-        "topic": "mesh/uat/orders/eu/created/v1"
-      },
-      "truth": "order-processing",
-      "truth_probability_delta": -0.2801
-    },
-    {
-      "base_choice": "order-processing",
-      "base_confidence": 0.8095,
-      "base_truth_probability": 0.8095,
-      "challenge_tags": [
-        "ambiguous",
-        "noisy_text"
-      ],
-      "fine_tuned_choice": "order-processing",
-      "fine_tuned_confidence": 0.6525,
-      "fine_tuned_truth_probability": 0.6525,
-      "id": "mesh-tes-0203",
-      "language": "en",
-      "state": {
-        "event_type": "order.cancellation.requested",
-        "payload": {
-          "allocation_note": "stock reservation follows order acceptance",
-          "currency": "USD",
-          "customer_id": "C-1021",
-          "event_id": "EVT-000203",
-          "items": [
-            {
-              "quantity": 4,
-              "sku": "SKU-118"
-            }
-          ],
-          "message": "Cancel before allocation. FYI: replay after maintenance; correlation header may be stale.",
-          "order_id": "O-80203",
-          "total": 162.25
-        },
-        "schema_name": "OrderCancellationRequested",
+        "schema_name": "WeatherThresholdObserved",
         "schema_version": "1.0",
-        "topic": "initech/prod/apac/orders/cancel-requested/v1"
+        "source_system": "Oracle Financials",
+        "topic": "edm0/pilot/events/v3/weather-threshold/latam/finance"
       },
-      "truth": "order-processing",
-      "truth_probability_delta": -0.15700000000000003
+      "truth": "finance-accounting",
+      "truth_probability_delta": -0.5539
     },
     {
-      "base_choice": "order-processing",
-      "base_confidence": 1.0,
-      "base_truth_probability": 1.0,
+      "base_choice": "fraud-review",
+      "base_confidence": 0.6968,
+      "base_truth_probability": 0.6968,
       "challenge_tags": [
         "unseen_topic_pattern"
       ],
-      "fine_tuned_choice": "order-processing",
-      "fine_tuned_confidence": 0.8663,
-      "fine_tuned_truth_probability": 0.8663,
-      "id": "mesh-tes-0201",
+      "fine_tuned_choice": "shipping-logistics",
+      "fine_tuned_confidence": 0.2678,
+      "fine_tuned_truth_probability": 0.1591,
+      "id": "edm0-c8154304df8f",
       "language": "en",
       "state": {
-        "event_type": "order.created",
-        "payload": {
-          "currency": "USD",
-          "customer_id": "C-1019",
-          "event_id": "EVT-000201",
-          "items": [
-            {
-              "quantity": 2,
-              "sku": "SKU-116"
-            }
-          ],
-          "message": "Customer submitted a new basket.",
-          "order_id": "O-80201",
-          "total": 147.75
+        "correlation_id": "c09742",
+        "entity": {
+          "id": "g8dce99a8b96d",
+          "type": "risk-case"
         },
-        "schema_name": "OrderCreated",
-        "schema_version": "1.0",
-        "topic": "event/v2/created/acme/eu/orders"
+        "event_timestamp": "2026-09-21T07:06:00Z",
+        "event_type": "risk.mule.account",
+        "payload": {
+          "alert_id": "A959742",
+          "description": "Investigate the risk signals before execution.",
+          "event_id": "e09742",
+          "risk_score": 0.94,
+          "signals": [
+            "new_device",
+            "behavior_change"
+          ],
+          "transaction_id": "T309742"
+        },
+        "schema_name": "MuleAccountSuspected",
+        "schema_version": "3.0",
+        "source_system": "SCADA Historian",
+        "topic": "edm0/pilot/events/v2/mule-account/eu/itot"
       },
-      "truth": "order-processing",
-      "truth_probability_delta": -0.13370000000000004
+      "truth": "fraud-review",
+      "truth_probability_delta": -0.5377
     },
     {
-      "base_choice": "order-processing",
-      "base_confidence": 0.9999,
-      "base_truth_probability": 0.9999,
+      "base_choice": "finance-accounting",
+      "base_confidence": 0.9665,
+      "base_truth_probability": 0.9665,
       "challenge_tags": [
-        "topic_payload_conflict"
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
       ],
-      "fine_tuned_choice": "order-processing",
-      "fine_tuned_confidence": 0.8756,
-      "fine_tuned_truth_probability": 0.8756,
-      "id": "mesh-tes-0207",
+      "fine_tuned_choice": "payment-operations",
+      "fine_tuned_confidence": 0.5049,
+      "fine_tuned_truth_probability": 0.4679,
+      "id": "edm0-d1883b8257a0",
       "language": "en",
       "state": {
-        "event_type": "order.created",
-        "payload": {
-          "currency": "USD",
-          "customer_id": "C-1025",
-          "event_id": "EVT-000207",
-          "items": [
-            {
-              "quantity": 4,
-              "sku": "SKU-122"
-            }
-          ],
-          "message": "Customer submitted a new basket.",
-          "order_id": "O-80207",
-          "total": 24.5
+        "correlation_id": "c09081",
+        "entity": {
+          "id": "g0000cb17ddda",
+          "type": "financial-document"
         },
-        "schema_name": "OrderCreated",
-        "schema_version": "1.0",
-        "topic": "acme/prod/eu/stock/created/v1"
+        "event_timestamp": "2026-09-19T22:03:00Z",
+        "event_type": "finance.cash.position.changed",
+        "payload": {
+          "amount": 2581,
+          "company": "C03",
+          "currency": "EUR",
+          "description": "Reconcile this financial record.",
+          "document_id": "D109081",
+          "event_id": "e09081"
+        },
+        "schema_name": "CashPositionChanged",
+        "schema_version": "3.0",
+        "source_system": "Treasury Hub",
+        "topic": "edm0/pilot/events/v3/payment/eu/finance"
       },
-      "truth": "order-processing",
-      "truth_probability_delta": -0.12429999999999997
+      "truth": "finance-accounting",
+      "truth_probability_delta": -0.49860000000000004
+    },
+    {
+      "base_choice": "customer-crm",
+      "base_confidence": 0.9941,
+      "base_truth_probability": 0.9941,
+      "challenge_tags": [
+        "missing_optional_fields",
+        "topic_payload_conflict",
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "customer-crm",
+      "fine_tuned_confidence": 0.5575,
+      "fine_tuned_truth_probability": 0.5575,
+      "id": "edm0-96cc351faa64",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09914",
+        "entity": {
+          "id": "gb77bb9f6148a",
+          "type": "customer-account"
+        },
+        "event_timestamp": "2026-09-21T15:42:00Z",
+        "event_type": "crm.consent.changed",
+        "payload": {
+          "account_id": "A809914",
+          "action": "follow_up",
+          "case_id": "C909914",
+          "channel": "phone",
+          "event_id": "e09914",
+          "priority": "high"
+        },
+        "schema_name": "ConsentPreferenceChanged",
+        "schema_version": "1.0",
+        "source_system": "MuleSoft",
+        "topic": "edm0/pilot/events/v1/freight/latam/salesforce"
+      },
+      "truth": "customer-crm",
+      "truth_probability_delta": -0.4366
+    },
+    {
+      "base_choice": "fraud-review",
+      "base_confidence": 0.9062,
+      "base_truth_probability": 0.9062,
+      "challenge_tags": [
+        "unseen_topic_pattern"
+      ],
+      "fine_tuned_choice": "fraud-review",
+      "fine_tuned_confidence": 0.4704,
+      "fine_tuned_truth_probability": 0.4704,
+      "id": "edm0-83034e1b7080",
+      "language": "en",
+      "state": {
+        "correlation_id": "c09612",
+        "entity": {
+          "id": "g8378e7433ac7",
+          "type": "risk-case"
+        },
+        "event_timestamp": "2026-09-21T00:36:00Z",
+        "event_type": "risk.mule.account",
+        "payload": {
+          "alert_id": "A959612",
+          "description": "Investigate the risk signals before execution.",
+          "event_id": "e09612",
+          "risk_score": 0.72,
+          "signals": [
+            "new_device",
+            "behavior_change"
+          ],
+          "transaction_id": "T309612"
+        },
+        "schema_name": "MuleAccountSuspected",
+        "schema_version": "3.0",
+        "source_system": "Guidewire",
+        "topic": "edm0/pilot/events/v2/mule-account/apac/insurance"
+      },
+      "truth": "fraud-review",
+      "truth_probability_delta": -0.4358
     }
   ],
   "question_contract": {
     "route": {
       "criteria": {
-        "customer-support": "customer ticket, complaint, service request, or human follow-up",
-        "fraud-review": "suspected fraud, account takeover, payment abuse, or security alert",
-        "inventory-management": "warehouse stock reservation, count, replenishment, or correction",
-        "logistics": "shipment, carrier, delivery, customs, or fulfilment movement",
-        "order-processing": "order creation, amendment, cancellation, or validation",
-        "payment-operations": "payment authorization, settlement, failure, refund, or reconciliation"
+        "customer-crm": "lead, opportunity, account, customer case, renewal, or relationship workflow",
+        "finance-accounting": "general ledger, invoice, tax, treasury, receivables, or accounting control",
+        "fraud-review": "suspected fraud, account takeover, payment abuse, identity risk, or security investigation",
+        "insurance-operations": "policy, premium, underwriting, claim intake, coverage, or claim settlement",
+        "it-ot-operations": "IT service, cloud, identity, network, application, SCADA, PLC, or equipment incident",
+        "manufacturing-operations": "production order, material plan, quality, yield, or plant scheduling",
+        "payment-operations": "payment authorization, capture, settlement, refund, payout, or reconciliation",
+        "shipping-logistics": "shipment, carrier, delivery, customs, freight, or transport movement"
       },
-      "instructions": "Which consumer service should receive this Solace event? Prefer schema, event_type, and payload meaning over a conflicting legacy topic.",
+      "instructions": "Which operational team should receive this enterprise event? Use business meaning in schema, event_type, and payload. Source platform and topic are supporting evidence only; prefer the body when routing metadata conflicts.",
       "type": "choice"
     }
   },
-  "selected_checkpoint_training_duration_seconds": 118.83983662500032,
+  "selected_checkpoint_training_duration_seconds": 519.8626205,
   "status": "experimental_synthetic_proof_of_concept",
-  "test_events": 60,
-  "total_training_search_duration_seconds": 169.8616915829989
+  "test_events": 1000,
+  "total_training_search_duration_seconds": 519.8626205
 }

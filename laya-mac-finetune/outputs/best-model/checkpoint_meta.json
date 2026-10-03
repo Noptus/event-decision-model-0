@@ -1,0 +1,15 @@
+{
+  "calibration_id": "9efb068d7441967d55c151c1bef66fc98aea0bceaf664f6100a144e1d23d55a4",
+  "dataset_version": "edm0-enterprise-v2",
+  "examples_exposed": 8000,
+  "freeze_strategy": "head_only",
+  "max_steps_requested": 250,
+  "mode": "experiment",
+  "step": 250,
+  "training_duration_seconds": 519.8626205,
+  "validation": {
+    "accuracy": 0.841,
+    "examples": 1000,
+    "loss": 0.98078599396348
+  }
+}

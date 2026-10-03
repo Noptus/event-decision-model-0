@@ -1,12 +1,18 @@
 {
-  "topic": "acme/prod/na/shipments/delayed/v1",
-  "schema_name": "DeliveryDelayed",
-  "schema_version": "2.0",
-  "event_type": "delivery.delayed",
+  "topic": "edm0/pilot/events/v3/route-deviated/na/shipping",
+  "schema_name": "TransportRouteDeviated",
+  "schema_version": "3.0",
+  "event_type": "shipping.route.deviated",
+  "event_timestamp": "2026-10-03T14:01:00Z",
+  "source_system": "Carrier TMS",
+  "correlation_id": "demo-en-shipping",
+  "entity": {"type": "shipment", "id": "S-DEMO-200"},
   "payload": {
-    "shipment_id": "S-DEMO-901",
+    "event_id": "demo-en-shipping",
+    "shipment_id": "S-DEMO-200",
     "carrier": "NorthParcel",
-    "eta_hours": 48,
-    "message": "Carrier missed the delivery window; the customer only asks to be notified."
+    "status": "delayed",
+    "eta_hours": 36,
+    "description": "Carrier missed the window; replan before notifying the customer."
   }
 }

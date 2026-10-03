@@ -1,13 +1,16 @@
 {
-  "topic": "acme/prod/eu/payments/authorized/v1",
+  "topic": "edm0/pilot/events/eu/payments/authorized/v1",
   "schema_name": "AccountTakeoverSuspected",
   "schema_version": "1.0",
-  "event_type": "security.account.takeover",
+  "event_type": "risk.account.takeover",
+  "event_timestamp": "2026-10-03T14:02:00Z",
+  "source_system": "Salesforce Service Cloud",
+  "correlation_id": "demo-fr-fraud",
+  "entity": {"type": "risk-case", "id": "R-DEMO-300"},
   "payload": {
-    "alert_id": "A-DEMO-902",
-    "transaction_id": "TX-DEMO-902",
-    "risk_score": 0.96,
+    "event_id": "demo-fr-fraud",
+    "risk_score": 0.97,
     "signals": ["nouvel_appareil", "voyage_impossible"],
-    "message": "Compte probablement compromis malgré le topic historique de paiement."
+    "description": "Compte probablement compromis malgré le topic historique de paiement."
   }
 }

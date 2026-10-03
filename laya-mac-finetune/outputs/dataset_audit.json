@@ -1,0 +1,141 @@
+{
+  "checks": {
+    "counterfactual_pairs_valid": true,
+    "entity_overlap_across_splits": 0,
+    "exact_duplicates_across_splits": 0,
+    "language_varies_within_scenario_and_schema_version": true,
+    "route_label_or_annotation_in_model_state": false,
+    "scenario_family_overlap_across_splits": 0,
+    "schema_valid": true,
+    "semantic_template_overlap_across_splits": 0,
+    "time_ranges_disjoint": true,
+    "topic_conflicts_semantically_verified": true
+  },
+  "counterfactual_pairs": 150,
+  "dataset_version": "edm0-enterprise-v2",
+  "splits": {
+    "test": {
+      "challenges": {
+        "ambiguous": 93,
+        "counterfactual_pair": 100,
+        "hard_boundary": 100,
+        "missing_optional_fields": 68,
+        "noisy_text": 84,
+        "out_of_distribution": 40,
+        "schema_evolution": 45,
+        "topic_payload_conflict": 47,
+        "unseen_topic_pattern": 900
+      },
+      "count": 1000,
+      "domains": {
+        "finance": 125,
+        "insurance": 125,
+        "it-ot": 125,
+        "manufacturing": 125,
+        "payments": 125,
+        "salesforce": 125,
+        "sap": 125,
+        "shipping": 125
+      },
+      "languages": {
+        "en": 499,
+        "fr": 501
+      },
+      "routes": {
+        "customer-crm": 125,
+        "finance-accounting": 125,
+        "fraud-review": 125,
+        "insurance-operations": 125,
+        "it-ot-operations": 125,
+        "manufacturing-operations": 125,
+        "payment-operations": 125,
+        "shipping-logistics": 125
+      },
+      "scenario_families": 23,
+      "timestamp_max": "2026-09-21T20:00:00+00:00",
+      "timestamp_min": "2026-09-01T01:40:00+00:00"
+    },
+    "train": {
+      "challenges": {
+        "ambiguous": 800,
+        "counterfactual_pair": 100,
+        "hard_boundary": 100,
+        "missing_optional_fields": 612,
+        "noisy_text": 716,
+        "schema_evolution": 415,
+        "topic_payload_conflict": 470
+      },
+      "count": 8000,
+      "domains": {
+        "finance": 1000,
+        "insurance": 1000,
+        "it-ot": 1000,
+        "manufacturing": 1000,
+        "payments": 1000,
+        "salesforce": 1000,
+        "sap": 1000,
+        "shipping": 1000
+      },
+      "languages": {
+        "en": 4002,
+        "fr": 3998
+      },
+      "routes": {
+        "customer-crm": 1000,
+        "finance-accounting": 1000,
+        "fraud-review": 1000,
+        "insurance-operations": 1000,
+        "it-ot-operations": 1000,
+        "manufacturing-operations": 1000,
+        "payment-operations": 1000,
+        "shipping-logistics": 1000
+      },
+      "scenario_families": 37,
+      "timestamp_max": "2026-01-17T16:00:00+00:00",
+      "timestamp_min": "2026-01-01T00:33:00+00:00"
+    },
+    "validation": {
+      "challenges": {
+        "ambiguous": 93,
+        "counterfactual_pair": 100,
+        "hard_boundary": 100,
+        "missing_optional_fields": 68,
+        "noisy_text": 84,
+        "out_of_distribution": 40,
+        "schema_evolution": 45,
+        "topic_payload_conflict": 47
+      },
+      "count": 1000,
+      "domains": {
+        "finance": 125,
+        "insurance": 125,
+        "it-ot": 125,
+        "manufacturing": 125,
+        "payments": 125,
+        "salesforce": 125,
+        "sap": 125,
+        "shipping": 125
+      },
+      "languages": {
+        "en": 499,
+        "fr": 501
+      },
+      "routes": {
+        "customer-crm": 125,
+        "finance-accounting": 125,
+        "fraud-review": 125,
+        "insurance-operations": 125,
+        "it-ot-operations": 125,
+        "manufacturing-operations": 125,
+        "payment-operations": 125,
+        "shipping-logistics": 125
+      },
+      "scenario_families": 23,
+      "timestamp_max": "2026-07-19T18:00:00+00:00",
+      "timestamp_min": "2026-07-01T01:40:00+00:00"
+    }
+  },
+  "total": 10000,
+  "unique_entity_groups": 2606,
+  "unique_states": 10000
+}

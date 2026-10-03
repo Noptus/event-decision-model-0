@@ -1,0 +1,14 @@
+{
+  "route": {
+    "type": "choice",
+    "instructions": "Which consumer service should receive this Solace event? Prefer schema, event_type, and payload meaning over a conflicting legacy topic.",
+    "criteria": {
+      "order-processing": "order creation, amendment, cancellation, or validation",
+      "payment-operations": "payment authorization, settlement, failure, refund, or reconciliation",
+      "logistics": "shipment, carrier, delivery, customs, or fulfilment movement",
+      "inventory-management": "warehouse stock reservation, count, replenishment, or correction",
+      "customer-support": "customer ticket, complaint, service request, or human follow-up",
+      "fraud-review": "suspected fraud, account takeover, payment abuse, or security alert"
+    }
+  }
+}

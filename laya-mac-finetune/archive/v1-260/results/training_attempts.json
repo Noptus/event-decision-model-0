@@ -1,0 +1,41 @@
+[
+  {
+    "mode": "smoke",
+    "device": "mps",
+    "max_steps_requested": 5,
+    "optimizer_steps_completed": 5,
+    "duration_seconds": 23.915436875000523,
+    "selected_checkpoint_updated": true,
+    "best_validation": {
+      "accuracy": 0.875,
+      "loss": 1.0813754133880138
+    }
+  },
+  {
+    "mode": "experiment",
+    "device": "mps",
+    "max_steps_requested": 60,
+    "optimizer_steps_completed": 60,
+    "duration_seconds": 118.83983662500032,
+    "selected_checkpoint_updated": true,
+    "selected_checkpoint_step": 50,
+    "best_validation": {
+      "accuracy": 0.925,
+      "loss": 0.8336891584098339
+    }
+  },
+  {
+    "mode": "experiment_refinement",
+    "device": "mps",
+    "max_steps_requested": 120,
+    "optimizer_steps_completed": 80,
+    "duration_seconds": 51.021854957998585,
+    "selected_checkpoint_updated": false,
+    "stop_reason": "early_stopping_after_8_non-improving_evaluations",
+    "preserved_checkpoint_step": 50,
+    "best_validation": {
+      "accuracy": 0.925,
+      "loss": 0.8336891584098339
+    }
+  }
+]

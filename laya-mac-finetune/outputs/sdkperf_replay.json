@@ -1,0 +1,24 @@
+{
+  "broker": "redacted",
+  "delivery_mode": "persistent",
+  "duration_seconds": 185.4952645839985,
+  "live_broker_executed": true,
+  "logs_directory": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/.cache/sdkperf-replay/logs",
+  "mode": "execute",
+  "per_event_topic_payload_pairing": true,
+  "rate_per_second": 500,
+  "records_requested": 10000,
+  "records_submitted": 10000,
+  "records_validated": 10000,
+  "sdkperf_reported_counts": {
+    "publish_acks": 10000,
+    "publish_nacks": 0,
+    "published": 10000
+  },
+  "sdkperf_version": "10.30.2",
+  "shard_size": 250,
+  "shards": 40,
+  "unique_correlations": 10000,
+  "unique_payloads": 10000,
+  "username": "redacted"
+}

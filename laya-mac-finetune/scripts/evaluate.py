@@ -112,8 +112,12 @@ def metrics_for(records: list[dict[str, Any]], results: list[dict[str, Any]]) ->
     hard_brier = []
     soft_brier = []
     per_route: dict[str, list[float]] = defaultdict(list)
+    per_domain: dict[str, list[float]] = defaultdict(list)
     per_language: dict[str, list[float]] = defaultdict(list)
     per_challenge: dict[str, list[float]] = defaultdict(list)
+    known_owner_correct = []
+    ood_reviewed = []
+    review_needed_detected = []
     abstained = []
     accepted_correct = []
     for record, result in zip(records, results):
@@ -137,14 +141,22 @@ def metrics_for(records: list[dict[str, Any]], results: list[dict[str, Any]]) ->
         hard_brier.append(float(np.square(probabilities - one_hot).sum()))
         soft_brier.append(float(np.square(probabilities - target).sum()))
         per_route[truth].append(is_correct)
+        per_domain[record["domain"]].append(is_correct)
         per_language[record["language"]].append(is_correct)
-        for tag in record.get("challenge_tags", []):
+        tags = record.get("challenge_tags", [])
+        for tag in tags:
             per_challenge[tag].append(is_correct)
+        if "out_of_distribution" not in tags:
+            known_owner_correct.append(is_correct)
         if "abstention" in answer:
             did_abstain = answer["abstention"] == "abstained"
             abstained.append(float(did_abstain))
             if not did_abstain:
                 accepted_correct.append(is_correct)
+            if "out_of_distribution" in tags:
+                ood_reviewed.append(float(did_abstain))
+            if record["annotation"]["review_needed"]:
+                review_needed_detected.append(float(did_abstain))
 
     confidence_array = np.asarray(confidences)
     correct_array = np.asarray(correct)
@@ -160,9 +172,15 @@ def metrics_for(records: list[dict[str, Any]], results: list[dict[str, Any]]) ->
     result = {
         "count": len(records),
         "accuracy": float(correct_array.mean()),
+        "overall_compatibility_accuracy_including_provisional_ood": float(correct_array.mean()),
+        "known_owner_accuracy_excluding_ood": float(np.mean(known_owner_correct)),
         "accuracy_per_route": {
             route: {"accuracy": float(np.mean(per_route[route])), "count": len(per_route[route])}
             for route in ROUTES
+        },
+        "accuracy_per_domain": {
+            key: {"accuracy": float(np.mean(values)), "count": len(values)}
+            for key, values in sorted(per_domain.items())
         },
         "accuracy_per_language": {
             key: {"accuracy": float(np.mean(values)), "count": len(values)}
@@ -184,6 +202,10 @@ def metrics_for(records: list[dict[str, Any]], results: list[dict[str, Any]]) ->
             "review_rate": float(np.mean(abstained)),
             "coverage": float(1.0 - np.mean(abstained)),
             "accepted_accuracy": float(np.mean(accepted_correct)) if accepted_correct else None,
+            "ood_review_recall": float(np.mean(ood_reviewed)) if ood_reviewed else None,
+            "annotated_review_recall": (
+                float(np.mean(review_needed_detected)) if review_needed_detected else None
+            ),
         }
     return result
 

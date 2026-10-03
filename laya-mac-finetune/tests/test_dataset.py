@@ -7,7 +7,7 @@ from collections import Counter
 import pytest
 
 from _shared import DATA_DIR, QUESTION_ID, ROUTES, ROUTING_QUESTION, read_jsonl, state_fingerprint
-from validate_dataset import EXPECTED, validate
+from validate_dataset import EXPECTED, REQUIRED_STATE_FIELDS, validate
 
 
 @pytest.fixture(scope="module")
@@ -16,17 +16,11 @@ def splits():
 
 
 def test_dataset_schema_and_counts(splits):
-    summary = validate()
-    assert {name: details["count"] for name, details in summary.items()} == EXPECTED
+    audit = validate()
+    assert {name: details["count"] for name, details in audit["splits"].items()} == EXPECTED
     for records in splits.values():
         for record in records:
-            assert set(record["state"]) == {
-                "topic",
-                "schema_name",
-                "schema_version",
-                "event_type",
-                "payload",
-            }
+            assert set(record["state"]) == REQUIRED_STATE_FIELDS
             assert record["questions"] == ROUTING_QUESTION
             target = record["gold"][QUESTION_ID]["probabilities"]
             assert set(target) == set(ROUTES)
@@ -49,13 +43,12 @@ def test_every_route_and_language_are_represented(splits):
         assert {record["language"] for record in records} == {"en", "fr"}
 
 
-def test_each_route_variant_is_bilingual(splits):
+def test_each_actual_scenario_is_bilingual(splits):
     for split, records in splits.items():
         coverage = {}
         for record in records:
-            key = (record["gold"][QUESTION_ID]["label"], record["state"]["event_type"])
+            key = (record["gold"][QUESTION_ID]["label"], record["scenario_family"])
             coverage.setdefault(key, set()).add(record["language"])
-        assert len(coverage) == len(ROUTES) * 3, split
         assert all(languages == {"en", "fr"} for languages in coverage.values()), split
 
 

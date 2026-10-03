@@ -1,0 +1,18 @@
+{
+  "version": "edm0-enterprise-v2",
+  "question_id": "route",
+  "question": {
+    "type": "choice",
+    "instructions": "Which operational team should receive this enterprise event? Use business meaning in schema, event_type, and payload. Source platform and topic are supporting evidence only; prefer the body when routing metadata conflicts.",
+    "criteria": {
+      "finance-accounting": "general ledger, invoice, tax, treasury, receivables, or accounting control",
+      "manufacturing-operations": "production order, material plan, quality, yield, or plant scheduling",
+      "payment-operations": "payment authorization, capture, settlement, refund, payout, or reconciliation",
+      "shipping-logistics": "shipment, carrier, delivery, customs, freight, or transport movement",
+      "insurance-operations": "policy, premium, underwriting, claim intake, coverage, or claim settlement",
+      "it-ot-operations": "IT service, cloud, identity, network, application, SCADA, PLC, or equipment incident",
+      "customer-crm": "lead, opportunity, account, customer case, renewal, or relationship workflow",
+      "fraud-review": "suspected fraud, account takeover, payment abuse, identity risk, or security investigation"
+    }
+  }
+}

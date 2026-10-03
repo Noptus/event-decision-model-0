@@ -1,41 +1,89 @@
 [
   {
-    "mode": "smoke",
-    "device": "mps",
-    "max_steps_requested": 5,
-    "optimizer_steps_completed": 5,
-    "duration_seconds": 23.915436875000523,
-    "selected_checkpoint_updated": true,
     "best_validation": {
       "accuracy": 0.875,
       "loss": 1.0813754133880138
-    }
+    },
+    "device": "mps",
+    "duration_seconds": 23.915436875000523,
+    "max_steps_requested": 5,
+    "mode": "smoke",
+    "optimizer_steps_completed": 5,
+    "selected_checkpoint_updated": true
   },
   {
-    "mode": "experiment",
+    "best_validation": {
+      "accuracy": 0.925,
+      "loss": 0.8336891584098339
+    },
     "device": "mps",
-    "max_steps_requested": 60,
-    "optimizer_steps_completed": 60,
     "duration_seconds": 118.83983662500032,
-    "selected_checkpoint_updated": true,
+    "max_steps_requested": 60,
+    "mode": "experiment",
+    "optimizer_steps_completed": 60,
     "selected_checkpoint_step": 50,
-    "best_validation": {
-      "accuracy": 0.925,
-      "loss": 0.8336891584098339
-    }
+    "selected_checkpoint_updated": true
   },
   {
-    "mode": "experiment_refinement",
-    "device": "mps",
-    "max_steps_requested": 120,
-    "optimizer_steps_completed": 80,
-    "duration_seconds": 51.021854957998585,
-    "selected_checkpoint_updated": false,
-    "stop_reason": "early_stopping_after_8_non-improving_evaluations",
-    "preserved_checkpoint_step": 50,
     "best_validation": {
       "accuracy": 0.925,
       "loss": 0.8336891584098339
-    }
+    },
+    "device": "mps",
+    "duration_seconds": 51.021854957998585,
+    "max_steps_requested": 120,
+    "mode": "experiment_refinement",
+    "optimizer_steps_completed": 80,
+    "preserved_checkpoint_step": 50,
+    "selected_checkpoint_updated": false,
+    "stop_reason": "early_stopping_after_8_non-improving_evaluations"
+  },
+  {
+    "best_validation": {
+      "accuracy": 0.723,
+      "loss": 1.5152399435937405
+    },
+    "device": "mps",
+    "duration_seconds": 160.09678995800277,
+    "epochs_completed": 1.0,
+    "examples_exposed": 64,
+    "gradient_accumulation_steps": 4,
+    "max_steps_requested": 4,
+    "micro_batch_size": 4,
+    "mode": "smoke",
+    "optimizer_steps_completed": 4,
+    "selected_checkpoint_updated": true
+  },
+  {
+    "best_validation": {
+      "accuracy": 0.723,
+      "loss": 1.5151992673575878
+    },
+    "device": "mps",
+    "duration_seconds": 61.11113804199704,
+    "epochs_completed": 1.0,
+    "examples_exposed": 64,
+    "gradient_accumulation_steps": 4,
+    "max_steps_requested": 4,
+    "micro_batch_size": 4,
+    "mode": "smoke",
+    "optimizer_steps_completed": 4,
+    "selected_checkpoint_updated": true
+  },
+  {
+    "best_validation": {
+      "accuracy": 0.841,
+      "loss": 0.98078599396348
+    },
+    "device": "mps",
+    "duration_seconds": 519.8626205,
+    "epochs_completed": 1.0,
+    "examples_exposed": 8000,
+    "gradient_accumulation_steps": 2,
+    "max_steps_requested": 250,
+    "micro_batch_size": 16,
+    "mode": "experiment",
+    "optimizer_steps_completed": 250,
+    "selected_checkpoint_updated": true
   }
 ]

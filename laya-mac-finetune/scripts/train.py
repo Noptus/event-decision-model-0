@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
 import json
 import math
@@ -10,6 +11,8 @@ import os
 import random
 import shutil
 import time
+from contextlib import contextmanager
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +28,7 @@ from _shared import (
     DATA_DIR,
     OUTPUT_DIR,
     ROUTES,
+    ROUTE_CONTRACT_PATH,
     atomic_write_json,
     build_training_item,
     clear_device_cache,
@@ -50,6 +54,46 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", choices=("auto", "mps", "cpu"))
     parser.add_argument("--max-steps", type=int)
     return parser.parse_args()
+
+
+@contextmanager
+def exclusive_training():
+    """Prevent concurrent cache writers and checkpoint replacements."""
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    with (OUTPUT_DIR / ".training.lock").open("a+") as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            handle.seek(0)
+            owner = handle.read().strip() or "unknown"
+            raise SystemExit(f"Another training run is active in this project (PID {owner}); wait for it to finish.")
+        handle.seek(0)
+        handle.truncate()
+        handle.write(str(os.getpid()))
+        handle.flush()
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def validate_exposure_plan(
+    mode: str,
+    max_steps: int,
+    micro_batch: int,
+    gradient_accumulation: int,
+    training_examples: int,
+    minimum_epochs: int,
+) -> tuple[int, int]:
+    planned = max_steps * micro_batch * gradient_accumulation
+    required = minimum_epochs * training_examples
+    if mode == "experiment" and planned < required:
+        raise ValueError(
+            "planned optimizer steps do not cover the required full passes: "
+            f"{max_steps} * {micro_batch} * {gradient_accumulation} = {planned} "
+            f"examples, need at least {required}"
+        )
+    return planned, required
 
 
 def balanced_subset(records: list[dict[str, Any]], size: int) -> list[dict[str, Any]]:
@@ -80,21 +124,152 @@ def set_training_mode(model, freeze_strategy: str) -> None:
         model.encoder.eval()
 
 
+def forward_from_hidden(model, hidden_states: torch.Tensor, batch: dict[str, torch.Tensor]):
+    """Run the unchanged native Laya decision head over a frozen encoder representation."""
+    hidden = hidden_states + model.type_emb(batch["qtype"])[:, None, :]
+    if model.head is not None:
+        padding_mask = ~batch["attention_mask"].bool()
+        for layer in model.head.layers:
+            hidden = layer(hidden, src_key_padding_mask=padding_mask)
+    index = batch["marker_pos"].clamp(min=0)[:, :, None].expand(-1, -1, hidden.size(-1))
+    markers = torch.gather(hidden, 1, index)
+    logits = model.scorer(markers).squeeze(-1).float()
+    logits = logits.masked_fill(~batch["marker_mask"], -1e4)
+    probabilities = torch.softmax(logits.detach(), -1)
+    option_count = batch["marker_mask"].sum(-1).clamp(min=2).float()
+    top_two = probabilities.topk(2, -1).values
+    entropy = -(
+        probabilities * torch.log(probabilities.clamp_min(1e-9))
+    ).sum(-1) / torch.log(option_count)
+    features = torch.stack(
+        [top_two[:, 0], top_two[:, 0] - top_two[:, 1], entropy, option_count / 255.0], -1
+    )
+    activation = model.act_head(torch.cat([hidden[:, 0].float(), features], -1))
+    return logits, activation
+
+
+@lru_cache(maxsize=2)
+def encoder_weights_hash(path: str, size: int, modified_ns: int) -> str:
+    with Path(path).open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest()
+
+
+def encoder_cache_key(items: list[dict[str, Any]], model_config: dict[str, Any]) -> dict[str, Any]:
+    digest = hashlib.sha256("\n".join(item["id"] for item in items).encode()).hexdigest()
+    inputs = hashlib.sha256()
+    for item in items:
+        inputs.update(json.dumps(item["ids"], separators=(",", ":")).encode())
+        inputs.update(b"\n")
+    weights = BASE_MODEL_DIR / "model.safetensors"
+    stat = weights.stat()
+    return {
+        "item_ids_sha256": digest,
+        "input_tokens_sha256": inputs.hexdigest(),
+        "encoder_weights_sha256": encoder_weights_hash(str(weights), stat.st_size, stat.st_mtime_ns),
+        "count": len(items),
+        "max_len": int(model_config["max_len"]),
+        "hidden_size": int(model_config.get("hidden_size", 0)),
+        "encoder": model_config.get("encoder"),
+        "dtype": "float16",
+        "contains_labels": False,
+    }
+
+
+def build_encoder_cache(
+    model,
+    items: list[dict[str, Any]],
+    tokenizer,
+    model_config: dict[str, Any],
+    device: torch.device,
+    cache_name: str,
+    batch_size: int,
+):
+    cache_dir = OUTPUT_DIR / "encoder-cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    data_path = cache_dir / f"{cache_name}.npy"
+    metadata_path = cache_dir / f"{cache_name}.json"
+    partial_path = cache_dir / f".{cache_name}.partial.npy"
+    progress_path = cache_dir / f".{cache_name}.partial.json"
+    key = encoder_cache_key(items, model_config)
+    key["hidden_size"] = int(model.encoder.config.hidden_size)
+    shape = (len(items), int(model_config["max_len"]), int(model.encoder.config.hidden_size))
+    if data_path.exists() and metadata_path.exists():
+        with metadata_path.open(encoding="utf-8") as handle:
+            cached_key = json.load(handle)
+        if cached_key == key:
+            print(f"Using frozen encoder cache: {data_path}")
+            return np.load(data_path, mmap_mode="r"), 0.0
+
+    start_row = 0
+    cache = None
+    if partial_path.exists() and progress_path.exists():
+        with progress_path.open(encoding="utf-8") as handle:
+            progress = json.load(handle)
+        if progress.get("cache_key") == key and tuple(progress.get("shape", ())) == shape:
+            start_row = int(progress.get("completed_rows", 0))
+            if 0 <= start_row <= len(items):
+                cache = np.lib.format.open_memmap(partial_path, mode="r+")
+                print(f"Resuming frozen encoder cache at {start_row}/{len(items)} rows")
+    if cache is None:
+        partial_path.unlink(missing_ok=True)
+        progress_path.unlink(missing_ok=True)
+        cache = np.lib.format.open_memmap(partial_path, mode="w+", dtype=np.float16, shape=shape)
+        atomic_write_json(
+            progress_path,
+            {"cache_key": key, "shape": list(shape), "completed_rows": 0},
+        )
+
+    model.encoder.eval()
+    started = time.perf_counter()
+    with torch.no_grad():
+        for start in range(start_row, len(items), batch_size):
+            chunk = items[start : start + batch_size]
+            batch = move_batch(
+                collate_training_items(chunk, tokenizer.pad_token_id, int(model_config["max_len"])),
+                device,
+            )
+            hidden = model.encoder(
+                input_ids=batch["input_ids"], attention_mask=batch["attention_mask"]
+            ).last_hidden_state
+            completed_rows = start + len(chunk)
+            cache[start:completed_rows] = hidden.float().cpu().numpy().astype(np.float16)
+            if completed_rows % (batch_size * 10) == 0 or completed_rows == len(items):
+                cache.flush()
+                atomic_write_json(
+                    progress_path,
+                    {"cache_key": key, "shape": list(shape), "completed_rows": completed_rows},
+                )
+            if (start // batch_size + 1) % 100 == 0:
+                print(f"cached {completed_rows}/{len(items)} frozen encoder rows")
+    cache.flush()
+    del cache
+    os.replace(partial_path, data_path)
+    atomic_write_json(metadata_path, key)
+    progress_path.unlink(missing_ok=True)
+    elapsed = time.perf_counter() - started
+    print(f"Built label-free frozen encoder cache {data_path} in {elapsed:.1f}s")
+    return np.load(data_path, mmap_mode="r"), elapsed
+
+
 def forward_loss(
     model,
     batch: dict[str, torch.Tensor],
     freeze_strategy: str,
     sigma: float,
     group_size: int,
+    hidden_states: torch.Tensor | None = None,
 ) -> tuple[torch.Tensor, dict[str, float]]:
-    logits, activation = model(
-        batch["input_ids"],
-        batch["attention_mask"],
-        batch["marker_pos"],
-        batch["marker_mask"],
-        batch["qtype"],
-        detach_encoder=freeze_strategy == "head_only",
-    )
+    if hidden_states is None:
+        logits, activation = model(
+            batch["input_ids"],
+            batch["attention_mask"],
+            batch["marker_pos"],
+            batch["marker_mask"],
+            batch["qtype"],
+            detach_encoder=freeze_strategy == "head_only",
+        )
+    else:
+        logits, activation = forward_from_hidden(model, hidden_states, batch)
     logits = logits.float()
     mask = batch["marker_mask"]
     target = batch["target"]
@@ -142,6 +317,7 @@ def evaluate_model(
     device: torch.device,
     freeze_strategy: str,
     collect_records: bool = False,
+    feature_cache=None,
 ) -> tuple[dict[str, float], list[tuple[int, Any, Any, int]]]:
     model.eval()
     losses: list[float] = []
@@ -151,14 +327,20 @@ def evaluate_model(
     for start in range(0, len(items), batch_size):
         chunk = items[start : start + batch_size]
         batch = move_batch(collate_training_items(chunk, tokenizer.pad_token_id, max_length), device)
-        logits, _ = model(
-            batch["input_ids"],
-            batch["attention_mask"],
-            batch["marker_pos"],
-            batch["marker_mask"],
-            batch["qtype"],
-            detach_encoder=freeze_strategy == "head_only",
-        )
+        if feature_cache is None:
+            logits, _ = model(
+                batch["input_ids"],
+                batch["attention_mask"],
+                batch["marker_pos"],
+                batch["marker_mask"],
+                batch["qtype"],
+                detach_encoder=freeze_strategy == "head_only",
+            )
+        else:
+            hidden = torch.from_numpy(np.array(feature_cache[start : start + len(chunk)], copy=True)).to(
+                device=device, dtype=torch.float32
+            )
+            logits, _ = forward_from_hidden(model, hidden, batch)
         logits = logits.float()
         masked = logits.masked_fill(~batch["marker_mask"], -1e4)
         per_item_loss = -(batch["target"] * torch.log_softmax(masked, -1)).sum(-1)
@@ -232,12 +414,15 @@ def calibration_metrics(
     }
 
 
-def checkpoint_config(model_config: dict[str, Any], mode: str) -> dict[str, Any]:
+def checkpoint_config(
+    model_config: dict[str, Any], mode: str, dataset_version: str
+) -> dict[str, Any]:
     result = dict(model_config)
     result.update(
         {
             "fine_tuned": True,
-            "model_name": "laya-solace-event-mesh-router",
+            "model_name": f"laya-{dataset_version}",
+            "dataset_version": dataset_version,
             "experiment_mode": mode,
             "temperature": [1.0, 1.0, 1.0],
         }
@@ -268,6 +453,7 @@ def save_checkpoint_atomic(
         del weights
         model.encoder.config.save_pretrained(temporary / "encoder")
         tokenizer.save_pretrained(temporary / "tokenizer")
+        shutil.copy2(ROUTE_CONTRACT_PATH, temporary / "route_contract.json")
         atomic_write_json(temporary / "rl_agent_config.json", model_config)
         atomic_write_json(temporary / "checkpoint_meta.json", metadata)
         if destination.exists():
@@ -315,13 +501,18 @@ def main() -> None:
     grad_accum = int(
         mode_config.get("gradient_accumulation_steps", config["gradient_accumulation_steps"])
     )
+    micro_batch = int(mode_config.get("micro_batch_size", config["micro_batch_size"]))
+    minimum_epochs = int(mode_config.get("minimum_train_epochs", config.get("minimum_train_epochs", 0)))
     max_length = int(config["max_length"])
     freeze_strategy = str(config["freeze_strategy"])
     require_free_disk(float(config["min_free_disk_gb"]))
     set_seed(int(config["seed"]))
     torch.set_float32_matmul_precision("high")
     device = select_device(args.device or str(config["device"]))
-    print(f"Mode={args.mode} device={device} precision=float32 strategy={freeze_strategy}")
+    print(
+        f"Mode={args.mode} device={device} precision=float32 strategy={freeze_strategy} "
+        f"micro_batch={micro_batch} grad_accum={grad_accum}"
+    )
     if device.type == "cpu":
         print("WARNING: training is using CPU; no silent MPS fallback occurred.")
 
@@ -329,6 +520,14 @@ def main() -> None:
     validation_records = read_jsonl(DATA_DIR / "validation.jsonl")
     if args.mode == "smoke":
         train_records = balanced_subset(train_records, int(mode_config["subset_size"]))
+    planned_exposures, required_exposures = validate_exposure_plan(
+        args.mode,
+        max_steps,
+        micro_batch,
+        grad_accum,
+        len(train_records),
+        minimum_epochs,
+    )
 
     model, tokenizer, model_config = load_trainable_model(
         BASE_MODEL_DIR, max_length, int(config["head_max_length"])
@@ -350,7 +549,62 @@ def main() -> None:
     validation_items = [
         build_training_item(tokenizer, model_config, record) for record in validation_records
     ]
-    print(f"Encoded {len(train_items)} train and {len(validation_items)} validation events")
+    print(
+        f"Encoded {len(train_items)} train and {len(validation_items)} validation events; "
+        f"planned_exposures={planned_exposures} required_exposures={required_exposures}"
+    )
+
+    train_features = validation_features = None
+    feature_cache_seconds = 0.0
+    cache_parity_max_abs = None
+    if freeze_strategy == "head_only" and bool(config.get("cache_frozen_encoder", False)):
+        cache_batch_size = int(config.get("encoder_cache_batch_size", 16))
+        dataset_version = str(config.get("dataset_version", "dataset"))
+        train_features, elapsed = build_encoder_cache(
+            model,
+            train_items,
+            tokenizer,
+            model_config,
+            device,
+            f"{dataset_version}-{args.mode}-train",
+            cache_batch_size,
+        )
+        feature_cache_seconds += elapsed
+        validation_features, elapsed = build_encoder_cache(
+            model,
+            validation_items,
+            tokenizer,
+            model_config,
+            device,
+            f"{dataset_version}-validation",
+            cache_batch_size,
+        )
+        feature_cache_seconds += elapsed
+        parity_batch = move_batch(
+            collate_training_items(train_items[:1], tokenizer.pad_token_id, max_length), device
+        )
+        model.eval()
+        with torch.no_grad():
+            direct_logits, _ = model(
+                parity_batch["input_ids"],
+                parity_batch["attention_mask"],
+                parity_batch["marker_pos"],
+                parity_batch["marker_mask"],
+                parity_batch["qtype"],
+                detach_encoder=True,
+            )
+            cached_hidden = torch.from_numpy(np.array(train_features[:1], copy=True)).to(
+                device=device, dtype=torch.float32
+            )
+            cached_logits, _ = forward_from_hidden(model, cached_hidden, parity_batch)
+        cache_parity_max_abs = float((direct_logits.float() - cached_logits.float()).abs().max().cpu())
+        if cache_parity_max_abs > 0.02:
+            raise RuntimeError(
+                f"Frozen encoder cache changed native logits by {cache_parity_max_abs:.6f}"
+            )
+        model.encoder.to("cpu")
+        clear_device_cache(device)
+        print(f"Frozen-cache parity max_abs={cache_parity_max_abs:.6f}; encoder moved to CPU")
 
     optimizer = optimizer_for(model, config, freeze_strategy)
     warmup_steps = int(config["warmup_steps"])
@@ -371,11 +625,14 @@ def main() -> None:
         int(config["validation_batch_size"]),
         device,
         freeze_strategy,
+        feature_cache=validation_features,
     )
     print(f"Initial validation: {initial_validation}")
 
     output_path = OUTPUT_DIR / ("smoke-model" if args.mode == "smoke" else "best-model")
-    model_config_to_save = checkpoint_config(model_config, args.mode)
+    model_config_to_save = checkpoint_config(
+        model_config, args.mode, str(config.get("dataset_version", "unknown"))
+    )
     history: list[dict[str, Any]] = []
     best_accuracy = -1.0
     best_loss = float("inf")
@@ -391,34 +648,45 @@ def main() -> None:
     checkpoint_updated = False
     global_step = 0
     micro_step = 0
+    examples_exposed = 0
     epoch = 0
     cursor = 0
     order = list(range(len(train_items)))
+    minimum_exposures = minimum_epochs * len(train_items)
     run_started = time.perf_counter()
     set_training_mode(model, freeze_strategy)
 
     while global_step < max_steps:
         if cursor == 0:
             random.Random(int(config["seed"]) + epoch).shuffle(order)
-        item = train_items[order[cursor]]
-        cursor += 1
+        end = min(cursor + micro_batch, len(order))
+        batch_indices = order[cursor:end]
+        chunk = [train_items[index] for index in batch_indices]
+        cursor = end
         if cursor >= len(order):
             cursor = 0
             epoch += 1
 
         batch = move_batch(
-            collate_training_items([item], tokenizer.pad_token_id, max_length), device
+            collate_training_items(chunk, tokenizer.pad_token_id, max_length), device
         )
+        examples_exposed += len(chunk)
         progress = global_step / max(1, max_steps - 1)
         sigma = float(config["sigma_start"]) + (
             float(config["sigma_end"]) - float(config["sigma_start"])
         ) * progress
+        hidden_states = None
+        if train_features is not None:
+            hidden_states = torch.from_numpy(
+                np.array(train_features[batch_indices], copy=True)
+            ).to(device=device, dtype=torch.float32)
         loss, components = forward_loss(
             model,
             batch,
             freeze_strategy,
             sigma,
             int(config["rlcd_group_size"]),
+            hidden_states=hidden_states,
         )
         if not torch.isfinite(loss):
             raise FloatingPointError(
@@ -440,6 +708,7 @@ def main() -> None:
         record = {
             "step": global_step,
             "epoch": epoch,
+            "examples_exposed": examples_exposed,
             "sigma": sigma,
             "learning_rates": [group["lr"] for group in optimizer.param_groups],
             "gradient_norm": float(gradient_norm.detach().cpu()),
@@ -462,6 +731,7 @@ def main() -> None:
             int(config["validation_batch_size"]),
             device,
             freeze_strategy,
+            feature_cache=validation_features,
         )
         record["validation"] = validation
         improved = validation["accuracy"] > best_accuracy or (
@@ -480,6 +750,8 @@ def main() -> None:
                 {
                     "mode": args.mode,
                     "step": global_step,
+                    "examples_exposed": examples_exposed,
+                    "dataset_version": config.get("dataset_version"),
                     "validation": validation,
                     "freeze_strategy": freeze_strategy,
                 },
@@ -488,8 +760,15 @@ def main() -> None:
             clear_device_cache(device)
         else:
             stale_evaluations += 1
-        if args.mode == "experiment" and stale_evaluations >= patience:
-            print(f"Early stopping after {stale_evaluations} evaluations without improvement")
+        if (
+            args.mode == "experiment"
+            and examples_exposed >= minimum_exposures
+            and stale_evaluations >= patience
+        ):
+            print(
+                f"Early stopping after {examples_exposed} examples and "
+                f"{stale_evaluations} evaluations without improvement"
+            )
             break
         set_training_mode(model, freeze_strategy)
 
@@ -503,13 +782,21 @@ def main() -> None:
             int(config["validation_batch_size"]),
             device,
             freeze_strategy,
+            feature_cache=validation_features,
         )
         save_checkpoint_atomic(
             model,
             tokenizer,
             model_config_to_save,
             output_path,
-            {"mode": args.mode, "step": global_step, "validation": validation},
+            {
+                "mode": args.mode,
+                "step": global_step,
+                "examples_exposed": examples_exposed,
+                "dataset_version": config.get("dataset_version"),
+                "validation": validation,
+                "freeze_strategy": freeze_strategy,
+            },
         )
         checkpoint_updated = True
 
@@ -524,7 +811,9 @@ def main() -> None:
     if args.mode == "experiment":
         # Reload the atomically saved best weights, then fit only on validation records.
         model.load_state_dict(load_file(str(output_path / "model.safetensors")), strict=True)
-        model.float().to(device)
+        model.float()
+        if validation_features is None:
+            model.to(device)
         validation, calibration_records = evaluate_model(
             model,
             validation_items,
@@ -534,6 +823,7 @@ def main() -> None:
             device,
             freeze_strategy,
             collect_records=True,
+            feature_cache=validation_features,
         )
         fitted = fit_temperature_map(calibration_records)
         temperatures = [float(value) for value in fitted["temperature"]]
@@ -553,7 +843,7 @@ def main() -> None:
         with (output_path / "checkpoint_meta.json").open(encoding="utf-8") as handle:
             checkpoint_meta = json.load(handle)
         identity_payload = {
-            "model_name": "laya-solace-event-mesh-router",
+            "model_name": model_config_to_save["model_name"],
             "mode": checkpoint_meta.get("mode"),
             "step": checkpoint_meta.get("step"),
             "question_contract_sha256": question_contract_hash(),
@@ -599,7 +889,15 @@ def main() -> None:
         "initial_validation": initial_validation,
         "best_validation": {"accuracy": best_accuracy, "loss": best_loss},
         "optimizer_steps": global_step,
+        "micro_batch_size": micro_batch,
         "gradient_accumulation_steps": grad_accum,
+        "examples_exposed": examples_exposed,
+        "epochs_completed": examples_exposed / max(1, len(train_items)),
+        "minimum_train_epochs": minimum_epochs,
+        "feature_cache_seconds": feature_cache_seconds,
+        "feature_cache_dtype": "float16" if train_features is not None else None,
+        "feature_cache_contains_labels": False if train_features is not None else None,
+        "feature_cache_parity_max_abs": cache_parity_max_abs,
         "duration_seconds": training_seconds,
         "mps_memory_at_end": mps_memory(),
         "history": history,
@@ -619,6 +917,10 @@ def main() -> None:
             "device": str(device),
             "max_steps_requested": max_steps,
             "optimizer_steps_completed": global_step,
+            "micro_batch_size": micro_batch,
+            "gradient_accumulation_steps": grad_accum,
+            "examples_exposed": examples_exposed,
+            "epochs_completed": examples_exposed / max(1, len(train_items)),
             "duration_seconds": training_seconds,
             "selected_checkpoint_updated": checkpoint_updated,
             "best_validation": {"accuracy": best_accuracy, "loss": best_loss},
@@ -633,4 +935,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    with exclusive_training():
+        main()

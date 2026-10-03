@@ -27,32 +27,32 @@ os.environ.setdefault("TORCH_HOME", str(ROOT / ".cache" / "torch"))
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 os.environ.setdefault("USE_TF", "0")
 
-ROUTES = (
-    "order-processing",
-    "payment-operations",
-    "logistics",
-    "inventory-management",
-    "customer-support",
-    "fraud-review",
-)
-QUESTION_ID = "route"
-ROUTING_QUESTION = {
-    QUESTION_ID: {
-        "type": "choice",
-        "instructions": (
-            "Which consumer service should receive this Solace event? Prefer schema, event_type, "
-            "and payload meaning over a conflicting legacy topic."
-        ),
-        "criteria": {
-            "order-processing": "order creation, amendment, cancellation, or validation",
-            "payment-operations": "payment authorization, settlement, failure, refund, or reconciliation",
-            "logistics": "shipment, carrier, delivery, customs, or fulfilment movement",
-            "inventory-management": "warehouse stock reservation, count, replenishment, or correction",
-            "customer-support": "customer ticket, complaint, service request, or human follow-up",
-            "fraud-review": "suspected fraud, account takeover, payment abuse, or security alert",
-        },
-    }
-}
+ROUTE_CONTRACT_PATH = ROOT / "configs" / "route_contract.json"
+
+
+def load_routing_question(model_path: Path | str | None = None) -> dict[str, Any]:
+    candidates = []
+    if model_path is not None:
+        candidates.append(Path(model_path) / "route_contract.json")
+    candidates.append(ROUTE_CONTRACT_PATH)
+    for path in candidates:
+        if path.is_file():
+            with path.open(encoding="utf-8") as handle:
+                contract = json.load(handle)
+            question_id = contract.get("question_id", "route")
+            question = contract.get("question", contract)
+            if not isinstance(question, dict) or question.get("type") != "choice":
+                raise ValueError(f"Invalid route contract: {path}")
+            # JSONL records serialize sorted keys. Use that same option order at inference.
+            question = dict(question)
+            question["criteria"] = dict(sorted(question["criteria"].items()))
+            return {question_id: question}
+    raise FileNotFoundError("No route_contract.json found")
+
+
+ROUTING_QUESTION = load_routing_question()
+QUESTION_ID = next(iter(ROUTING_QUESTION))
+ROUTES = tuple(ROUTING_QUESTION[QUESTION_ID]["criteria"])
 
 
 def load_config(path: Path | str = CONFIG_PATH) -> dict[str, Any]:
@@ -122,8 +122,8 @@ def state_fingerprint(state: dict[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def question_contract_hash() -> str:
-    encoded = json.dumps(ROUTING_QUESTION, sort_keys=True, separators=(",", ":")).encode()
+def question_contract_hash(question: dict[str, Any] | None = None) -> str:
+    encoded = json.dumps(question or ROUTING_QUESTION, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
 
 

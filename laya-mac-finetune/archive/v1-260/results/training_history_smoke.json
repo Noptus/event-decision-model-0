@@ -1,0 +1,104 @@
+{
+  "best_validation": {
+    "accuracy": 0.875,
+    "loss": 1.0813754133880138
+  },
+  "calibration": null,
+  "checkpoint": "/Volumes/Mac Storage/github_external/laya_ft/laya-mac-finetune/outputs/smoke-model",
+  "device": "mps",
+  "duration_seconds": 23.915436875000523,
+  "freeze_strategy": "head_only",
+  "gradient_accumulation_steps": 4,
+  "history": [
+    {
+      "epoch": 0,
+      "gradient_norm": 117.89616394042969,
+      "learning_rates": [
+        0.00011999999999999999
+      ],
+      "loss": -0.3113727867603302,
+      "loss_ce": 0.46153053641319275,
+      "loss_rlcd": -0.772903323173523,
+      "reward": 0.2105024755001068,
+      "sigma": 0.3,
+      "step": 1
+    },
+    {
+      "epoch": 0,
+      "gradient_norm": 13.96180248260498,
+      "learning_rates": [
+        0.00017999999999999998
+      ],
+      "loss": 0.2646932601928711,
+      "loss_ce": 0.4280053675174713,
+      "loss_rlcd": -0.16331210732460022,
+      "reward": 0.2647373676300049,
+      "sigma": 0.25,
+      "step": 2
+    },
+    {
+      "epoch": 1,
+      "gradient_norm": 43.851741790771484,
+      "learning_rates": [
+        0.00023999999999999998
+      ],
+      "loss": 0.22218042612075806,
+      "loss_ce": 0.8602228760719299,
+      "loss_rlcd": -0.6380424499511719,
+      "reward": -0.04690068960189819,
+      "sigma": 0.2,
+      "step": 3
+    },
+    {
+      "epoch": 1,
+      "gradient_norm": 183.32754516601562,
+      "learning_rates": [
+        0.0003
+      ],
+      "loss": 1.272257924079895,
+      "loss_ce": 0.4576769769191742,
+      "loss_rlcd": 0.8145809769630432,
+      "reward": 0.23745615780353546,
+      "sigma": 0.15,
+      "step": 4
+    },
+    {
+      "epoch": 1,
+      "gradient_norm": 51.82972717285156,
+      "learning_rates": [
+        0.0003
+      ],
+      "loss": 0.9534235000610352,
+      "loss_ce": 1.5703145265579224,
+      "loss_rlcd": -0.6168910264968872,
+      "reward": -1.2320822477340698,
+      "sigma": 0.1,
+      "step": 5,
+      "validation": {
+        "accuracy": 0.875,
+        "examples": 40,
+        "loss": 1.0813754133880138
+      }
+    }
+  ],
+  "initial_validation": {
+    "accuracy": 0.875,
+    "examples": 40,
+    "loss": 1.0747029393911363
+  },
+  "mode": "smoke",
+  "mps_memory_at_end": {
+    "current_allocated_memory": 1419724800,
+    "driver_allocated_memory": 2417704960,
+    "recommended_max_memory": 12713115648
+  },
+  "optimizer_steps": 5,
+  "parameter_counts": {
+    "frozen": 306939648,
+    "total": 321908995,
+    "trainable": 14969347
+  },
+  "precision": "float32",
+  "train_examples": 12,
+  "validation_examples": 40
+}

@@ -1,0 +1,35 @@
+base_model: convaiinnovations/laya-multilingual
+model_revision: e4e9ddf21a7b1903b7acffd8814ad4307bf63a67
+laya_repository: https://github.com/NandhaKishorM/laya.git
+laya_revision: fa9a2a7070b1789912a49ae24603bbfb1a78b001
+seed: 20261003
+device: auto
+max_length: 256
+head_max_length: 128
+micro_batch_size: 1
+gradient_accumulation_steps: 8
+validation_batch_size: 8
+inference_batch_size: 8
+learning_rate: 0.0003
+encoder_learning_rate: 0.00002
+weight_decay: 0.01
+warmup_steps: 5
+max_steps: 60
+evaluation_interval: 10
+patience: 3
+freeze_strategy: head_only
+output_directory: outputs
+min_free_disk_gb: 10
+rlcd_group_size: 4
+sigma_start: 0.30
+sigma_end: 0.10
+calibration_target_error: 0.15
+smoke:
+  subset_size: 12
+  max_steps: 5
+  gradient_accumulation_steps: 4
+  evaluation_interval: 5
+experiment:
+  max_steps: 60
+  evaluation_interval: 10
+  patience: 3

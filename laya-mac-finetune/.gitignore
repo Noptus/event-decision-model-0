@@ -12,12 +12,15 @@ models/
 upstream/laya/
 
 # Large generated checkpoints and transient training state
-outputs/best-model/
 outputs/smoke-model/
 outputs/recovery-model/
+outputs/models/
+outputs/encoder-cache/
+outputs/.training.lock
 outputs/*.pt
 outputs/*.log
 outputs/.best-model.tmp-*/
 outputs/.smoke-model.tmp-*/
 
-# Metrics, manifests, predictions, CSVs, and generated toy data stay visible.
+# The release checkpoint is tracked, with its large assets stored in Git LFS.
+# Metrics, manifests, predictions, CSVs, and generated event data stay visible.
