@@ -1,4 +1,4 @@
-# EDM-0 — Event Decision Model
+# EDM-0 : Event Decision Model
 
 A local bilingual decision model for Solace projects. EDM-0 reads a JSON event,
 selects an operational owner and returns eight route probabilities plus a review
